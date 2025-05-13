@@ -1,23 +1,58 @@
-const mysql = require('mysql2/promise');
-const connectToDatabase = require('..app/config/dbconfig');
+const {DataTypes} = require('sequelize');
+const sequelize = require('../../config/db.config');
 
-class Alumno {
-    constructor (alumno_id, codigo, nombre_alumno, edad, genero, fecha_nacimiento, repitente, residencia, nombre_padre_encargado,
-        telefono, grado_seccion_id, estado_alumno
-    ){
-        this.alumno_id = alumno_id;
-        this.codigo = codigo;
-        this.nombre_alumno = nombre_alumno;
-        this.edad = edad;
-        this.genero = genero;
-        this.fecha_nacimiento = fecha_nacimiento;
-        this.repitente = repitente;
-        this.residencia = residencia;
-        this.nombre_padre_encargado = nombre_padre_encargado;
-        this.telefono = telefono;
-        this.grado_seccion_id = grado_seccion_id;
-        this.estado_alumno = estado_alumno;
-    }
-}
-
-module.exports = Alumno;
+/* Modelo Alumno para la DB */
+    const Alumno = sequelize.define('Alumno', {
+      alumno_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      codigo: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+        unique: true,
+      },
+      nombre_alumno: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
+      },
+      edad: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      genero: {
+        type: DataTypes.STRING(10),
+        allowNull: false,
+      },
+      fecha_nacimiento: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+      },
+      repitente: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      residencia: {
+        type: DataTypes.STRING(150),
+        allowNull: false,
+      },
+      grado_seccion_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      encargado_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      estado_alumno: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+      }
+    }, {
+      tableName: 'Alumno',
+      timestamps: false
+    });
+  
+    module.exports = Alumno;
+  

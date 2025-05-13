@@ -1,13 +1,28 @@
-const mysql = require('mysql2/promise');
-const connectToDatabase = require('./app/config/dbconfig');
+const {DataTypes} = require('sequelize');
+const sequelize = require('../../config/db.config');
 
-class Recuperacion_Contraseña {
-    constructor(recuperacion_id, codigo_autentication, usuario_id, estado_autentication){
-        this.recuperacion_id = recuperacion_id;
-        this.codigo_autentication = codigo_autentication;
-        this.usuario_id = usuario_id;
-        this.estado_autentication = estado_autentication;
+/* Modelo Recuperacion_contraseña para la DB */
+const RecuperacionContrasena = sequelize.define('RecuperacionContrasena', {
+    recuperacion_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    codigo_autenticacion: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
+    usuario_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    estado_autenticacion: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
     }
-}
+  }, {
+    tableName: 'recuperacion_contrasena',
+    timestamps: false
+  });
 
-module.exports = Recuperacion_Contraseña;
+  module.exports = RecuperacionContrasena;

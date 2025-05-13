@@ -1,9 +1,20 @@
-const mysql = require('mysql2/promise');
-const connectToDatabase = require('../config/dbconfig');
+const {DataTypes} = require('sequelize');
+const sequelize = require('../../config/db.config');
 
-class Ciclo {
-    constructor(ciclo_id, año){
-        this.ciclo_id = ciclo_id;
-        this.año = año;
+/* Modelo Ciclo para la DB */
+const Ciclo = sequelize.define('Ciclo', {
+    ciclo_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    año: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
-}
+  }, {
+    tableName: 'Ciclo',
+    timestamps: false
+  });
+
+  module.exports = Ciclo;

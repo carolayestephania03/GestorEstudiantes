@@ -1,15 +1,36 @@
-const mysql = require('mysql2/promise');
-const connectToDatabase = require('../config/dbconfig');
+const {DataTypes} = require('sequelize');
+const sequelize = require('../../config/db.config');
 
-class Bitacora {
-    constructor(bitacora_id, usuario_id, descripcion, fecha_creacion, fecha_modificacion, estado_bitacora){
-        this.bitacora_id = bitacora_id;
-        this.usuario_id = usuario_id;
-        this.descripcion = descripcion;
-        this.fecha_creacion = fecha_creacion;
-        this.fecha_modificacion = fecha_modificacion;
-        this.estado_bitacora = estado_bitacora;
+/* Modelo Bitacora para la DB */
+const Bitacora = sequelize.define('Bitacora', {
+    bitacora_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    usuario_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    descripcion: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    fecha_creacion: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
+    },
+    fecha_modificacion: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
+    },
+    estado_bitacora: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
     }
-}
+  }, {
+    tableName: 'Bitacora',
+    timestamps: false
+  });
 
-module.exports = Bitacora;
+  module.exports = Bitacora;

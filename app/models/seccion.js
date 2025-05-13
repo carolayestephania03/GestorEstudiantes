@@ -1,12 +1,24 @@
-const mysql = require('mysql');
-const connectToDatabase = require('../config/dbconfig');
+const {DataTypes} = require('sequelize');
+const sequelize = require('../../config/db.config');
 
-class Seccion {
-    constructor(seccion_id, seccion_des, estado_seccion) {
-        this.seccion_id = seccion_id;
-        this.seccion_des = seccion_des;
-        this.estado_seccion = estado_seccion;
+/* Modelo Seccion para la DB */
+const Seccion = sequelize.define('Seccion', {
+    seccion_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    seccion_des: {
+      type: DataTypes.STRING(50),
+      allowNull: false
+    },
+    estado_seccion: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
     }
-}
+  }, {
+    tableName: 'Seccion',
+    timestamps: false
+  });
 
-module.exports = Seccion;
+  module.exports = Seccion;

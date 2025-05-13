@@ -1,23 +1,62 @@
-const mysql = require('mysql2/promise');
-const connectToDatabase = require('./app/config/dbconfig');
+const {DataTypes} = require('sequelize');
+const sequelize = require('../../config/db.config');
 
-class Actividad {
-    constructor(actividad_id, usuario_id, materia_id, bimestre_id, nombre_actividad, descripcion, fecha_creacion, fecha_entrega, 
-        puntaje_maximo, tipo_actividad_id, estado_actividad_id, aviso_actividad_id  
-    ){
-        this.actividad_id = actividad_id;
-        this.usuario_id = usuario_id;
-        this.materia_id = materia_id;
-        this.bimestre_id = bimestre_id;
-        this.nombre_actividad = nombre_actividad;
-        this.descripcion = descripcion;
-        this.fecha_creacion = fecha_creacion;
-        this.fecha_entrega = fecha_entrega;
-        this.puntaje_maximo = puntaje_maximo;
-        this.tipo_actividad_id = tipo_actividad_id;
-        this.estado_actividad_id = estado_actividad_id;
-        this.aviso_actividad_id = aviso_actividad_id;
-    }
-}
+/* Modelo Actividad para la DB */
+    const Actividad = sequelize.define('Actividad', {
+      actividad_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      usuario_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      materia_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      bimestre_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      nombre_actividad: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+      },
+      descripcion: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      fecha_creacion: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      fecha_entrega: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      puntaje_maximo: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: false,
+      },
+      tipo_actividad_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      estado_actividad_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      aviso_actividad_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      }
+    }, {
+      tableName: 'Actividad',
+      timestamps: false,
+    });
+  
+    module.exports = Actividad;
 
-module.exports = Actividad;
+  

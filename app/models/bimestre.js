@@ -1,12 +1,24 @@
-const mysql = require('mysql2/promise');
-const connectToDatabase = require('./app/config/dbconfig');
+const {DataTypes} = require('sequelize');
+const sequelize = require('../../config/db.config');
 
-class Bimestre {
-    constructor(bimestre_id, nombre_id, estado_bimestre) {
-        this.bimestre_id = bimestre_id;
-        this.nombre_id = nombre_id;
-        this.estado_bimestre = estado_bimestre;
+/* Modelo Bimestre para la DB */
+const Bimestre = sequelize.define('Bimestre', {
+    bimestre_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    nombre_bimestre: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+    },
+    estado_bimestre: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
     }
-}
+  }, {
+    tableName: 'Bimestre',
+    timestamps: false
+  });
 
-module.exports = Bimestre;
+  module.exports = Bimestre;

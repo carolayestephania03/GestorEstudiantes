@@ -1,13 +1,29 @@
-const mysql = require('mysql2/promise');
-const connectToDatabase = require ('./app/config/dbconfig');
+const {DataTypes} = require('sequelize');
+const sequelize = require('../../config/db.config');
 
-class Rol {
-    constructor(rol_id, nombre_rol, fecha_creacion, fecha_modificacion) {
-        this.rol_id = rol_id;
-        this.nombre_rol = nombre_rol;
-        this.fecha_creacion = fecha_creacion;
-        this.fecha_modificacion = fecha_modificacion;
+/* Modelo Rol para la DB */
+const Rol = sequelize.define('Rol', {
+    rol_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    nombre_rol: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      unique: true
+    },
+    fecha_creacion: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
+    },
+    fecha_modificacion: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
     }
-}
+  }, {
+    tableName: 'Rol',
+    timestamps: false
+  });
 
-module.exports = Rol;
+  module.exports = Rol;

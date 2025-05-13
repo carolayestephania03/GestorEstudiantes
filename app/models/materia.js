@@ -1,13 +1,29 @@
-const mysql = require('mysql2/promise');
-const connectToDatabase = require('./app/config/dbconfig');
+const {DataTypes} = require('sequelize');
+const sequelize = require('../../config/db.config');
 
-class Materia {
-    constructor(materia_id, nombre_materia, descripcion_materia, estado_materia) {
-        this.materia_id = materia_id;
-        this.nombre_materia = nombre_materia;
-        this.descripcion_materia = descripcion_materia;
-        this.estado_materia = estado_materia;
+/* Modelo Materia para la DB */
+const Materia = sequelize.define('Materia', {
+    materia_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    nombre_materia: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+      unique: true
+    },
+    descripcion_materia: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    estado_materia: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
     }
-}
+  }, {
+    tableName: 'Materia',
+    timestamps: false
+  });
 
-module.exports = Materia;
+  module.exports = Materia;

@@ -1,12 +1,24 @@
-const mysql = require('mysql2/promise');
-const connectToDatabase = require('./app/config/dbconfig');
+const {DataTypes} = require('sequelize');
+const sequelize = require('../../config/db.config');
 
-class Grado {
-    constructor(grado_id, grado_des, estado_grado) {
-        this.grado_id = grado_id;
-        this.grado_des = grado_des;
-        this.estado_grado = estado_grado;
+/* Modelo Grado para la DB */
+const Grado = sequelize.define('Grado', {
+    grado_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    grado_des: {
+      type: DataTypes.STRING(50),
+      allowNull: false
+    },
+    estado_grado: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
     }
-}
+  }, {
+    tableName: 'Grado',
+    timestamps: false
+  });
 
-module.exports = Grado;
+  module.exports = Grado;

@@ -1,5 +1,5 @@
 const {DataTypes} = require('sequelize');
-const sequelize = require('../../config/db.config');
+const sequelize = require('../../config/dbconfig');
 
 /* Modelo Materia para la DB */
 const Materia = sequelize.define('Materia', {

@@ -5,6 +5,8 @@ const initDB = require('./config/dbconfig');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const app = express();
+const swagger = require('./config/swagger');
+
 
 /* Uso de cookies */
 app.use(cookieParser());
@@ -22,10 +24,15 @@ const corsOptions = {
 
 /* Routes ------------------------------------------*/ 
 
+const actividadRoutes = require('./app/routes/actividad');
+
 /* Activación del cors*/
 app.use(cors(corsOptions));
 
 /* Utilizacion de Rutas ----------------------------*/ 
+app.use(actividadRoutes);
+
+app.use('/api-docs', swagger.swaggerUi.serve, swagger.swaggerUi.setup(swagger.specs));
 
 app.get('/', (req, res) => {
     res.send('¡Servidor funcionando correctamente!');

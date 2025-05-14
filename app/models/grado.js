@@ -1,5 +1,5 @@
 const {DataTypes} = require('sequelize');
-const sequelize = require('../../config/db.config');
+const sequelize = require('../../config/dbconfig');
 
 /* Modelo Grado para la DB */
 const Grado = sequelize.define('Grado', {

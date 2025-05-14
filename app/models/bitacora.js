@@ -1,5 +1,5 @@
 const {DataTypes} = require('sequelize');
-const sequelize = require('../../config/db.config');
+const sequelize = require('../../config/dbconfig');
 
 /* Modelo Bitacora para la DB */
 const Bitacora = sequelize.define('Bitacora', {

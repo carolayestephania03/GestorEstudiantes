@@ -1,8 +1,8 @@
 const {DataTypes} = require('sequelize');
-const sequelize = require('../../config/db.config');
+const sequelize = require('../../config/dbconfig');
 
 /* Modelo Actividad para la DB */
-    const Actividad = sequelize.define('Actividad', {
+    const actividad = sequelize.define('actividad', {
       actividad_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -53,10 +53,10 @@ const sequelize = require('../../config/db.config');
         allowNull: false,
       }
     }, {
-      tableName: 'Actividad',
+      tableName: 'actividad',
       timestamps: false,
     });
   
-    module.exports = Actividad;
+    module.exports = actividad;
 
   

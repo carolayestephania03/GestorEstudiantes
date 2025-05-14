@@ -1,5 +1,5 @@
 const {DataTypes} = require('sequelize');
-const sequelize = require('../../config/db.config');
+const sequelize = require('../../config/dbconfig');
 
 /* Modelo Recuperacion_contraseña para la DB */
 const RecuperacionContrasena = sequelize.define('RecuperacionContrasena', {

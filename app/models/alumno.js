@@ -55,4 +55,3 @@ const sequelize = require('../../config/dbconfig');
     });
   
     module.exports = Alumno;
-  

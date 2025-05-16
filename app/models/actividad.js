@@ -58,5 +58,3 @@ const sequelize = require('../../config/dbconfig');
     });
   
     module.exports = actividad;
-
-  

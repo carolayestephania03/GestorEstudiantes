@@ -25,12 +25,32 @@ const corsOptions = {
 /* Routes ------------------------------------------*/ 
 
 const actividadRoutes = require('./app/routes/actividad');
+const alumnoRoutes = require('./app/routes/alumno');
+const bimestreRoutes = require('./app/routes/bimestre');
+const bitacoraRoutes = require('./app/routes/bitacora');
+const cicloRoutes = require('./app/routes/ciclo');
+const encargadoRoutes = require('./app/routes/encargado');
+const gradoRoutes = require('./app/routes/grado');
+const materiaRoutes = require('./app/routes/materia');
+const rolRoutes = require('./app/routes/rol');
+const seccionRoutes = require('./app/routes/seccion');
+const usuarioRoutes = require('./app/routes/usuario');
 
 /* Activación del cors*/
 app.use(cors(corsOptions));
 
 /* Utilizacion de Rutas ----------------------------*/ 
 app.use(actividadRoutes);
+app.use(alumnoRoutes);
+app.use(bimestreRoutes);
+app.use(bitacoraRoutes);
+app.use(cicloRoutes);
+app.use(encargadoRoutes);
+app.use(gradoRoutes);
+app.use(materiaRoutes);
+app.use(rolRoutes);
+app.use(seccionRoutes);
+app.use(usuarioRoutes);
 
 app.use('/api-docs', swagger.swaggerUi.serve, swagger.swaggerUi.setup(swagger.specs));
 

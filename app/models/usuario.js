@@ -1,97 +1,92 @@
-const {DataTypes} = require('sequelize');
+/**Depedencias utilizadas */
+const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/dbconfig');
+const bcrypt = require('bcrypt');
 
-/* Modelo Usuario para la DB */
+/**Modelo Usuario */
 const Usuario = sequelize.define('Usuario', {
     usuario_id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    persona_id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false
     },
     rol_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+        type: DataTypes.ENUM('D', 'M', 'S'),
+        allowNull: true
     },
     nombre_usuario: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-      unique: true
-    },
-    nombre: {
-      type: DataTypes.STRING(50),
-      allowNull: false
+        type: DataTypes.STRING(50),
+        allowNull: false,
+        unique: true
     },
     hash_contrasena: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    correo: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-      unique: true
-    },
-    telefono: {
-      type: DataTypes.STRING(15),
-      allowNull: false,
-      unique: true
-    },
-    residencia: {
-      type: DataTypes.STRING(255),
-      allowNull: false
-    },
-    genero: {
-      type: DataTypes.ENUM('Masculino', 'Femenino', 'Otro'),
-      allowNull: false
-    },
-    dpi: {
-      type: DataTypes.STRING(13),
-      allowNull: false,
-      unique: true
-    },
-    fecha_nacimiento: {
-      type: DataTypes.DATEONLY,
-      allowNull: false
-    },
-    nit: {
-      type: DataTypes.STRING(10),
-      allowNull: false,
-      unique: true
+        type: DataTypes.TEXT,
+        allowNull: false
     },
     codigo_empleado: {
-      type: DataTypes.INTEGER,
-      unique: true
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        unique: true
     },
     cedula_docente: {
-      type: DataTypes.INTEGER,
-      unique: true
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        unique: true
     },
     fecha_inicio_labores: {
-      type: DataTypes.DATEONLY
+        type: DataTypes.DATE,
+        allowNull: true
     },
-    escalafon: {
-      type: DataTypes.STRING(1)
+    escalafon_id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: true
     },
-    renglon: {
-      type: DataTypes.STRING(3)
+    renglon_id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: true
     },
     codigo_institucional: {
-      type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    estado: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: true
     },
     fecha_creacion: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: DataTypes.NOW
     },
     fecha_modificacion: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW
-    },
-    estado_usuario: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: DataTypes.NOW
     }
-  }, {
-    tableName: 'Usuario',
-    timestamps: false
-  });
+}, {
+        tableName: 'Usuario',
+        timestamps: false,
+        hooks: {
+            /*Encriptación de las contraseñas */
+            beforeCreate: async (Usuario) => {
+                if (Usuario.hash_contrasena) {
+                    const salt = await bcrypt.genSalt(10);
+                    Usuario.hash_contrasena = await bcrypt.hash(Usuario.hash_contrasena, salt);
+                }
+            },
+            beforeUpdate: async (Usuario) => {
+                if (Usuario.hash_contrasena) {
+                    const salt = await bcrypt.genSalt(10);
+                    Usuario.hash_contrasena = await bcrypt.hash(Usuario.hash_contrasena, salt);
+                }
+            }
+        }
+    });
 
-  module.exports = Usuario;
+    module.exports = Usuario;

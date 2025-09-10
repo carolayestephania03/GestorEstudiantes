@@ -1,29 +1,32 @@
-const {DataTypes} = require('sequelize');
+/**Depedencias utilizadas */
+const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/dbconfig');
 
-/* Modelo Materia para la DB */
+/**Modelo Materia */
 const Materia = sequelize.define('Materia', {
     materia_id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
     },
     nombre_materia: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-      unique: true
+        type: DataTypes.STRING(100),
+        allowNull: false,
+        unique: true
     },
     descripcion_materia: {
-      type: DataTypes.TEXT,
-      allowNull: false
+        type: DataTypes.TEXT,
+        allowNull: false
     },
-    estado_materia: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true
+    estado: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: true
     }
-  }, {
+}, {
     tableName: 'Materia',
     timestamps: false
-  });
+});
 
-  module.exports = Materia;
+module.exports = Materia;

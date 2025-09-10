@@ -4,10 +4,10 @@ require('dotenv').config({});
 
 // Configuración de la conexión a la base de datos
 const dbConfig = {
-    host: 'localhost', // Cambiado de 'server' a 'host'
-    user: 'root',
-    password: 'Carolay123',
-    database: 'db_linda_vista',
+    host: '127.0.0.1', // Cambiado de 'server' a 'host'
+    user: 'eormSchool',
+    password: 'EORM$chool2025',
+    database: 'eorm_escuela',
     port: 3306,
 };
 

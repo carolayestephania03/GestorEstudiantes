@@ -21,26 +21,29 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
     rel="stylesheet" />
-
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/locales/es.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
 
   <!-- Icons. Uncomment required icon fonts -->
-  <link rel="stylesheet" href="/frontend/assets/css/boxicons.css" />
+  <link rel="stylesheet" href="../../assets/css/boxicons.css" />
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/frontend/assets/css/core.css" class="template-customizer-core-css" />
-  <link rel="stylesheet" href="/frontend/assets/css/theme-default.css" class="template-customizer-theme-css" />
-  <link rel="stylesheet" href="/frontend/assets/css/demo.css" />
+  <link rel="stylesheet" href="../../assets/css/core.css" class="template-customizer-core-css" />
+  <link rel="stylesheet" href="../../assets/css/theme-default.css" class="template-customizer-theme-css" />
+  <link rel="stylesheet" href="../../assets/css/demo.css" />
 
   <!-- Scroll CSS -->
-  <link rel="stylesheet" href="/frontend/assets/css/perfect-scrollbar.css" />
+  <link rel="stylesheet" href="../../assets/css/perfect-scrollbar.css" />
 
-  <link rel="stylesheet" href="/frontend/assets/css/apex-charts.css" />
+  <link rel="stylesheet" href="../../assets/css/apex-charts.css" />
 
   <!-- Helpers -->
-  <script src="/frontend/assets/js/helpers.js"></script>
+  <script src="../../assets/js/helpers.js"></script>
 
-  <!-- Config -->
-  <script src="/frontend/assets/js/config.js"></script>
 </head>
 
 <body>
@@ -52,9 +55,9 @@
 
       <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
         <div class="app-brand demo">
-          <a href="/frontend/pages/dashboard.html" class="app-brand-link">
+          <a href="../../pages/dashboard.html" class="app-brand-link">
             <span class="app-brand-logo demo">
-              <img src="/frontend/assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" width="70" height="70">
+              <img src="../../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" width="70" height="70">
             </span>
             <span class="app-brand-text demo menu-text fw-bolder ms-2 text-uppercase">EORM</span>
           </a>
@@ -73,7 +76,7 @@
             <span class="menu-header-text">Inicio</span>
           </li>
           <li class="menu-item">
-            <a href="/frontend/pages/dashboard.html" class="menu-link">
+            <a href="../../pages/dashboard.html" class="menu-link">
               <i class="menu-icon tf-icons bx bx-home-circle"></i>
               <div data-i18n="Analytics">Inicio</div>
             </a>
@@ -92,17 +95,17 @@
             <!-- Menú Tareas y Actividades -->
             <ul class="menu-sub">
               <li class="menu-item active">
-                <a href="/frontend/pages/tareas/calendario.html" class="menu-link">
+                <a href="../../pages/tareas/calendario.html" class="menu-link">
                   <div data-i18n="Without menu">Calendario</div>
                 </a>
               </li>
               <li class="menu-item">
-                <a href="/frontend/pages/tareas/actividades.html" class="menu-link">
+                <a href="../../pages/tareas/actividades.html" class="menu-link">
                   <div data-i18n="Without navbar">Actividades</div>
                 </a>
               </li>
               <li class="menu-item">
-                <a href="/frontend/pages/tareas/asigna-lista-cotejo.html" class="menu-link">
+                <a href="../../pages/tareas/asigna-lista-cotejo.html" class="menu-link">
                   <div data-i18n="Container">Visualizar Lista de Cotejo</div>
                 </a>
               </li>
@@ -114,7 +117,7 @@
             <span class="menu-header-text">Alumnos</span>
           </li>
           <li class="menu-item">
-            <a href="/frontend/pages/alumnos/alumnos.html" class="menu-link">
+            <a href="../../pages/alumnos/alumnos.html" class="menu-link">
               <i class="menu-icon tf-icons bx bx-dock-top"></i>
               <div data-i18n="Documentation">Alumnos</div>
             </a>
@@ -127,21 +130,21 @@
 
           <!-- Boleta de Calificaciones -->
           <li class="menu-item">
-            <a href="/frontend/pages/reportes/boleta-calificacion.html" class="menu-link">
+            <a href="../../pages/reportes/boleta-calificacion.html" class="menu-link">
               <i class="menu-icon tf-icons bx bx-file"></i>
               <div data-i18n="Basic">Boleta de Calificaciones</div>
             </a>
           </li>
           <!-- Lista de Cotejo -->
           <li class="menu-item">
-            <a href="/frontend/pages/reportes/lista-cotejo.html" class="menu-link">
+            <a href="../../pages/reportes/lista-cotejo.html" class="menu-link">
               <i class="menu-icon tf-icons bx bx-file"></i>
               <div data-i18n="Basic">Lista de Cotejo</div>
             </a>
           </li>
           <!-- Cuadro PRIM -->
           <li class="menu-item">
-            <a href="/frontend/pages/reportes/cuadro-prim.html" class="menu-link">
+            <a href="../../pages/reportes/cuadro-prim.html" class="menu-link">
               <i class="menu-icon tf-icons bx bx-file"></i>
               <div data-i18n="Basic">Cuadro PRIM</div>
             </a>
@@ -154,7 +157,7 @@
 
 
           <li class="menu-item">
-            <a href="/frontend/pages/alertas/alertas.html" target="_blank" class="menu-link">
+            <a href="../../pages/alertas/alertas.html" target="_blank" class="menu-link">
               <i class="menu-icon tf-icons bx bx-error"></i>
               <div data-i18n="Documentation">Alertas</div>
             </a>
@@ -185,7 +188,7 @@
               <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                   <div class="avatar avatar-online">
-                    <img src="/frontend/assets/img/icons/user.png" alt class="w-px-40 h-auto rounded-circle" />
+                    <img src="../../assets/img/icons/user.png" alt class="w-px-40 h-auto rounded-circle" />
                   </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -194,7 +197,7 @@
                       <div class="d-flex">
                         <div class="flex-shrink-0 me-3">
                           <div class="avatar avatar-online">
-                            <img src="/frontend/assets/img/icons/user.png" alt class="w-px-40 h-auto rounded-circle" />
+                            <img src="../../assets/img/icons/user.png" alt class="w-px-40 h-auto rounded-circle" />
                           </div>
                         </div>
                         <div class="flex-grow-1">
@@ -226,7 +229,7 @@
                     <div class="dropdown-divider"></div>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="/frontend/index.html">
+                    <a class="dropdown-item" href="../../index.html">
                       <i class="bx bx-power-off me-2"></i>
                       <span class="align-middle">Cerrar Sesión</span>
                     </a>
@@ -247,73 +250,62 @@
               <div class="col-lg-12 mb-4 order-0">
                 <div class="card">
                   <div class="d-flex align-items-end row">
-                    <div class="col-sm-7">
-                      <div class="card-body">
-                        <h2 class="card-title text-primary">Calendario</h2>
-                        <p class="mb-4">
-                          Enseñar es un trabajo que se hace desde el corazón!
-                        </p>
-                      </div>
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4" id="Calendar-title1">
+                      <h1 class="card-title text-primary ">Calendario</h1>
                     </div>
-                    <div class="col-sm-5 text-end">
-                      <div class="card-body pb-3 px-0 px-md-8">
-                        <img src="/frontend/assets/img/mochila.jpg" height="130" alt="View Badge User" />
+                    <div class="row">
+                      <!-- Contenido de columna -->
+                      <div class="col-lg-12 mb-4 order-0">
+                        <div class="card">
+                          <!-- Añadir calendario -->
+                          <div id='calendar'></div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <!-- Total Revenue -->
             </div>
           </div>
-          <!-- / Content -->
-
-          <!-- Footer -->
-          <footer class="content-footer footer bg-footer-theme">
-            <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
-              <div class="mb-2 mb-md-0">
-                Carolay Canté © 2026, "Construyendo herramientas que facilitan el aprendizaje."
-              </div>
-              <div>
-                <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
-                  target="_blank" class="footer-link me-4">Documentación</a>
-              </div>
-            </div>
-          </footer>
-          <!-- / Footer -->
-
-          <div class="content-backdrop fade"></div>
         </div>
-      </div>
-      <!-- / Layout page -->
-    </div>
+        <!-- / Content -->
 
-    <!-- Overlay -->
-    <div class="layout-overlay layout-menu-toggle"></div>
+        <!-- Footer -->
+        <footer class="content-footer footer bg-footer-theme">
+          <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+            <div class="mb-2 mb-md-0">
+              Carolay Canté © 2026, "Construyendo herramientas que facilitan el aprendizaje."
+            </div>
+            <div>
+              <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
+                target="_blank" class="footer-link me-4">Documentación</a>
+            </div>
+          </div>
+        </footer>
+        <!-- / Footer -->
+
+        <div class="content-backdrop fade"></div>
+      </div>
+    </div>
+    <!-- / Layout page -->
+  </div>
+
+  <!-- Overlay -->
+  <div class="layout-overlay layout-menu-toggle"></div>
   </div>
   <!-- / Layout wrapper -->
 
   <!-- Core JS -->
   <!-- build:js assets/vendor/js/core.js -->
-  <script src="/frontend/assets/js/jquery.js"></script>
-  <script src="/frontend/assets/js/popper.js"></script>
-  <script src="/frontend/assets/js/bootstrap.js"></script>
-  <script src="/frontend/assets/js/perfect-scrollbar.js"></script>
-
-  <script src="/frontend/assets/js/menu.js"></script>
+  <script src="../../assets/js/bootstrap.js"></script>
+  <script src="../../assets/js/perfect-scrollbar.js"></script>
+  <script src="../../assets/js/menu.js"></script>
   <!-- endbuild -->
-
-  <!-- Vendors JS -->
-  <script src="/frontend/assets/js/apexcharts.js"></script>
-
   <!-- Main JS -->
   <script src="/frontend/assets/js/main.js"></script>
-
-  <!-- Page JS -->
-  <script src="/frontend/assets/js/dashboards-analytics.js"></script>
-
-  <!-- Place this tag in your head or just before your close body tag. -->
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- JS Geovanny-->
+  <script src="../../assets/js/Calendar/index.global.min.js"></script>
+  <!-- Main JS -->
 </body>
 
 </html>

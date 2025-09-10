@@ -4,9 +4,16 @@ const cors = require('cors');
 const initDB = require('./config/dbconfig');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const http = require('http');
 const app = express();
 const swagger = require('./config/swagger');
+const socketMiddleware = require('./app/middleware/socket');
+const path = require('path');
 
+app.use(express.static(path.join(__dirname, './frontend')));
+
+// Crear servidor HTTP
+const server = http.createServer(app);
 
 /* Uso de cookies */
 app.use(cookieParser());
@@ -14,45 +21,68 @@ app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: true }));
 
 /* Puerto a utilizar */ 
-const port = 8000;
+const port = 8001;
 
 /* Configuracion del cors */
 const corsOptions = {
-    origin: 'http://localhost:8000', // Cambia esto a la URL de tu frontend mas adelante
+    origin: 'http://localhost:8001', // Cambia esto a la URL de tu frontend mas adelante
     Credentials: true,
 }
 
 /* Routes ------------------------------------------*/ 
 
-const actividadRoutes = require('./app/routes/actividad');
-const alumnoRoutes = require('./app/routes/alumno');
-const bimestreRoutes = require('./app/routes/bimestre');
-const bitacoraRoutes = require('./app/routes/bitacora');
-const cicloRoutes = require('./app/routes/ciclo');
-const encargadoRoutes = require('./app/routes/encargado');
-const gradoRoutes = require('./app/routes/grado');
-const materiaRoutes = require('./app/routes/materia');
-const rolRoutes = require('./app/routes/rol');
-const seccionRoutes = require('./app/routes/seccion');
-const usuarioRoutes = require('./app/routes/usuario');
+const RouteEscalafon = require('./app/routes/Escalafon');
+const RouteRenglon = require('./app/routes/Renglon');
+const RoutePersona = require('./app/routes/Persona');
+const RouteUsuario = require('./app/routes/Usuario');
+const RouteGrado = require('./app/routes/Grado');
+const RouteSeccion = require('./app/routes/Seccion');
+const RouteCiclo = require('./app/routes/Ciclo');
+const RouteMateria = require('./app/routes/Materia');
+const RouteTipoActividad = require('./app/routes/Tipo_actividad');
+const RouteEstadoActividad = require('./app/routes/Estado_actividad');
+const RouteActividad = require('./app/routes/Actividad');
+const RouteEncargado = require('./app/routes/Encargado');
+const RouteAlumno = require('./app/routes/Alumno');
+const RouteCalificacion = require('./app/routes/Calificacion');
+const RoutePromedioAmbito = require('./app/routes/Promedio_ambito');
+const RoutePromedioCiclo = require('./app/routes/Promedio_ciclo');
 
 /* Activación del cors*/
 app.use(cors(corsOptions));
 
-/* Utilizacion de Rutas ----------------------------*/ 
-app.use(actividadRoutes);
-app.use(alumnoRoutes);
-app.use(bimestreRoutes);
-app.use(bitacoraRoutes);
-app.use(cicloRoutes);
-app.use(encargadoRoutes);
-app.use(gradoRoutes);
-app.use(materiaRoutes);
-app.use(rolRoutes);
-app.use(seccionRoutes);
-app.use(usuarioRoutes);
+/**Parseador de solicitudes */
+app.use(
+    bodyParser.json({
+        limit: '50mb'
+    })
+);
 
-app.use('/api-docs', swagger.swaggerUi.serve, swagger.swaggerUi.setup(swagger.specs));
+app.use(
+    bodyParser.urlencoded({
+        limit: '50mb',
+        extended: true
+    })
+);
+
+/* Utilizacion de Rutas ----------------------------*/ 
+app.use(RouteEscalafon);
+app.use(RouteRenglon);
+app.use(RoutePersona);
+app.use(RouteUsuario);
+app.use(RouteGrado);
+app.use(RouteSeccion);
+app.use(RouteCiclo);
+app.use(RouteMateria);
+app.use(RouteTipoActividad);
+app.use(RouteEstadoActividad);
+app.use(RouteActividad);
+app.use(RouteEncargado);
+app.use(RouteAlumno);
+app.use(RouteCalificacion);
+app.use(RoutePromedioAmbito);
+app.use(RoutePromedioCiclo);
+
 
 app.get('/', (req, res) => {
     res.send('¡Servidor funcionando correctamente!');
@@ -66,10 +96,10 @@ const startServer = async () => {
 
         await initDB.sync();
 
-        const server = app.listen(port, () => {
-            console.log(`La aplicación está en línea en el puerto ${port}!`);
+        server.listen(port, '0.0.0.0', () => {
+            console.log(`La aplicación está en línea en http://localhost:${port}!`);
         });
-        
+
     } catch (error) {
         console.error('Error al conectar a la base de datos:', error);
     }

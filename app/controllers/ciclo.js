@@ -1,17 +1,18 @@
-const {body, validationResult} = require('express-validator');
+/**Depedencias utilizadas */
+const { body, validationResult } = require('express-validator');
+const Ciclo = require('../models/Ciclo');
 const sequelize = require('../../config/dbconfig');
-const ciclo = require('../models/ciclo');
-const moment = require('moment');
 
-
-/* Operación GET hacia la base de datos */
+/**Operación GET hacia la DB*/
 exports.getData = async (req, res) => {
     try {
-        const [data, metadata] = await sequelize.query(
-            'SELECT * FROM ciclo'
-        );
-        res.send({data});
+        const data = await Ciclo.findAll({
+            where: {
+                estado: 1
+            }
+        });
+        res.send({ data });
     } catch (error) {
-        res-status(500).json({error: error.message});
+        res.status(500).json({ error: error.message });
     }
 };

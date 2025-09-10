@@ -1,17 +1,18 @@
-const {body, validationResult} = require('express-validator');
+/**Depedencias utilizadas */
+const { body, validationResult } = require('express-validator');
+const Materia = require('../models/Materia');
 const sequelize = require('../../config/dbconfig');
-const materia = require('../models/materia');
-const moment = require('moment');
 
-
-/* Operación GET hacia la base de datos */
+/**Operación GET hacia la DB*/
 exports.getData = async (req, res) => {
     try {
-        const [data, metadata] = await sequelize.query(
-            'SELECT * FROM materia'
-        );
-        res.send({data});
+        const data = await Materia.findAll({
+            where: {
+                estado: 1
+            }
+        });
+        res.send({ data });
     } catch (error) {
-        res-status(500).json({error: error.message});
+        res.status(500).json({ error: error.message });
     }
 };

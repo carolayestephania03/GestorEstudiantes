@@ -1,33 +1,27 @@
-const {DataTypes} = require('sequelize');
+/**Depedencias utilizadas */
+const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/dbconfig');
 
-/* Modelo Encargado para la DB */
+/**Modelo Encargado */
 const Encargado = sequelize.define('Encargado', {
     encargado_id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
     },
-    nombre: {
-      type: DataTypes.STRING(100),
-      allowNull: false
+    persona_id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false
     },
-    dpi: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      unique: true
-    },
-    telefono: {
-      type: DataTypes.STRING(20),
-      allowNull: false
-    },
-    estado_encargado: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true
+    estado: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: true
     }
-  }, {
+}, {
     tableName: 'Encargado',
     timestamps: false
-  });
+});
 
-  module.exports = Encargado;
+module.exports = Encargado;

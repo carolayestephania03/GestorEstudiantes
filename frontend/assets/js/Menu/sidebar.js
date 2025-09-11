@@ -151,9 +151,6 @@ document.addEventListener('DOMContentLoaded', function () {
   if (appBrandLink) {
     appBrandLink.addEventListener('dblclick', function () {
       console.log('Doble clic en logo');
-      if (window.innerWidth >= 1200) {
-        toggleCollapseMenu();
-      }
     });
   }
 

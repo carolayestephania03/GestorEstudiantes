@@ -2,12 +2,13 @@ document.addEventListener('DOMContentLoaded', function () {
   console.log('DOM cargado - Iniciando configuración del menú');
   
   // 🔹 Obtener elementos con verificación
-  const menuToggle = document.getElementById('menuToggle');
+  const menuToggleMobile = document.getElementById('menuToggleMobile');
+  const menuToggleDesktop = document.getElementById('menuToggleDesktop');
   const closeMenu = document.getElementById('closeMenu');
-  const overlay = document.getElementById('overlay');
+  const overlay = document.querySelector('.layout-overlay');
   const mainContainer = document.getElementById('mainContainer');
   
-  console.log('Elementos encontrados:', {menuToggle, closeMenu, overlay, mainContainer});
+  console.log('Elementos encontrados:', {menuToggleMobile, menuToggleDesktop, closeMenu, overlay, mainContainer});
 
   // Verificar que los elementos críticos existen
   if (!mainContainer) {
@@ -26,9 +27,9 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('Estado menu-mobile-open:', mainContainer.classList.contains('menu-mobile-open'));
   }
 
-  // Colapsar menú (desktop)
-  function toggleCollapseMenu() {
-    console.log('Alternando menú colapsado');
+  // Colapsar/expandir menú (desktop)
+  function toggleDesktopMenu() {
+    console.log('Alternando menú desktop');
     mainContainer.classList.toggle('menu-collapsed');
     const isCollapsed = mainContainer.classList.contains('menu-collapsed');
     localStorage.setItem('menuCollapsed', isCollapsed);
@@ -42,15 +43,28 @@ document.addEventListener('DOMContentLoaded', function () {
     
     if (window.innerWidth < 1200) {
       console.log('Vista móvil detectada');
+      // En móvil, asegurarse de que el menú esté cerrado inicialmente
       mainContainer.classList.remove('menu-collapsed');
       mainContainer.classList.remove('menu-mobile-open');
+      
+      // Mostrar botón móvil, ocultar desktop
+      if (menuToggleMobile) menuToggleMobile.style.display = 'block';
+      if (menuToggleDesktop) menuToggleDesktop.style.display = 'none';
     } else {
       console.log('Vista desktop detectada');
+      // En desktop, restaurar el estado colapsado/expandido
       if (isCollapsed) {
         mainContainer.classList.add('menu-collapsed');
       } else {
         mainContainer.classList.remove('menu-collapsed');
       }
+      
+      // Asegurar que el menú esté visible (no en estado móvil)
+      mainContainer.classList.remove('menu-mobile-open');
+      
+      // Mostrar botón desktop, ocultar móvil
+      if (menuToggleMobile) menuToggleMobile.style.display = 'none';
+      if (menuToggleDesktop) menuToggleDesktop.style.display = 'block';
     }
   }
 
@@ -59,14 +73,24 @@ document.addEventListener('DOMContentLoaded', function () {
   // -------------------------------
 
   // Botones de abrir/cerrar menú
-  if (menuToggle) {
-    menuToggle.addEventListener('click', function(e) {
-      console.log('Clic en menuToggle');
+  if (menuToggleMobile) {
+    menuToggleMobile.addEventListener('click', function(e) {
+      console.log('Clic en menuToggleMobile');
       e.stopPropagation();
       toggleMobileMenu();
     });
   } else {
-    console.warn('No se encontró menuToggle');
+    console.warn('No se encontró menuToggleMobile');
+  }
+
+  if (menuToggleDesktop) {
+    menuToggleDesktop.addEventListener('click', function(e) {
+      console.log('Clic en menuToggleDesktop');
+      e.stopPropagation();
+      toggleDesktopMenu();
+    });
+  } else {
+    console.warn('No se encontró menuToggleDesktop');
   }
 
   if (closeMenu) {
@@ -89,8 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
     console.warn('No se encontró overlay');
   }
 
-  // Submenús desplegables - VERSIÓN MEJORADA
-  const menuToggles = document.querySelectorAll('.menu-toggle');
+const menuToggles = document.querySelectorAll('.menu-toggle');
   console.log('Encontrados', menuToggles.length, 'elementos .menu-toggle');
   
   menuToggles.forEach(link => {
@@ -141,18 +164,9 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   });
-
   // Ajuste inicial y al cambiar tamaño
   adjustMenu();
   window.addEventListener('resize', adjustMenu);
-
-  // Doble clic en logo → colapsar (solo desktop)
-  const appBrandLink = document.querySelector('.app-brand-link');
-  if (appBrandLink) {
-    appBrandLink.addEventListener('dblclick', function () {
-      console.log('Doble clic en logo');
-    });
-  }
 
   console.log('Configuración del menú completada');
 });

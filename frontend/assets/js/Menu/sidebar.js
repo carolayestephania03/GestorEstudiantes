@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Ajustar menú al cargar y al redimensionar
   function adjustMenu() {
-    const isCollapsed = localStorage.getItem('menuCollapsed') === 'true';
+    const isCollapsed = localStorage.getItem('menuCollapsed') === 'false';
     console.log('Ajustando menú. Colapsado en localStorage:', isCollapsed);
     
     if (window.innerWidth < 1200) {

@@ -8,8 +8,7 @@
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-
-  <title>Inicio</title>
+  <title>Alumnos</title>
 
   <meta name="description" content="" />
   <!-- Logo en la pestaña -->
@@ -22,44 +21,50 @@
     href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
     rel="stylesheet" />
 
-  <!-- Icons. Uncomment required icon fonts -->
-  <link rel="stylesheet" href="../assets/css/boxicons.css" />
+  <!-- Material Symbols -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/locales/es.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
   <!-- CSS -->
   <link rel="stylesheet" href="../assets/css/core.css" class="template-customizer-core-css" />
   <link rel="stylesheet" href="../assets/css/theme-default.css" class="template-customizer-theme-css" />
-  <link rel="stylesheet" href="../assets/css/demo.css" />
-
+  <link rel="stylesheet" href="../assets/css/sidebar.css" />
   <!-- Scroll CSS -->
-  <link rel="stylesheet" href="../assets/css/perfect-scrollbar.css" />
-
-  <link rel="stylesheet" href="../assets/css/apex-charts.css" />
 
   <!-- Helpers -->
-  <script src="../assets/js/helpers.js"></script>
-
-  <!-- Config -->
-  <script src="../assets/js/config.js"></script>
 </head>
 
 <body>
+
   <!-- Layout -->
-  <div class="layout-wrapper layout-content-navbar">
+  <div class="layout-wrapper layout-content-navbar" id="mainContainer">
+    
+  <!-- Botón hamburguesa para móvil (oculto en desktop) -->
+  <button id="menuToggleMobile" class="hamburger-btn d-xl-none">
+    <img src="../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" class="hamburger-img">
+  </button>
+
     <div class="layout-container">
 
       <!-- Menu -->
-
-      <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+      <aside class="layout-menu menu-vertical bg-menu-theme" id="layoutMenu">
         <div class="app-brand demo">
-          <a href="dashboard.html" class="app-brand-link">
+          <a href="../pages/dashboard.html" class="app-brand-link">
             <span class="app-brand-logo demo">
               <img src="../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" width="70" height="70">
             </span>
             <span class="app-brand-text demo menu-text fw-bolder ms-2 text-uppercase">EORM</span>
           </a>
 
-          <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-            <i class="bx bx-chevron-left bx-sm align-middle"></i>
+          <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none"
+            id="closeMenu">
+            <span class="material-symbols-outlined">close</span>
           </a>
         </div>
 
@@ -68,40 +73,33 @@
         <ul class="menu-inner py-1">
 
           <!-- Dashboard/Inicio -->
-          <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">Inicio</span>
-          </li>
-          <li class="menu-item active">
-            <a href="dashboard.html" class="menu-link">
-              <i class="menu-icon tf-icons bx bx-home-circle"></i>
-              <div data-i18n="Analytics">Inicio</div>
-            </a>
-          </li>
-
-          <!-- Tareas y Actividades -->
-          <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">Tareas</span>
-          </li>
           <li class="menu-item">
+            <a href="../pages/dashboard.html" class="menu-link">
+              <span class="menu-icon material-symbols-outlined">home</span>
+              <div class="menu-text" data-i18n="Analytics">Inicio</div>
+            </a>
+          </li>
+
+          <!-- Modulo de Tareas -->
+          <li class="menu-item" id="menuTareas">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-              <i class="menu-icon tf-icons bx bx-collection"></i>
-              <div data-i18n="Layouts">Tareas</div>
+              <span class="menu-icon material-symbols-outlined">assignment</span>
+              <div class="menu-text" data-i18n="Layouts">Tareas</div>
             </a>
 
-            <!-- Menú Tareas y Actividades -->
             <ul class="menu-sub">
               <li class="menu-item">
-                <a href="./tareas/calendario.html" class="menu-link">
+                <a href="../pages/tareas/calendario.html" class="menu-link">
                   <div data-i18n="Without menu">Calendario</div>
                 </a>
               </li>
-              <li class="menu-item">
-                <a href="./tareas/actividades.html" class="menu-link">
+              <li class="menu-item ">
+                <a href="../pages/tareas/actividades.html" class="menu-link">
                   <div data-i18n="Without navbar">Actividades</div>
                 </a>
               </li>
               <li class="menu-item">
-                <a href="./tareas/asigna-lista-cotejo.html" class="menu-link">
+                <a href="../pages/tareas/asigna-lista-cotejo.html" class="menu-link">
                   <div data-i18n="Container">Visualizar Lista de Cotejo</div>
                 </a>
               </li>
@@ -109,53 +107,57 @@
           </li>
 
           <!-- Información del alumno -->
-          <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">Alumnos</span>
-          </li>
           <li class="menu-item">
-            <a href="./alumnos/alumnos.html"  class="menu-link">
-              <i class="menu-icon tf-icons bx bx-dock-top"></i>
-              <div data-i18n="Documentation">Alumnos</div>
+            <a href="../pages/alumnos/alumnos.html" class="menu-link">
+              <span class="menu-icon material-symbols-outlined">group</span>
+              <div class="menu-text" data-i18n="Documentation">Alumnos</div>
             </a>
           </li>
 
           <!-- Modulo de Reportes -->
-          <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">Reportes</span>
+          <li class="menu-item" id="menuReportes">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+              <span class="menu-icon material-symbols-outlined">summarize</span>
+              <div class="menu-text" data-i18n="Layouts">Reportes</div>
+            </a>
+
+            <ul class="menu-sub">
+              <li class="menu-item ">
+                <a href="../pages/reportes/boleta-calificacion.html" class="menu-link">
+                  <div data-i18n="Without menu">Boleta de Calificaciones</div>
+                </a>
+              </li>
+              <li class="menu-item ">
+                <a href="../pages/reportes/lista-cotejo.html" class="menu-link">
+                  <div data-i18n="Without navbar">Lista de Cotejo</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="../pages/reportes/cuadro-prim.html" class="menu-link">
+                  <div data-i18n="Container">Cuadro PRIM</div>
+                </a>
+              </li>
+            </ul>
           </li>
 
-          <!-- Boleta de Calificaciones -->
           <li class="menu-item">
-            <a href="./reportes/boleta-calificacion.html" class="menu-link">
-              <i class="menu-icon tf-icons bx bx-file"></i>
-              <div data-i18n="Basic">Boleta de Calificaciones</div>
+            <a href="../pages/alertas/alertas.html" class="menu-link">
+              <span class="menu-icon material-symbols-outlined">notification_important</span>
+              <div class="menu-text" data-i18n="Documentation">Alertas</div>
             </a>
           </li>
-          <!-- Lista de Cotejo -->
+
           <li class="menu-item">
-            <a href="./reportes/lista-cotejo.html" class="menu-link">
-              <i class="menu-icon tf-icons bx bx-file"></i>
-              <div data-i18n="Basic">Lista de Cotejo</div>
-            </a>
-          </li>
-          <!-- Cuadro PRIM -->
-          <li class="menu-item">
-            <a href="./reportes/cuadro-prim.html" class="menu-link">
-              <i class="menu-icon tf-icons bx bx-file"></i>
-              <div data-i18n="Basic">Cuadro PRIM</div>
+            <a href="../pages/panelControl/panel-control.html" class="menu-link">
+              <span class="menu-icon material-symbols-outlined">settings</span>
+              <div class="menu-text" data-i18n="Documentation">Panel de control</div>
             </a>
           </li>
 
-          <!-- Alertas -->
-          <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">Alertas</span>
-          </li>
-
-
           <li class="menu-item">
-            <a href="./alertas/alertas.html" target="_blank" class="menu-link">
-              <i class="menu-icon tf-icons bx bx-error"></i>
-              <div data-i18n="Documentation">Alertas</div>
+            <a href="../pages/maestros/maestros.html" class="menu-link">
+              <span class="menu-icon material-symbols-outlined">person</span>
+              <div class="menu-text" data-i18n="Documentation">Maestros</div>
             </a>
           </li>
         </ul>
@@ -165,14 +167,8 @@
       <div class="layout-page">
         <!-- Navbar -->
 
-        <nav
-          class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
-          id="layout-navbar">
-          <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
-            <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
-              <i class="bx bx-menu bx-sm"></i>
-            </a>
-          </div>
+<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+  id="layout-navbar">
 
           <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
 
@@ -248,7 +244,7 @@
                   <div class="d-flex align-items-end row">
                     <div class="col-sm-7">
                       <div class="card-body">
-                        <h2 class="card-title text-primary">Bienvenido</h2>
+                        <h2 class="card-title text-primary">Dashboard</h2>
                         <p class="mb-4">
                           Enseñar es un trabajo que se hace desde el corazón!
                         </p>
@@ -265,54 +261,42 @@
               <!-- Total Revenue -->
             </div>
           </div>
-          <!-- / Content -->
 
-          <!-- Footer -->
-          <footer class="content-footer footer bg-footer-theme">
-            <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
-              <div class="mb-2 mb-md-0">
-                Carolay Canté © 2026, "Construyendo herramientas que facilitan el aprendizaje."
-              </div>
-              <div>
-                <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
-                  target="_blank" class="footer-link me-4">Documentación</a>
-              </div>
-            </div>
-          </footer>
-          <!-- / Footer -->
-
-          <div class="content-backdrop fade"></div>
         </div>
-      </div>
-      <!-- / Layout page -->
-    </div>
+        <!-- / Content -->
 
-    <!-- Overlay -->
-    <div class="layout-overlay layout-menu-toggle"></div>
+        <!-- Footer -->
+        <footer class="content-footer footer bg-footer-theme">
+          <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+            <div class="mb-2 mb-md-0">
+              Carolay Canté © 2026, "Construyendo herramientas que facilitan el aprendizaje."
+            </div>
+            <div>
+              <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
+                target="_blank" class="footer-link me-4">Documentación</a>
+            </div>
+          </div>
+        </footer>
+        <!-- / Footer -->
+
+        <div class="content-backdrop fade"></div>
+      </div>
+    </div>
+    <!-- / Layout page -->
+  </div>
+  <!-- Overlay -->
+  <div class="layout-overlay layout-menu-toggle"></div>
   </div>
   <!-- / Layout wrapper -->
-
   <!-- Core JS -->
-  <!-- build:js assets/vendor/js/core.js -->
-  <script src="../assets/js/jquery.js"></script>
-  <script src="../assets/js/popper.js"></script>
   <script src="../assets/js/bootstrap.js"></script>
-  <script src="../assets/js/perfect-scrollbar.js"></script>
-
-  <script src="../assets/js/menu.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- endbuild -->
-
-  <!-- Vendors JS -->
-  <script src="../assets/js/apexcharts.js"></script>
-
   <!-- Main JS -->
   <script src="../assets/js/main.js"></script>
+  <!-- JS Geovanny-->
+  <script src="../../assets/js/Menu/sidebar.js"></script>
 
-  <!-- Page JS -->
-  <script src="../assets/js/dashboards-analytics.js"></script>
-
-  <!-- Place this tag in your head or just before your close body tag. -->
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
 
 </html>

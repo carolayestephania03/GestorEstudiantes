@@ -638,6 +638,13 @@ a:hover {
           backdrop-filter: saturate(200%) blur(6px);
 }
 
+.profile-avatar img {
+  width: 120px;   /* ajusta según lo pequeño que lo quieras */
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%; /* opcional, para hacerlo redondo */
+}
+
 .navbar-detached {
   box-shadow: 0 0 0.375rem 0.25rem rgba(161, 172, 184, 0.15);
 }

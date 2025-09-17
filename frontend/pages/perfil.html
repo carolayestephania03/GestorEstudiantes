@@ -189,7 +189,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                   <li>
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="perfil.html">
                       <div class="d-flex">
                         <div class="flex-shrink-0 me-3">
                           <div class="avatar avatar-online">
@@ -207,7 +207,7 @@
                     <div class="dropdown-divider"></div>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="perfil.html">
                       <i class="bx bx-user me-2"></i>
                       <span class="align-middle">Mi Perfil</span>
                     </a>
@@ -244,28 +244,187 @@
           <div class="container-xxl flex-grow-1 container-p-y">
             <div class="row">
               <div class="col-lg-12 mb-4 order-0">
-                <div class="card">
-                  <div class="d-flex align-items-end row">
-                    <div class="col-sm-7">
-                      <div class="card-body">
-                        <h2 class="card-title text-primary">Cuadro PRIM</h2>
-                        <p class="mb-4">
-                          Enseñar es un trabajo que se hace desde el corazón!
-                        </p>
-                      </div>
+                <div class="card profile-card">
+
+                  <!-- Banner -->
+                  <div class="profile-banner"></div>
+
+                  <!-- Avatar + Info -->
+                  <div class="card-body d-flex align-items-center">
+                    <!-- Avatar -->
+                    <div class="profile-avatar">
+                      <img src="/frontend/assets/img/icons/user.png" alt="Avatar">
                     </div>
-                    <div class="col-sm-5 text-end">
-                      <div class="card-body pb-3 px-0 px-md-8">
-                        <img src="/frontend/assets/img/mochila.jpg" height="130" alt="View Badge User" />
+
+                    <!-- Info -->
+                    <div class="ms-3">
+                      <h4 class="mb-1">Carolay Canté</h4>
+                      <p class="mb-2 text-muted">Enseñar es un trabajo que se hace desde el corazón!</p>
+                      <p class="mb-0 text-muted">
+                        <i class="bx bx-briefcase"></i> Docente
+                        <i class="bx bx-building ms-2"></i> Quinto Primaria
+                        <i class="bx bx-map ms-2"></i> Ciudad
+                        <i class="bx bx-calendar ms-2"></i> Desde 2023
+                      </p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <!--Menu en el perfil-->
+              <div class="row">
+                <div class="col-xl-12">
+                  <div class="nav-align-top mb-4">
+                    <ul class="nav nav-pills mb-3" role="tablist">
+                      <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                          data-bs-target="#navs-pills-top-home" aria-controls="navs-pills-top-home"
+                          aria-selected="true">
+                          Información
+                        </button>
+                      </li>
+                      <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                          data-bs-target="#navs-pills-top-profile" aria-controls="navs-pills-top-profile"
+                          aria-selected="false">
+                          Seguridad
+                        </button>
+                      </li>
+                      <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                          data-bs-target="#navs-pills-top-messages" aria-controls="navs-pills-top-messages"
+                          aria-selected="false">
+                          Contacto
+                        </button>
+                      </li>
+                    </ul>
+                    <div class="tab-content">
+                      <div class="tab-pane fade show active" id="navs-pills-top-home" role="tabpanel">
+                        <form>
+                          <!-- Información Personal -->
+                          <h5 class="mb-3">Información Personal</h5>
+                          <div class="row">
+                            <div class="col-md-6 mb-3">
+                              <label for="nombre" class="form-label">Nombre</label>
+                              <input type="text" class="form-control" id="nombre" placeholder="Ingresa tu nombre">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="correo" class="form-label">Correo electrónico</label>
+                              <input type="email" class="form-control" id="correo" placeholder="ejemplo@correo.com">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="genero" class="form-label">Género</label>
+                              <select class="form-select" id="genero">
+                                <option selected disabled>Selecciona tu género</option>
+                                <option value="masculino">Masculino</option>
+                                <option value="femenino">Femenino</option>
+                              </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="telefono" class="form-label">Teléfono</label>
+                              <input type="tel" class="form-control" id="telefono" placeholder="0000-0000">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="residencia" class="form-label">Residencia</label>
+                              <input type="text" class="form-control" id="residencia" placeholder="Residencia">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="fechaNacimiento" class="form-label">Fecha de nacimiento</label>
+                              <input type="date" class="form-control" id="fechaNacimiento">
+                            </div>
+                          </div>
+
+                          <hr class="my-4">
+
+                          <!-- Documentos de Identificación -->
+                          <h5 class="mb-3">Documentos de Identificación</h5>
+                          <div class="row">
+                            <div class="col-md-6 mb-3">
+                              <label for="dpi" class="form-label">DPI</label>
+                              <input type="text" class="form-control" id="dpi" placeholder="Número de DPI">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="nit" class="form-label">NIT</label>
+                              <input type="text" class="form-control" id="nit" placeholder="Número de NIT">
+                            </div>
+                          </div>
+
+                          <hr class="my-4">
+
+                          <!-- Información Laboral -->
+                          <h5 class="mb-3">Información Laboral</h5>
+                          <div class="row">
+                            <div class="col-md-6 mb-3">
+                              <label for="codigoEmpleado" class="form-label">Código de empleado</label>
+                              <input type="text" class="form-control" id="codigoEmpleado"
+                                placeholder="Código de empleado">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="cedulaDocente" class="form-label">Cédula docente</label>
+                              <input type="text" class="form-control" id="cedulaDocente" placeholder="Cédula docente">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="fechaInicio" class="form-label">Fecha de inicio de labores</label>
+                              <input type="date" class="form-control" id="fechaInicio">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="escalafon" class="form-label">Escalafón</label>
+                              <input type="text" class="form-control" id="escalafon" placeholder="Escalafón">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="renglon" class="form-label">Renglón</label>
+                              <input type="text" class="form-control" id="renglon" placeholder="Renglón">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="codigoInstitucional" class="form-label">Código institucional</label>
+                              <input type="text" class="form-control" id="codigoInstitucional"
+                                placeholder="Código institucional">
+                            </div>
+                          </div>
+
+                          <div class="mt-3">
+                            <button type="button" class="btn btn-primary">Guardar</button>
+                          </div>
+                        </form>
+                      </div>
+                      <div class="tab-pane fade" id="navs-pills-top-profile" role="tabpanel">
+                        <h5>Cambiar contraseña</h5>
+                        <form>
+                          <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Contraseña actual</label>
+                            <input type="password" class="form-control" id="currentPassword"
+                              placeholder="Ingresa tu contraseña actual">
+                          </div>
+                          <div class="mb-3">
+                            <label for="newPassword" class="form-label">Nueva contraseña</label>
+                            <input type="password" class="form-control" id="newPassword"
+                              placeholder="Ingresa tu nueva contraseña">
+                          </div>
+                          <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirmar nueva contraseña</label>
+                            <input type="password" class="form-control" id="confirmPassword"
+                              placeholder="Confirma tu nueva contraseña">
+                          </div>
+                          <button type="button" class="btn btn-primary">Guardar</button>
+                        </form>
+                      </div>
+                      <div class="tab-pane fade" id="navs-pills-top-messages" role="tabpanel">
+                        <p>
+                          Contacto
+                        </p>
+                        <p class="mb-0">
+                          Contacto
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <!-- Total Revenue -->
+
             </div>
           </div>
           <!-- / Content -->
+
 
           <!-- Footer -->
           <footer class="content-footer footer bg-footer-theme">

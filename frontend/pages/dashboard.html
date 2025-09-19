@@ -36,7 +36,49 @@
   <link rel="stylesheet" href="../assets/css/theme-default.css" class="template-customizer-theme-css" />
   <link rel="stylesheet" href="../assets/css/sidebar.css" />
   <!-- Scroll CSS -->
+  <style>
+    .card-info {
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      height: 100%;
+    }
 
+    .card-info:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-img-container {
+      height: 160px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f8f9fa;
+    }
+
+    .card-img-container img {
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    h3 {
+      color: #3b71ca;
+      margin-bottom: 15px;
+    }
+
+    .card-text {
+      color: #6c757d;
+      line-height: 1.6;
+    }
+    
+  </style>
   <!-- Helpers -->
 </head>
 
@@ -44,11 +86,11 @@
 
   <!-- Layout -->
   <div class="layout-wrapper layout-content-navbar" id="mainContainer">
-    
-  <!-- Botón hamburguesa para móvil (oculto en desktop) -->
-  <button id="menuToggleMobile" class="hamburger-btn d-xl-none">
-    <img src="../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" class="hamburger-img">
-  </button>
+
+    <!-- Botón hamburguesa para móvil (oculto en desktop) -->
+    <button id="menuToggleMobile" class="hamburger-btn d-xl-none">
+      <img src="../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" class="hamburger-img">
+    </button>
 
     <div class="layout-container">
 
@@ -167,8 +209,9 @@
       <div class="layout-page">
         <!-- Navbar -->
 
-<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
-  id="layout-navbar">
+        <nav
+          class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+          id="layout-navbar">
 
           <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
 
@@ -239,12 +282,12 @@
           <!-- Mensaje Bienvenida -->
           <div class="container-xxl flex-grow-1 container-p-y">
             <div class="row">
-              <div class="col-lg-12 mb-4 order-0">
+              <div class="col-lg-12 order-0">
                 <div class="card">
                   <div class="d-flex align-items-end row">
                     <div class="col-sm-7">
                       <div class="card-body">
-                        <h2 class="card-title text-primary">Dashboard</h2>
+                        <h2 class="card-title text-primary">Bienvenido</h2>
                         <p class="mb-4">
                           Enseñar es un trabajo que se hace desde el corazón!
                         </p>
@@ -262,6 +305,185 @@
             </div>
           </div>
 
+          <!-- Tarjetas de información -->
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="row">
+              <!-- Tarjeta 1 -->
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 mb-4">
+                <div class="card card-info">
+                  <div class="card-img-container">
+                    <img
+                      src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80"
+                      alt="Estudiantes colaborando">
+                  </div>
+                  <div class="card-body">
+                    <h3>Aprendizaje Colaborativo</h3>
+                    <p class="card-text">Fomentamos el trabajo en equipo para desarrollar habilidades sociales y
+                      cognitivas en un entorno de apoyo mutuo.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tarjeta 2 -->
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 mb-4">
+                <div class="card card-info">
+                  <div class="card-img-container">
+                    <img
+                      src="https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80"
+                      alt="Tecnología educativa">
+                  </div>
+                  <div class="card-body">
+                    <h3>Tecnología Educativa</h3>
+                    <p class="card-text">Integramos herramientas tecnológicas modernas para enriquecer el proceso de
+                      enseñanza-aprendizaje.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tarjeta 3 -->
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 mb-4">
+                <div class="card card-info">
+                  <div class="card-img-container">
+                    <img
+                      src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80"
+                      alt="Educación personalizada">
+                  </div>
+                  <div class="card-body">
+                    <h3>Educación Personalizada</h3>
+                    <p class="card-text">Adaptamos nuestros métodos de enseñanza a las necesidades individuales de cada
+                      estudiante.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tarjeta 4 -->
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 mb-4">
+                <div class="card card-info">
+                  <div class="card-img-container">
+                    <img
+                      src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80"
+                      alt="Creatividad en el aula">
+                  </div>
+                  <div class="card-body">
+                    <h3>Creatividad en el Aula</h3>
+                    <p class="card-text">Estimulamos la expresión creativa y el pensamiento innovador en todas nuestras
+                      actividades educativas.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="row">
+              <!-- Primera tarjeta: Cuadro de Honor -->
+              <div class="col-lg-6 ">
+                <div class="card card-custom h-100">
+                  <img
+                    src="https://ims.evidentscientific.com/es/insights/media_1d36e1ce13e321c2ac45415fa7a096e8978e67fcd.jpg?width=750&format=jpg&optimize=medium"
+                    class="card-img-top" alt="Estudiantes graduación">
+                  <div class="card-body">
+                    <h3 class="card-title">Cuadro de Honor</h3>
+                    <div class="table-responsive">
+                      <table class="table table-honor">
+                        <thead>
+                          <tr>
+                            <th>Posición</th>
+                            <th>Estudiante</th>
+                            <th>Promedio</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>1° <i class="bi bi-award gold medal"></i></td>
+                            <td>María González</td>
+                            <td>9.8</td>
+                          </tr>
+                          <tr>
+                            <td>2° <i class="bi bi-award silver medal"></i></td>
+                            <td>Carlos Rodríguez</td>
+                            <td>9.5</td>
+                          </tr>
+                          <tr>
+                            <td>3° <i class="bi bi-award bronze medal"></i></td>
+                            <td>Ana Martínez</td>
+                            <td>9.3</td>
+                          </tr>
+                          <tr>
+                            <td>4°</td>
+                            <td>Javier López</td>
+                            <td>9.1</td>
+                          </tr>
+                          <tr>
+                            <td>5°</td>
+                            <td>Laura Sánchez</td>
+                            <td>8.9</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Segunda tarjeta: Estadísticas por Materia -->
+              <div class="col-lg-6 mb-4">
+                <div class="card card-custom h-100">
+                  <div class="card-body">
+                    <h3 class="card-title">Rendimiento por Materia</h3>
+                    <p class="text-muted mb-4">Porcentaje de aprobación por asignatura</p>
+
+                    <div class="subject-container">
+                      <div class="subject-name">
+                        <i class="bi bi-calculator stats-icon"></i> Matemáticas
+                      </div>
+                      <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 85%">
+                          <span>85%</span>
+                        </div>
+                      </div>
+
+                      <div class="subject-name">
+                        <i class="bi bi-book stats-icon"></i> Lenguaje
+                      </div>
+                      <div class="progress">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: 78%">
+                          <span>78%</span>
+                        </div>
+                      </div>
+
+                      <div class="subject-name">
+                        <i class="bi bi-flask stats-icon"></i> Ciencias
+                      </div>
+                      <div class="progress">
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: 65%">
+                          <span>65%</span>
+                        </div>
+                      </div>
+
+                      <div class="subject-name">
+                        <i class="bi bi-globe stats-icon"></i> Sociales
+                      </div>
+                      <div class="progress">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 72%">
+                          <span>72%</span>
+                        </div>
+                      </div>
+
+                      <div class="subject-name">
+                        <i class="bi bi-palette stats-icon"></i> Artes
+                      </div>
+                      <div class="progress">
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: 90%">
+                          <span>90%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <!-- / Content -->
 
@@ -290,7 +512,7 @@
   <!-- / Layout wrapper -->
   <!-- Core JS -->
   <script src="../assets/js/bootstrap.js"></script>
-  
+
   <!-- endbuild -->
   <!-- Main JS -->
   <script src="../assets/js/main.js"></script>

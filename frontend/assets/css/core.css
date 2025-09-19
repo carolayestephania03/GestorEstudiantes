@@ -4254,9 +4254,9 @@ textarea.form-control-lg {
 }
 .progress {
   display: flex;
-  height: 0.75rem;
+  height: 1.10rem;
   overflow: hidden;
-  font-size: 0.625rem;
+  font-size: 0.80rem;
   background-color: rgba(67, 89, 113, 0.1);
   border-radius: 10rem;
 }

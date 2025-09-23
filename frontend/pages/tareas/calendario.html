@@ -239,6 +239,7 @@
           <div id="eventModal" class="modal">
             
               <div class="modal-content mb-4" id="Formulario-actividades">
+                <span class="close">&times;</span>
                 <div class="card-body">
                   <h1 class="h4 text-gray-900 mb-4 text-center">Agregar
                     actividad</h1>
@@ -386,11 +387,20 @@
   <!-- Core JS -->
   <script src="../../assets/js/bootstrap.js"></script>
   
+  <!-- Variables de configuración -->
+  <script>
+    const ENV = {
+      API_URL: 'http://localhost:3000' // Ajusta esta URL según tu configuración
+    };
+  </script>
+  
   <!-- endbuild -->
   <!-- Main JS -->
   <script src="/frontend/assets/js/main.js"></script>
   <!-- JS Geovanny-->
   <script src="../../assets/js/Calendar/index.global.min.js"></script>
+  <script src="../../assets/js/Calendar/save-activity.js"></script>
+  <script src="../../assets/js/Calendar/select-modal.js"></script>
   <script src="../../assets/js/Menu/sidebar.js"></script>
   
 

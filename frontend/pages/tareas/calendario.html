@@ -236,6 +236,103 @@
 
         <!-- Content wrapper -->
         <div class="content-wrapper">
+          <div id="eventModal" class="modal">
+            
+              <div class="modal-content mb-4" id="Formulario-actividades">
+                <div class="card-body">
+                  <h1 class="h4 text-gray-900 mb-4 text-center">Agregar
+                    actividad</h1>
+                  <form class="row g-3" id="eventForm">
+                    <!-- Nombre de la Actividad -->
+                    <div class="col-10 mb-2">
+                      <label class="form-label">Nombre de la actividad</label>
+                      <input type="text" class="form-control"
+                        id="nombre_actividad">
+                    </div>
+                    <!-- Punteo de la Actividad -->
+                    <div class="col-2 mb-2">
+                      <label class="form-label">Punteo</label>
+                      <input type="number" class="form-control" id="punteo">
+                    </div>
+                    <!-- Descripción de la Actividad -->
+                    <div class="col-10 mb-2">
+                      <label class="form-label">Descripción</label>
+                      <input type="text" class="form-control" id="descripcion">
+                    </div>
+                    <!-- Fecha de Finalización -->
+                    <div class="col-2 mb-2">
+                      <label class="form-label">Fecha Finalización</label>
+                      <input type="date" class="form-control" id="endDate">
+                    </div>
+                    <!-- Selección del Materia -->
+                    <div class="col-4 mb-2">
+                      <label class="form-label">Materia</label>
+                      <select class="form-control" id="materia">
+                        <option value="0">Elija la materia</option>
+                      </select>
+                    </div>
+                    <!-- Selección del Tipo -->
+                    <div class="col-4 mb-2">
+                      <label class="form-label">Tipo de tarea</label>
+                      <select class="form-control" id="tipo_tarea">
+                        <option value="0">Elija la tarea</option>
+                      </select>
+                    </div>
+                    <!-- Selección del Bloque -->
+                    <div class="col-4 mb-2">
+                      <label class="form-label">Bloque</label>
+                      <select class="form-control" id="Bloque">
+                        <option value="0">Elija el bloque</option>
+                      </select>
+                    </div>
+
+                  <!-- Chequeo del es responsable -->
+                  <div class="col-4 mb-2">
+                    <label class="form-check-label">Responsabilidad</label>
+                    <div
+                      class="btn-group"
+                      role="group"
+                      aria-label="Basic radio toggle button group"
+                      id="radio_responsabilidad"
+                    >
+                      <input
+                        type="radio"
+                        class="btn-check"
+                        name="cumplimiento"
+                        id="btn_no_cumplimiento"
+                        autocomplete="off"
+                      />
+                      <label
+                        class="btn btn-outline-secondary"
+                        for="btn_no_cumplimiento"
+                        >No es responsable</label
+                      >
+
+                      <input
+                        type="radio"
+                        class="btn-check"
+                        name="cumplimiento"
+                        id="btn_cumplimiento"
+                        autocomplete="off"
+                      />
+                      <label
+                        class="btn btn-outline-secondary"
+                        for="btn_cumplimiento"
+                        >Es responsable</label
+                      >
+                    </div>
+                  </div>
+                    <!-- Botón de Guardar -->
+                    <div class="col-12 text-center mt-3">
+                      <button type="submit"
+                        class="btn-sm btn-primary"
+                        id="Boton-guardar-act">Guardar</button>
+                    </div>
+                  </form>
+                </div>
+              
+            </div>
+          </div>
 
           <!-- Mensaje Bienvenida -->
           <div class="container-xxl flex-grow-1 container-p-y">
@@ -298,5 +395,52 @@
   
 
 </body>
+<style>
+
+  .modal {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    z-index: 1000;
+    left: 8.5%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Evitar el scroll en el modal */
+    background-color: rgba(0,0,0,0.5);
+    padding-top: 10px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    background-color: #e6ebec;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Ajustar el ancho según tus necesidades */
+    max-width: 90%; /* Aumentar el ancho máximo */
+    max-height: 90%;
+    border-radius: 8px; /* Añadir bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Añadir sombra para un efecto de profundidad */
+    /*overflow: auto; Desplazamiento dentro del modal*/
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+  }
+
+/* styles.css */
+
+</style>
 
 </html>

@@ -39,16 +39,53 @@
 
   <!-- Helpers -->
 </head>
+  <style>
+    .custom-select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #3b71ca;
+      border-radius: 8px;
+      font-size: 16px;
+      color: #333;
+      background-color: #f8f9fa;
+      background-image: linear-gradient(45deg, transparent 50%, #3b71ca 50%),
+        linear-gradient(135deg, #3b71ca 50%, transparent 50%);
+      background-position: calc(100% - 20px) center, calc(100% - 15px) center;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      appearance: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
 
+    .custom-select:focus {
+      border-color: #2a5cad;
+      box-shadow: 0 0 0 0.25rem rgba(59, 113, 202, 0.25);
+      outline: none;
+    }
+
+    .select-label {
+      font-weight: 600;
+      color: #3b71ca;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .option-group {
+      padding: 8px 12px;
+      font-weight: 500;
+      color: #2c3e50;
+      background-color: #e9f1fd;
+    }
+  </style>
 <body>
 
   <!-- Layout -->
   <div class="layout-wrapper layout-content-navbar" id="mainContainer">
-    
-  <!-- Botón hamburguesa para móvil (oculto en desktop) -->
-  <button id="menuToggleMobile" class="hamburger-btn d-xl-none">
-    <img src="../../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" class="hamburger-img">
-  </button>
+
+    <!-- Botón hamburguesa para móvil (oculto en desktop) -->
+    <button id="menuToggleMobile" class="hamburger-btn d-xl-none">
+      <img src="../../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" class="hamburger-img">
+    </button>
 
     <div class="layout-container">
 
@@ -167,8 +204,9 @@
       <div class="layout-page">
         <!-- Navbar -->
 
-<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
-  id="layout-navbar">
+        <nav
+          class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+          id="layout-navbar">
 
           <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
 
@@ -238,31 +276,36 @@
 
           <!-- Mensaje Bienvenida -->
           <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="row">
-              <div class="col-lg-12 ">
+            <div class="row mb-4">
+              <div class="col-lg-12 order-0">
                 <div class="card">
-                  <div class="d-flex align-items-end row">
-                    <div class="col-sm-7">
-                      <div class="card-body">
-                        <h2 class="card-title text-primary">Lista Cotejo</h2>
-                        <p class="mb-4">
-                          Enseñar es un trabajo que se hace desde el corazón!
-                        </p>
-                      </div>
-                    </div>
-                    <div class="col-sm-5 text-end">
-                      <div class="card-body pb-3 px-0 px-md-8">
-                        <img src="../../assets/img/mochila.jpg" height="130" alt="View Badge User" />
-                      </div>
-                    </div>
+                  <div class="card-body py-3">
+                    <h2 class="card-title text-primary mb-2">Bienvenido</h2>
+                    <p class="mb-0">
+                      Enseñar es un trabajo que se hace desde el corazón!
+                    </p>
                   </div>
                 </div>
               </div>
               <!-- Total Revenue -->
             </div>
-          </div>
-          
-          <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="col-lg-12 mb-3 d-flex">
+              <div class="col-4 form-container me-3">
+                <label for="combo_grado_direc" class="select-label">Seleccionar grado:</label>
+                <select id="combo_grado_direc" class="custom-select">
+                  <option value="" disabled selected>-- Elija una opción --</option>
+                </select>
+              </div>
+              <div class="col-4 form-container">
+                <label for="combo_seccion_direc" class="select-label">Seleccionar sección:</label>
+                <select id="combo_seccion_direc" class="custom-select">
+                  <option value="" disabled selected>-- Elija una opción --</option>
+                </select>
+              </div>
+              <div class="col-12 justify-content-center" style="padding-top: 2.5rem; padding-left: 2.5rem;">
+                <button type="button" class="btn btn-primary">Ver</button>
+              </div>
+            </div>
             <div class="row">
               <!-- Lista de cotejo -->
               <div class="col-lg-12">

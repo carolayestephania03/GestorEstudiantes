@@ -9,7 +9,7 @@
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
   <title>Actividades</title>
-
+  <base id="spa-base" href="/" />
   <meta name="description" content="" />
   <!-- Logo en la pestaña -->
   <link rel="icon" type="image/x-icon" href="/frontend/assets/img/LogoEscuela.png" />
@@ -276,38 +276,37 @@
 
           <!-- Mensaje Bienvenida -->
           <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="row">
-              <div class="col-lg-12 mb-4 order-0">
+            <div class="col-lg-12 mb-3 d-flex">
+              <div class="col-4 form-container me-3">
+                <label for="combo_grado" class="select-label">Seleccionar grado:</label>
+                <select id="combo_grado" class="custom-select">
+                  <option value="" disabled selected>-- Elija una opción --</option>
+                </select>
+              </div>
+              <div class="col-4 form-container">
+                <label for="combo_seccion" class="select-label">Seleccionar sección:</label>
+                <select id="combo_seccion" class="custom-select">
+                  <option value="" disabled selected>-- Elija una opción --</option>
+                </select>
+              </div>
+              <div class="col-12 justify-content-center" style="padding-top: 2.5rem; padding-left: 2.5rem;">
+                <button type="button" class="btn btn-primary">Ver</button>
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-lg-12 order-0">
                 <div class="card">
-                  <div class="d-flex align-items-end row">
-                    <div class="col-sm-7">
-                      <div class="card-body">
-                        <h2 class="card-title text-primary">Actividades</h2>
-                        <p class="mb-4">
-                          Enseñar es un trabajo que se hace desde el corazón!
-                        </p>
-                      </div>
-                    </div>
-                    <div class="col-sm-5 text-end">
-                      <div class="card-body pb-3 px-0 px-md-8">
-                        <img src="../../assets/img/mochila.jpg" height="130" alt="View Badge User" />
-                      </div>
-                    </div>
+                  <div class="card-body py-3">
+                    <h2 class="card-title text-primary mb-2">Actividades</h2>
+                    <p class="mb-0">
+                      Enseñar es un trabajo que se hace desde el corazón!
+                    </p>
                   </div>
                 </div>
               </div>
               <!-- Total Revenue -->
             </div>
-            <div class="form-container mb-4">
-              <label for="posicion" class="select-label">Seleccione una posición:</label>
-              <select id="posicion" class="custom-select">
-                <option value="" disabled selected>-- Elija una opción --</option>
-                <option value="1">Primero</option>
-                <option value="2">Segundo</option>
-                <option value="3">Tercero</option>
-              </select>
-            </div>
-            
             <div class="row">
               <h3>Trabajo, proyecto o ejercicio</h3>
               <div class="col-lg-12 mb-4 order-0">

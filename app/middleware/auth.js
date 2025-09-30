@@ -1,23 +1,16 @@
 const jwt = require('jsonwebtoken');
-const config = require('../../config/jwt');
+const { JWT_SECRET = 'SecretoEscuelaORM1234' } = process.env;
 
-module.exports = (req, res, next) => {
-    // Obtener el token desde los headers
-    const token = req.headers['authorization']; // El nombre del header es 'authorization'
+module.exports = function requireAuth(req, res, next) {
+  const token = req.cookies?.access_token;
+  if (!token) return res.redirect(302, '/');
 
-    if (!token) {
-        return res.status(403).send({ auth: false, message: 'No token provided.' });
-    }
-
-    // Si el token tiene el prefijo "Bearer ", se lo quitamos
-    const tokenWithoutBearer = token.startsWith('Bearer ') ? token.slice(7, token.length) : token;
-
-    jwt.verify(tokenWithoutBearer, config.secret, (err, decoded) => {
-        if (err) {
-            return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
-        }
-
-        req.userId = decoded.id;
-        next();
-    });
+  try {
+    const payload = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
+    req.user = payload;
+    return next();
+  } catch (e) {
+    res.clearCookie('access_token', { httpOnly: true, sameSite: 'lax', path: '/' });
+    return res.redirect(302, '/');
+  }
 };

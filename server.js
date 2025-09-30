@@ -5,32 +5,43 @@ const initDB = require('./config/dbconfig');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const http = require('http');
-const app = express();
-const swagger = require('./config/swagger');
-const socketMiddleware = require('./app/middleware/socket');
 const path = require('path');
+const compression = require('compression');
+const helmet = require('helmet');
 
-app.use(express.static(path.join(__dirname, './frontend')));
-
-// Crear servidor HTTP
+const app = express();
+app.set('trust proxy', 1);
 const server = http.createServer(app);
-
-/* Uso de cookies */
-app.use(cookieParser());
-app.use(bodyParser.json({ limit: '20mb' }));
-app.use(bodyParser.urlencoded({ limit: '20mb', extended: true }));
-
-/* Puerto a utilizar */ 
 const port = 8001;
+const FRONTEND_DIR = path.join(__dirname, 'frontend');
 
-/* Configuracion del cors */
-const corsOptions = {
-    origin: 'http://localhost:8001', // Cambia esto a la URL de tu frontend mas adelante
-    Credentials: true,
-}
 
-/* Routes ------------------------------------------*/ 
+/* ======== Middlewares globales ======== */
+app.use(cookieParser());
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
+// Seguridad básica y compresión
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use(compression());
+
+// CORS (mismo origen; puedes omitirlo si no llamas desde otro host)
+app.use(cors({ origin: 'http://localhost:8001', credentials: true }));
+
+/* ======== Rutas estáticas públicas ======== */
+// Assets públicos (CSS/JS/imagenes)
+app.use('/assets', express.static(path.join(FRONTEND_DIR, 'assets'), { maxAge: '7d' }));
+app.get('/', (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'index.html')));
+
+// Protegido con cookie
+const requireAuth = require('./app/middleware/auth.js');
+app.use('/pages', requireAuth, express.static(path.join(FRONTEND_DIR, 'pages'), {
+  setHeaders(res, filePath) {
+    if (filePath.endsWith('.html')) res.setHeader('Cache-Control', 'no-cache');
+  }
+}));
+
+/* ======== Rutas API ======== */
 const RouteEscalafon = require('./app/routes/Escalafon');
 const RouteRenglon = require('./app/routes/Renglon');
 const RoutePersona = require('./app/routes/Persona');
@@ -47,25 +58,8 @@ const RouteAlumno = require('./app/routes/Alumno');
 const RouteCalificacion = require('./app/routes/Calificacion');
 const RoutePromedioAmbito = require('./app/routes/Promedio_ambito');
 const RoutePromedioCiclo = require('./app/routes/Promedio_ciclo');
+const AuthDevRoute = require('./app/routes/authDev');
 
-/* Activación del cors*/
-app.use(cors(corsOptions));
-
-/**Parseador de solicitudes */
-app.use(
-    bodyParser.json({
-        limit: '50mb'
-    })
-);
-
-app.use(
-    bodyParser.urlencoded({
-        limit: '50mb',
-        extended: true
-    })
-);
-
-/* Utilizacion de Rutas ----------------------------*/ 
 app.use(RouteEscalafon);
 app.use(RouteRenglon);
 app.use(RoutePersona);
@@ -82,27 +76,26 @@ app.use(RouteAlumno);
 app.use(RouteCalificacion);
 app.use(RoutePromedioAmbito);
 app.use(RoutePromedioCiclo);
+app.use(AuthDevRoute);
 
+/* ======== 404 estático básico ======== */
+app.use((req, res, next) => {
+  if (req.method !== 'GET') return next();
+  return res.status(404).send('Not Found');
+});
 
-app.get('/', (req, res) => {
-    res.send('¡Servidor funcionando correctamente!');
-  });
-
-/* Inicio del servidor y conexión a la base de datos*/
+/* ======== Inicio del servidor y DB ======== */
 const startServer = async () => {
-    try {
-        await initDB.authenticate();
-        console.log('Conexión a la base de datos establecida correctamente.');
+  try {
+    await initDB.authenticate();
+    console.log('Conexión a la base de datos establecida correctamente.');
+    await initDB.sync();
 
-        await initDB.sync();
-
-        server.listen(port, '0.0.0.0', () => {
-            console.log(`La aplicación está en línea en http://localhost:${port}!`);
-        });
-
-    } catch (error) {
-        console.error('Error al conectar a la base de datos:', error);
-    }
-}
-
+    server.listen(port, '0.0.0.0', () => {
+      console.log(`App en http://localhost:${port}`);
+    });
+  } catch (error) {
+    console.error('Error al conectar a la base de datos:', error);
+  }
+};
 startServer();

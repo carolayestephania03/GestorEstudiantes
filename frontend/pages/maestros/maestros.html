@@ -36,42 +36,44 @@
   <link rel="stylesheet" href="../../assets/css/theme-default.css" class="template-customizer-theme-css" />
   <link rel="stylesheet" href="../../assets/css/sidebar.css" />
   <!-- Scroll CSS -->
-<style>
-          .custom-select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #3b71ca;
-            border-radius: 8px;
-            font-size: 16px;
-            color: #333;
-            background-color: #f8f9fa;
-            background-image: linear-gradient(45deg, transparent 50%, #3b71ca 50%),
-                              linear-gradient(135deg, #3b71ca 50%, transparent 50%);
-            background-position: calc(100% - 20px) center, calc(100% - 15px) center;
-            background-size: 5px 5px, 5px 5px;
-            background-repeat: no-repeat;
-            appearance: none;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .custom-select:focus {
-            border-color: #2a5cad;
-            box-shadow: 0 0 0 0.25rem rgba(59, 113, 202, 0.25);
-            outline: none;
-        }
-        .select-label {
-            font-weight: 600;
-            color: #3b71ca;
-            margin-bottom: 10px;
-            display: block;
-        }
-        .option-group {
-            padding: 8px 12px;
-            font-weight: 500;
-            color: #2c3e50;
-            background-color: #e9f1fd;
-        }
+  <style>
+    .custom-select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #3b71ca;
+      border-radius: 8px;
+      font-size: 16px;
+      color: #333;
+      background-color: #f8f9fa;
+      background-image: linear-gradient(45deg, transparent 50%, #3b71ca 50%),
+        linear-gradient(135deg, #3b71ca 50%, transparent 50%);
+      background-position: calc(100% - 20px) center, calc(100% - 15px) center;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      appearance: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
 
-</style>
+    .custom-select:focus {
+      border-color: #2a5cad;
+      box-shadow: 0 0 0 0.25rem rgba(59, 113, 202, 0.25);
+      outline: none;
+    }
+
+    .select-label {
+      font-weight: 600;
+      color: #3b71ca;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .option-group {
+      padding: 8px 12px;
+      font-weight: 500;
+      color: #2c3e50;
+      background-color: #e9f1fd;
+    }
+  </style>
   <!-- Helpers -->
 </head>
 
@@ -274,41 +276,97 @@
 
           <!-- Mensaje Bienvenida -->
           <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="row">
-              <div class="col-lg-12 mb-4 order-0">
+            <div class="row mb-4">
+              <div class="col-lg-12 order-0">
                 <div class="card">
-                  <div class="d-flex align-items-end row">
-                    <div class="col-sm-7">
-                      <div class="card-body">
-                        <h2 class="card-title text-primary">Maestros</h2>
-                        <p class="mb-4">
-                          Enseñar es un trabajo que se hace desde el corazón!
-                        </p>
-                      </div>
+                  <div class="card-body py-3">
+                    <h2 class="card-title text-primary mb-2">Bienvenido</h2>
+                    <p class="mb-0">
+                      Enseñar es un trabajo que se hace desde el corazón!
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <!-- Total Revenue -->
+            </div>
+            <div class="row">
+              <div class="col-lg-8 mb-3">
+                <div class="card shadow mb-4" id="Tarjeta-Reportes-actividades">
+                  <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                      Buscar Maestro
+                    </h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="add-task">
+                      <form class="row g-3">
+                        <div class="col-3">
+                          <label for="Cod_empleado" class="form-label">Codigo de Empleado</label>
+                          <input type="number" class="form-control" id="Cod_empleado" />
+                        </div>
+                        <div class="col-9">
+                          <label for="nombre_maestro" class="form-label">Nombre maestro</label>
+                          <input type="text" class="form-control" id="nombre_maestro" />
+                        </div>
+                        <div class="col-3">
+                          <label for="renglon_maestro" class="form-label">Renglon</label>
+                          <select class="form-control" id="renglon_maestro">
+                            <option value="0">Elija renglon</option>
+                          </select>
+                        </div>
+                        <div class="col-3">
+                          <label for="escalafon_maestro" class="form-label">Escalafon</label>
+                          <select class="form-control" id="escalafon_maestro">
+                            <option value="0">Elija escalafon</option>
+                          </select>
+                        </div>
+                        <div class="col-6">
+                          <label for="dpi_maestro" class="form-label">DPI del maestro</label>
+                          <input type="number" class="form-control" id="dpi_maestro" />
+                        </div>
+
+
+                      </form>
+                      <br />
+                      <button class="btn-sm btn-primary" id="search-btn">
+                        Buscar
+                      </button>
+                      <!-- Botón de imprimir -->
                     </div>
-                    <div class="col-sm-5 text-end">
-                      <div class="card-body pb-3 px-0 px-md-8">
-                        <img src="../../assets/img/mochila.jpg" height="130" alt="View Badge User" />
-                      </div>
-                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12 mb-3">
+                <div class="card shadow mb-4" id="Tarjeta-Tablas">
+                  <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Información</h6>
+                  </div>
+                  <div class="table-responsive" id="tableContainerActivities" style="display: block; padding: 15px">
+                    <table class="table table-bordered" id="dataTableActivities" width="100%" cellspacing="0">
+                      <thead>
+                        <tr>
+                          <th>No</th>
+                          <th>Cod. Empleado</th>
+                          <th>Nombre del maestro</th>
+                          <th>Grado y Sección</th>
+                          <th>Renglón</th>
+                          <th>Escalafón</th>
+                          <th>DPI</th>
+                          <th>Estado</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tableBodyActivities">
+                        <!-- Las filas se insertarán aquí dinámicamente -->
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
               <!-- Total Revenue -->
             </div>
           </div>
-          
-          <div class="container-xxl flex-grow-1 container-p-y">
-          <div class="form-container">
-            <label for="posicion" class="select-label">Seleccione una posición:</label>
-            <select id="posicion" class="custom-select">
-              <option value="" disabled selected>-- Elija una opción --</option>
-              <option value="1">Primero</option>
-              <option value="2">Segundo</option>
-              <option value="3">Tercero</option>
-            </select>
-          </div>
-          </div>
+
 
         </div>
         <!-- / Content -->

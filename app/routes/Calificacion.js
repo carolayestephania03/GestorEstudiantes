@@ -7,4 +7,6 @@ const path = 'calificacion';
 
 router.get(`/${path}`, controller.getData);
 
+router.post(`/${path}/promedioAlumnos`, controller.getAlumnMejProm);
+
 module.exports = router;

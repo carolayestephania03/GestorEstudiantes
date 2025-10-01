@@ -34,7 +34,7 @@ const IMG_MAP = {
   'ciencias_sociales': 'ciencias_social_natural.png',
   'ciencias_naturales_y_tecnologia': 'ciencias_social_natural.png',
   'ciencias_social_natural': 'ciencias_social_natural.png',
-  'computacion': 'computacion.png'
+  'Computación': 'computacion.png'
 };
 function getMateriaImage(nombreMateria) {
   const slug = slugifyMateria(nombreMateria || '');
@@ -53,6 +53,7 @@ function getMateriaImage(nombreMateria) {
   if (/artist/i.test(nombreMateria)) return '/assets/img/materias/expresion_artistica.png';
   if (/ciudadan/i.test(nombreMateria)) return '/assets/img/materias/formacion_ciudadana.png';
   if (/ciencia|social/i.test(nombreMateria)) return '/assets/img/materias/ciencias_social_natural.png';
+  if (/computacion/i.test(nombreMateria)) return '/assets/img/materias/computacion.png';
   // Fallback
   return '/assets/img/materias/matematicas.png';
 }

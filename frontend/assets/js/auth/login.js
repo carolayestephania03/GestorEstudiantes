@@ -1,26 +1,43 @@
+// ./public/assets/js/login.js
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('formAuthentication');
   if (!form) return;
 
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
-    const username = (document.getElementById('email') || {}).value?.trim() || '';
-    const password = (document.getElementById('password') || {}).value || '';
-    if (!username || !password) { alert('Ingresa usuario y contraseña'); return; }
+
+    const identificador = (document.getElementById('email') || {}).value?.trim() || '';
+    const contrasena = (document.getElementById('password') || {}).value || '';
+
+    if (!identificador || !contrasena) {
+      alert('Ingresa usuario y contraseña');
+      return;
+    }
 
     try {
-      const r = await fetch('/auth/login-dev', {
+      const r = await fetch(`${ENV.API_URL}/usuario/Login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        // Importante para que el navegador ACEPTE la cookie HttpOnly del backend
+        credentials: 'include',   // envía/acepta cookies cross-site
+        mode: 'cors',             // asumiendo front y API en puertos distintos
+        body: JSON.stringify({ identificador, contrasena })
       });
+
+      // Intenta parsear JSON siempre
+      let payload = null;
+      try { payload = await r.json(); } catch (_) { payload = null; }
+
+      if (payload?.data) {
+        sessionStorage.setItem('userData', JSON.stringify(payload.data));
+      }
+
       if (!r.ok) {
-        const err = await r.json().catch(()=>({message:'Login inválido'}));
-        alert(err.message || 'Login inválido');
+        const msg = payload?.message || payload?.error || 'Login inválido';
+        alert(msg);
         return;
       }
-      // Aquí el backend YA dejó la cookie HttpOnly.
-      // Redirige a la página real:
+
       location.href = './pages/dashboard.html';
     } catch (err) {
       console.error(err);

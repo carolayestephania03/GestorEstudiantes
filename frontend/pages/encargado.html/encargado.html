@@ -8,7 +8,7 @@
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-  <title>Lista de cotejo</title>
+  <title>Encargados</title>
 
   <meta name="description" content="" />
   <!-- Logo en la pestaña -->
@@ -36,7 +36,44 @@
   <link rel="stylesheet" href="../../assets/css/theme-default.css" class="template-customizer-theme-css" />
   <link rel="stylesheet" href="../../assets/css/sidebar.css" />
   <!-- Scroll CSS -->
+  <style>
+    .custom-select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #3b71ca;
+      border-radius: 8px;
+      font-size: 16px;
+      color: #333;
+      background-color: #f8f9fa;
+      background-image: linear-gradient(45deg, transparent 50%, #3b71ca 50%),
+        linear-gradient(135deg, #3b71ca 50%, transparent 50%);
+      background-position: calc(100% - 20px) center, calc(100% - 15px) center;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      appearance: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
 
+    .custom-select:focus {
+      border-color: #2a5cad;
+      box-shadow: 0 0 0 0.25rem rgba(59, 113, 202, 0.25);
+      outline: none;
+    }
+
+    .select-label {
+      font-weight: 600;
+      color: #3b71ca;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .option-group {
+      padding: 8px 12px;
+      font-weight: 500;
+      color: #2c3e50;
+      background-color: #e9f1fd;
+    }
+  </style>
   <!-- Helpers -->
 </head>
 
@@ -127,7 +164,7 @@
                   <div data-i18n="Without menu">Boleta de Calificaciones</div>
                 </a>
               </li>
-              <li class="menu-item active">
+              <li class="menu-item ">
                 <a href="../../pages/reportes/lista-cotejo.html" class="menu-link">
                   <div data-i18n="Without navbar">Lista de Cotejo</div>
                 </a>
@@ -236,82 +273,192 @@
 
         <!-- Content wrapper -->
         <div class="content-wrapper">
-          
+          <!-- Mensaje Bienvenida -->
           <div class="container-xxl flex-grow-1 container-p-y">
             <div class="row mb-4">
               <div class="col-lg-12 order-0">
                 <div class="card">
                   <div class="card-body py-3">
-                    <h2 class="card-title text-primary mb-2">reporte Boleta de calificaciones</h2>
+                    <h2 class="card-title text-primary mb-2">Encargado</h2>
                     <p class="mb-0">
-                      Enseñar es un trabajo que se hace desde el corazón!
+                      Somos un equipo en esta misión. El apoyo en casa es el terreno fértil para su crecimiento!
                     </p>
                   </div>
                 </div>
               </div>
               <!-- Total Revenue -->
             </div>
-            <div class="col-lg-12 mb-3">
-              <div class="card shadow mb-4" id="Tarjeta-Reportes-actividades">
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">
-                    Control de materias de grados de 4to a 6to
-                  </h6>
-                </div>
-                <div class="card-body">
-                  <div class="add-task">
-                    <form class="row g-3">
-                      <div class="col-12">
-                        <br>
-                        <label for="name_seccion" class="form-label">Nombre de la nueva sección</label>
-                      </div>
-                      <div class="col-3 mb-2">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="allDayStart">
-                          <label class="form-check-label" for="allDayStart">
-                            Matematicas
-                          </label>
+            <div class="row">
+              <div class="col-lg-8 mb-3">
+                <div class="card shadow mb-4" id="Tarjeta-Reportes-actividades">
+                  <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                      Buscar Encargado
+                    </h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="add-task">
+                      <form class="row g-3">
+                        <div class="col-4">
+                          <label for="DPI_enc" class="form-label">DPI</label>
+                          <input type="number" class="form-control" id="DPI_enc" />
                         </div>
-                      </div>
-                      <div class="col-3 mb-2">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="allDayStart">
-                          <label class="form-check-label" for="allDayStart">
-                            Matematicas
-                          </label>
+                        <div class="col-3">
+                          <label for="telefono" class="form-label">Telefono</label>
+                          <input type="number" class="form-control" id="telefono" />
                         </div>
-                      </div>
-                      <div class="col-3 mb-2">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="allDayStart">
-                          <label class="form-check-label" for="allDayStart">
-                            Matematicas
-                          </label>
+                        <div class="col-5">
+                          <label for="nombre_encargado" class="form-label">Nombre
+                            encargado</label>
+                          <input type="text" class="form-control" id="nombre_encargado" />
                         </div>
-                      </div>
-                      <div class="col-3 mb-2">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="allDayStart">
-                          <label class="form-check-label" for="allDayStart">
-                            Matematicas
-                          </label>
+                        <div class="col-4">
+                          <h6 class="m-0 font-weight-bold"
+                            style="padding-top: 1.5rem; color: black; font-size: medium;">Buscar por estudiante:</h6>
                         </div>
-                      </div>
-                    </form>
-                    <br />
-                    <button class="btn-sm btn-primary" id="search-btn">
-                      editar
-                    </button>
-                    <button class="btn-sm btn-primary" id="search-btn">
-                      Guardar
-                    </button>
-                    <!-- Botón de imprimir -->
+                        <div class="col-3">
+                          <label for="Cod_estudiante" class="form-label">Codigo Estudiante</label>
+                          <input type="number" class="form-control" id="Cod_estudiante" />
+                        </div>
+                        <div class="col-5">
+                          <label for="nombre_estudiante" class="form-label">Nombre
+                            estudiante</label>
+                          <input type="text" class="form-control" id="nombre_estudiante" />
+                        </div>
+
+                      </form>
+                      <br />
+                      <button class="btn-sm btn-primary" id="search-btn">
+                        Buscar
+                      </button>
+                      <button class="btn-sm btn-warning" id="create-btn">
+                        Crear
+                      </button>
+                      <!-- Botón de imprimir -->
+                    </div>
                   </div>
                 </div>
               </div>
+              <div class="col-lg-12 mb-3">
+                <div class="card shadow mb-4" id="Tarjeta-Tablas">
+                  <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Información</h6>
+                  </div>
+                  <div class="table-responsive" id="tableContainerActivities" style="display: block; padding: 15px">
+                    <table class="table table-bordered" id="dataTableActivities" width="100%" cellspacing="0">
+                      <thead>
+                        <tr>
+                          <th>No</th>
+                          <th>DPI</th>
+                          <th>Nombre encargado</th>
+                          <th>telefono</th>
+                          <th>NIT</th>
+                          <th>Niños a su cargo</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tableBodyActivities">
+                        <!-- Las filas se insertarán aquí dinámicamente -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- Total Revenue -->
             </div>
           </div>
 
+          <!-- / MODAL -->
+           
+                    <div class="container-xxl flex-grow-1 container-p-y">
+                        <div class="row">
+                            <div class="col-lg-12 mb-3">
+                                <div class="card shadow mb-4" id="Tarjeta-Reportes-actividades">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            Información encargado...
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="add-task">
+                                            <form class="row g-3">
+                                                <div class="col-3">
+                                                    <label for="Cod_empleado" class="form-label">DPI</label>
+                                                    <input type="number" class="form-control" id="Cod_empleado" />
+                                                </div>
+                                                <div class="col-3">
+                                                    <label for="nombre_maestro" class="form-label">Nombre</label>
+                                                    <input type="text" class="form-control" id="nombre_maestro" />
+                                                </div>
+                                                <div class="col-3">
+                                                    <label for="nombre_maestro" class="form-label">Apellido</label>
+                                                    <input type="text" class="form-control" id="nombre_maestro" />
+                                                </div>
+                                                <div class="col-3">
+                                                    <label for="nombre_maestro" class="form-label">Telefono</label>
+                                                    <input type="text" class="form-control" id="nombre_maestro" />
+                                                </div>
+                                                <div class="col-3">
+                                                    <label for="Cod_empleado" class="form-label">NIT</label>
+                                                    <input type="number" class="form-control" id="Cod_empleado" />
+                                                </div>
+                                                <div class="col-3">
+                                                    <label for="nombre_maestro" class="form-label">Correo</label>
+                                                    <input type="text" class="form-control" id="nombre_maestro" />
+                                                </div>
+                                                <div class="col-4">
+                                                    <label for="nombre_maestro" class="form-label">Residencia</label>
+                                                    <input type="text" class="form-control" id="nombre_maestro" />
+                                                </div>
+                                                <div class="col-2">
+                                                    <label for="escalafon_maestro" class="form-label">Estado</label>
+                                                    <select class="form-control" id="escalafon_maestro">
+                                                        <option value="0">Elija estado</option>
+                                                    </select>
+                                                </div>
+                                            </form>
+                                            <br />
+                                            <button class="btn-sm btn-primary" id="search-btn">
+                                                editar
+                                            </button>
+                                            <!-- Botón de imprimir -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 mb-3">
+                                <div class="card shadow mb-4" id="Tarjeta-Tablas">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">Información de los niños a su
+                                            cargo</h6>
+                                    </div>
+                                    <div class="table-responsive" id="tableContainerActivities"
+                                        style="display: block; padding: 15px">
+                                        <table class="table table-bordered" id="dataTableActivities" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Cod. Alumno</th>
+                                                    <th>Nombre del Alumno</th>
+                                                    <th>Grado y Sección</th>
+                                                    <th>DPI del alumno</th>
+                                                    <th>Estado</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tableBodyActivities">
+                                                <!-- Las filas se insertarán aquí dinámicamente -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Total Revenue -->
+                        </div>
+                    </div>
+
+          <!-- / MODAL -->
         </div>
         <!-- / Content -->
 

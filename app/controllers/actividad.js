@@ -273,3 +273,190 @@ exports.getActividadDetalle = [
     }
   }
 ];
+
+exports.getActividadesPorMateria = [
+  body('grado_id').exists().withMessage('grado_id requerido').bail().toInt().isInt({ gt: 0 }),
+  body('seccion_id').exists().withMessage('seccion_id requerido').bail().toInt().isInt({ gt: 0 }),
+
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    const grado_id = Number(req.body.grado_id);
+    const seccion_id = Number(req.body.seccion_id);
+
+    try {
+      // 1) Verificación previa: clase (grado+sección) y ciclo activo existen/están asignados
+      const [[pre]] = await sequelize.query(
+        `
+        SELECT
+          gs.grado_seccion_id AS gs_id,
+          (
+            SELECT ce.ciclo_escolar_id
+            FROM Ciclo_Escolar ce
+            WHERE ce.estado = 1
+            ORDER BY ce.anio DESC
+            LIMIT 1
+          ) AS ce_id
+        FROM Grado_Seccion gs
+        WHERE gs.grado_id = :g AND gs.seccion_id = :s AND gs.estado = 1
+        LIMIT 1
+        `,
+        { replacements: { g: grado_id, s: seccion_id } }
+      );
+
+      if (!pre || !pre.gs_id) {
+        return res.status(400).json({ error: 'La combinación Grado/Sección no existe o está inactiva' });
+      }
+      if (!pre.ce_id) {
+        return res.status(409).json({ error: 'No hay Ciclo_Escolar activo' });
+      }
+
+      // (Opcional) verificar que haya maestro asignado a esa clase en el ciclo actual,
+      // para evitar que el SP lance la misma excepción n veces:
+      const [[mcheck]] = await sequelize.query(
+        `
+        SELECT COUNT(*) AS cnt
+        FROM Maestro_Grado_Seccion
+        WHERE grado_seccion_id = :gs AND ciclo_escolar_id = :ce
+        `,
+        { replacements: { gs: pre.gs_id, ce: pre.ce_id } }
+      );
+      if (!mcheck || Number(mcheck.cnt) === 0) {
+        return res.status(409).json({ error: 'No hay maestro asignado a esa clase en el ciclo actual' });
+      }
+
+      // 2) Materias asignadas al grado (se omiten las no asignadas)
+      const [materias] = await sequelize.query(
+        `
+        SELECT m.materia_id, m.nombre_materia
+        FROM Materia m
+        JOIN Materia_Grado mg ON mg.materia_id = m.materia_id
+        WHERE mg.grado_id = :g
+          AND m.estado = 1
+        ORDER BY m.nombre_materia
+        `,
+        { replacements: { g: grado_id } }
+      );
+
+      // Helper para normalizar respuesta del CALL
+      const normalizeCall = (result) => {
+        if (!result) return [];
+        if (Array.isArray(result) && result.length && typeof result[0] === 'object') return result;
+        if (Array.isArray(result) && result.length && Array.isArray(result[0])) return result[0];
+        if (Array.isArray(result) && !result.length) return [];
+        if (typeof result === 'object') return [result];
+        return [];
+      };
+
+      // 3) Ejecutar SP por cada materia (en paralelo), omitiendo las que devuelven vacío
+      const items = await Promise.all(
+        (materias || []).map(async (mat) => {
+          try {
+            const rows = await sequelize.query(
+              `CALL sp_rep_actividades_por_materia(:g, :s, :m);`,
+              { replacements: { g: grado_id, s: seccion_id, m: mat.materia_id } }
+            );
+            const data = normalizeCall(rows);
+            if (!data.length) return null; // omitir si no hay actividades
+            return {
+              materia_id: mat.materia_id,
+              nombre_materia: mat.nombre_materia,
+              actividades: data
+            };
+          } catch (e) {
+            // Si el SP lanza error específico por catálogos/maestro/ciclo, puedes decidir omitir o propagar.
+            // Aquí omitimos sólo si es "No hay maestro..." para no romper el resto;
+            // pero como ya pre-validamos, no debería ocurrir.
+            const msg = String(e.message || '').toLowerCase();
+            if (msg.includes('no hay maestro') || msg.includes('ciclo_escolar')) return null;
+            throw e; // otros errores sí se propagan
+          }
+        })
+      );
+
+      // 4) Filtrar nulos (materias sin actividades)
+      const data = items.filter(Boolean);
+
+      return res.status(200).json({ data });
+    } catch (error) {
+      return res.status(500).json({ error: error.message || 'Error interno' });
+    }
+  }
+];
+
+exports.getNotasDetallePorClase = [
+  body('grado_id')
+    .exists().withMessage('grado_id requerido')
+    .bail().toInt().isInt({ gt: 0 }),
+  body('seccion_id')
+    .exists().withMessage('seccion_id requerido')
+    .bail().toInt().isInt({ gt: 0 }),
+
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    try {
+      const grado_id = Number(req.body.grado_id);
+      const seccion_id = Number(req.body.seccion_id);
+
+      const raw = await sequelize.query(
+        'CALL sp_rep_notas_actividades_detalle_por_clase(:g, :s);',
+        { replacements: { g: grado_id, s: seccion_id } }
+      );
+
+      // Normaliza respuesta del CALL
+      let rows = [];
+      if (Array.isArray(raw)) {
+        if (Array.isArray(raw[0])) rows = raw[0];
+        else if (raw.length && typeof raw[0] === 'object') rows = raw;
+      } else if (raw && typeof raw === 'object') {
+        rows = [raw];
+      }
+
+      // Agrupa: alumno -> tipos_actividad {1:[...],2:[...],3:[...]}
+      const byAlumno = new Map();
+
+      for (const r of rows) {
+        const alumnoId = Number(r.alumno_id);
+        const key = alumnoId;
+
+        if (!byAlumno.has(key)) {
+          byAlumno.set(key, {
+            alumno_id: alumnoId,
+            alumno_nombre: r.alumno_nombre,
+            alumno_apellido: r.alumno_apellido,
+            tipos_actividad: { 1: [], 2: [], 3: [] }
+          });
+        }
+
+        const entry = byAlumno.get(key);
+        const tipo = Number(r.tipo_actividad_id);
+        if ([1, 2, 3].includes(tipo)) {
+          entry.tipos_actividad[tipo].push({
+            actividad_id: Number(r.actividad_id),
+            nombre_actividad: r.nombre_actividad,
+            fecha_entrega: r.fecha_entrega,          // string DATETIME
+            materia_id: Number(r.materia_id),
+            nombre_materia: r.nombre_materia,
+            puntaje_maximo: Number(r.puntaje_maximo),
+            puntaje_obtenido: r.puntaje_obtenido != null ? Number(r.puntaje_obtenido) : null,
+            porcentaje: r.porcentaje != null ? Number(r.porcentaje) : null
+          });
+        }
+      }
+
+      // Convierte a array ordenado por apellido/nombre (ya viene ordenado del SP, pero por si acaso)
+      const data = Array.from(byAlumno.values());
+
+      return res.status(200).json({ data });
+    } catch (error) {
+      const msg = error?.message || 'Error interno';
+      if (/grado|secci[oó]n|ciclo_escolar|inexistente|inactiva/i.test(msg)) {
+        return res.status(400).json({ error: msg });
+      }
+      return res.status(500).json({ error: msg });
+    }
+  }
+];

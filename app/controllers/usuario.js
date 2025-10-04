@@ -585,3 +585,138 @@ exports.login = [
     }
   }
 ];
+
+exports.postForgotData = [
+    body('email')
+        .trim()
+        .notEmpty().withMessage('El correo electrónico de usuario es requerido')
+        .isEmail().withMessage('Debe ser un correo electrónico válido')
+        .customSanitizer(value => {
+            if (value.includes(';') || value.includes('--')) {
+                throw new Error('Caracteres inválidos detectados');
+            }
+            return value;
+        }),
+
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        try {
+          /**ARREGLAR LA BUSQUEDA = VISTA PARA BUSCAR POR EMAIL INFO DE USER */
+          /**ARREGLAR MODELO DE RESTAURAR CONTRASEÑA */
+            const { email } = req.body;
+            const foundEmail = await Usuario.findOne({ where: { email } });
+
+            if (!foundEmail) {
+                return res.status(404).json({ message: 'El usuario no existe' });
+            } else {
+                const autentication_code = crypto.randomBytes(5).toString('hex').toUpperCase(); 
+
+                const userId = foundEmail.catalogo_id || foundEmail.catalogo_id; // Ajusta el nombre del campo si es necesario
+
+                // Insertar el código de autenticación y el user_id en la tabla Forgot_password
+                await Forgot_password.create({
+                    autentication_code,
+                    user_id: userId
+                });
+
+                // Lógica de Nodemailer
+                const subject = 'Recuperación o creación de contraseña';
+                const message = `Hola,
+
+Hemos recibido una solicitud para restablecer o crear tu contraseña. Para realizar el proceso, ingresa el siguiente código de autenticación: ${autentication_code} en la página de recuperación: http://localhost:8001/pages/autentication.html. Si no has sido tú, por favor ignora este mensaje.
+
+Gracias,
+Tu equipo de soporte`;
+
+                await mailer.sendEmail(email, subject, message, `<p>${message.replace(/\n/g, '<br>')}</p>`);
+
+                res.status(200).json({ message: 'Correo de recuperación enviado correctamente' });
+            }
+
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+];
+
+exports.postAutenticationCode = [
+    body('autentication_code')
+        .trim()
+        .notEmpty().withMessage('El código de autenticación es requerido')
+        .customSanitizer(value => {
+            if (value.includes(';') || value.includes('--')) {
+                throw new Error('Caracteres inválidos detectados');
+            }
+            return value;
+        }),
+
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        try {
+            const { autentication_code } = req.body;
+
+            // Llamada al procedimiento almacenado
+            // CREAR PROCEDIMIENTO PARA OBTENER INFO CON EL CODIGO DE AUTENTICACION
+            const query = `CALL GetUserByAuthCode(:authCode);`;
+            const [results] = await sequelize.query(query, {
+                replacements: { authCode: autentication_code },
+                type: sequelize.QueryTypes.SELECT
+            });
+
+            // Validaciones de resultados
+            if (!results || results.length === 0) {
+                return res.status(404).json({ message: 'El código de autenticación no existe o no es válido' });
+            }
+
+            if (results[0].hasOwnProperty('mensaje')) {
+                return res.status(400).json({ message: results[0].mensaje });
+            }
+
+            // Extraer el nombre de usuario retornado por el procedure
+            const usuario = results[0].user;
+
+            // Buscar información del usuario en la vista
+            const [foundUser] = await sequelize.query(
+                `SELECT * FROM user WHERE user = :user`,
+                {
+                    replacements: { user: usuario },
+                    type: sequelize.QueryTypes.SELECT,
+                }
+            );
+
+            if (!foundUser) {
+                return res.status(404).json({ message: 'Usuario no encontrado en vista_usuario' });
+            }
+
+            /* HACER QUE SE ENVIE EL TOKEN CON LA COOKIE COMO EL LOGIN*/
+
+            // Crear el token
+            const token = jwt.sign(
+                {
+                    sub: foundUser.catalogo_id,
+                    name: foundUser.user,
+                    depto: foundUser.departamento_id,
+                },
+                config.secret,
+                config.getOptions(true)
+            );
+            // Responder con el resultado exacto del procedimiento almacenado
+            return res.status(200).json({ message: 'Autenticación recibida correctamente', user: results});
+
+        } catch (error) {
+            if (error.original && error.original.sqlState === '45000') {
+                return res.status(400).json({ message: 'El código de autenticación ya ha sido utilizado o es inválido' });
+            }
+
+            return res.status(500).json({ error: error.message });
+        }
+    }
+];

@@ -70,11 +70,11 @@
 
         <!-- Señala la pestaña activa -->
         <div class="menu-inner-shadow"></div>
-        <ul class="menu-inner py-1">
+        <ul class="menu-inner py-1" id="accordionSidebar">
 
           <!-- Dashboard/Inicio -->
-          <li class="menu-item">
-            <a href="../../pages/dashboard.html" class="menu-link">
+          <li class="menu-item" >
+            <a href="/frontend/pages/dashboard.html" class="menu-link" id="EnlaceInicio">
               <span class="menu-icon material-symbols-outlined">home</span>
               <div class="menu-text" data-i18n="Analytics">Inicio</div>
             </a>
@@ -82,24 +82,24 @@
 
           <!-- Modulo de Tareas -->
           <li class="menu-item" id="menuTareas">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceTarea"> 
               <span class="menu-icon material-symbols-outlined">assignment</span>
               <div class="menu-text" data-i18n="Layouts">Tareas</div>
             </a>
 
             <ul class="menu-sub">
               <li class="menu-item">
-                <a href="../../pages/tareas/calendario.html" class="menu-link">
+                <a href="/frontend/pages/tareas/calendario.html" class="menu-link">
                   <div data-i18n="Without menu">Calendario</div>
                 </a>
               </li>
               <li class="menu-item ">
-                <a href="../../pages/tareas/actividades.html" class="menu-link">
+                <a href="/frontend/pages/tareas/actividades.html" class="menu-link">
                   <div data-i18n="Without navbar">Actividades</div>
                 </a>
               </li>
               <li class="menu-item">
-                <a href="../../pages/tareas/asigna-lista-cotejo.html" class="menu-link">
+                <a href="/frontend/pages/tareas/asigna-lista-cotejo.html" class="menu-link">
                   <div data-i18n="Container">Visualizar Lista de Cotejo</div>
                 </a>
               </li>
@@ -108,7 +108,7 @@
 
           <!-- Información del alumno -->
           <li class="menu-item">
-            <a href="../../pages/alumnos/alumnos.html" class="menu-link">
+            <a href="/frontend/pages/alumnos/alumnos.html" class="menu-link" id="EnlaceAlumno">
               <span class="menu-icon material-symbols-outlined">group</span>
               <div class="menu-text" data-i18n="Documentation">Alumnos</div>
             </a>
@@ -116,24 +116,24 @@
 
           <!-- Modulo de Reportes -->
           <li class="menu-item" id="menuReportes">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceReportes">
               <span class="menu-icon material-symbols-outlined">summarize</span>
               <div class="menu-text" data-i18n="Layouts">Reportes</div>
             </a>
 
             <ul class="menu-sub">
               <li class="menu-item ">
-                <a href="../../pages/reportes/boleta-calificacion.html" class="menu-link">
+                <a href="/frontend/pages/reportes/boleta-calificacion.html" class="menu-link">
                   <div data-i18n="Without menu">Boleta de Calificaciones</div>
                 </a>
               </li>
               <li class="menu-item ">
-                <a href="../../pages/reportes/lista-cotejo.html" class="menu-link">
+                <a href="/frontend/pages/reportes/lista-cotejo.html" class="menu-link">
                   <div data-i18n="Without navbar">Lista de Cotejo</div>
                 </a>
               </li>
               <li class="menu-item">
-                <a href="../../pages/reportes/cuadro-prim.html" class="menu-link">
+                <a href="/frontend/pages/reportes/cuadro-prim.html" class="menu-link">
                   <div data-i18n="Container">Cuadro PRIM</div>
                 </a>
               </li>
@@ -141,23 +141,30 @@
           </li>
 
           <li class="menu-item">
-            <a href="../../pages/alertas/alertas.html" class="menu-link">
+            <a href="/frontend/pages/alertas/alertas.html" class="menu-link" id="EnlaceAlertas">
               <span class="menu-icon material-symbols-outlined">notification_important</span>
               <div class="menu-text" data-i18n="Documentation">Alertas</div>
             </a>
           </li>
 
           <li class="menu-item">
-            <a href="../../pages/panelControl/panel-control.html" class="menu-link">
+            <a href="/frontend/pages/panelControl/panel-control.html" class="menu-link" id="EnlacePanelControl">
               <span class="menu-icon material-symbols-outlined">settings</span>
               <div class="menu-text" data-i18n="Documentation">Panel de control</div>
             </a>
           </li>
 
           <li class="menu-item">
-            <a href="../../pages/maestros/maestros.html" class="menu-link">
+            <a href="/frontend/pages/maestros/maestros.html" class="menu-link" id="EnlaceMaestro">
               <span class="menu-icon material-symbols-outlined">person</span>
               <div class="menu-text" data-i18n="Documentation">Maestros</div>
+            </a>
+          </li>
+
+          <li class="menu-item">
+            <a href="/frontend/pages/encargado.html/encargado.html" class="menu-link" id="EnlaceEncargado">
+              <span class="menu-icon material-symbols-outlined">contacts_product</span>
+              <div class="menu-text" data-i18n="Documentation">Encargado</div>
             </a>
           </li>
         </ul>

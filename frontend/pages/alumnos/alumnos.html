@@ -260,48 +260,57 @@
               <!-- Total Revenue -->
             </div>
 
-            <div class="col-lg-8 mb-3">
-              <div class="card shadow mb-4" id="Tarjeta-Reportes-actividades">
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">
-                    Buscar Alumno
-                  </h6>
+            <div class="row">
+              <div class="col-lg-9 mb-3">
+                <div class="card shadow mb-4" id="Tarjeta-Reportes-actividades" style="height: 100%;">
+                  <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                      Buscar Alumno
+                    </h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="add-task">
+                      <form class="row g-3">
+                        <div class="col-3">
+                          <label for="Cod_alumno" class="form-label">Codigo de Alumno</label>
+                          <input type="number" class="form-control" id="Cod_alumno" />
+                        </div>
+                        <div class="col-9">
+                          <label for="nombre_alumno" class="form-label">Nombre alumno</label>
+                          <input type="text" class="form-control" id="nombre_alumno" />
+                        </div>
+                        <div class="col-3">
+                          <label for="grado_alumno" class="form-label">Grado del alumno</label>
+                          <select class="form-control" id="grado_alumno">
+                            <option value="0">Elija grado</option>
+                          </select>
+                        </div>
+                        <div class="col-3">
+                          <label for="seccion_alumno" class="form-label">Seccion del alumno</label>
+                          <select class="form-control" id="seccion_alumno">
+                            <option value="0">Elija seccion</option>
+                          </select>
+                        </div>
+                        <div class="col-6">
+                          <label for="dpi_alumno" class="form-label">DPI del alumno</label>
+                          <input type="number" class="form-control" id="dpi_alumno" />
+                        </div>
+
+
+                      </form>
+                      <br />
+                      <button class="btn-sm btn-primary" id="search-btn">
+                        Buscar
+                      </button>
+                      <!-- Botón de imprimir -->
+                    </div>
+                  </div>
                 </div>
-                <div class="card-body">
-                  <div class="add-task">
-                    <form class="row g-3">
-                      <div class="col-3">
-                        <label for="Cod_alumno" class="form-label">Codigo de Alumno</label>
-                        <input type="number" class="form-control" id="Cod_alumno" />
-                      </div>
-                      <div class="col-9">
-                        <label for="nombre_alumno" class="form-label">Nombre alumno</label>
-                        <input type="text" class="form-control" id="nombre_alumno" />
-                      </div>
-                      <div class="col-3">
-                        <label for="grado_alumno" class="form-label">Grado del alumno</label>
-                        <select class="form-control" id="grado_alumno">
-                          <option value="0">Elija grado</option>
-                        </select>
-                      </div>
-                      <div class="col-3">
-                        <label for="seccion_alumno" class="form-label">Seccion del alumno</label>
-                        <select class="form-control" id="seccion_alumno">
-                          <option value="0">Elija seccion</option>
-                        </select>
-                      </div>
-                      <div class="col-6">
-                        <label for="dpi_alumno" class="form-label">DPI del alumno</label>
-                        <input type="number" class="form-control" id="dpi_alumno" />
-                      </div>
-
-
-                    </form>
-                    <br />
-                    <button class="btn-sm btn-primary" id="search-btn">
-                      Buscar
-                    </button>
-                    <!-- Botón de imprimir -->
+              </div>
+              <div class="col-lg-3 mb-3">
+                <div class="card shadow mb-4" style="height: 100%;">
+                  <div class="card-body p-0" style="height: 100%;">
+                    <img src="../../assets/img/alumnos.png" alt="Imagen de alumnos" class="img-fluid w-100 h-100" style="object-fit: cover; border-radius: 0.375rem;">
                   </div>
                 </div>
               </div>

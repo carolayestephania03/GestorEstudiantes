@@ -60,7 +60,7 @@ function getMateriaImage(nombreMateria) {
 
 // ========== (1) Tarjetas de tareas pendientes ==========
 async function fetchMaterias() {
-  const r = await fetch('http://localhost:8001/materia', {
+  const r = await fetch(`${ENV.API_URL}/materia`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include'
@@ -71,7 +71,7 @@ async function fetchMaterias() {
 }
 // Resumen de pendientes/cumplidas por materia (para badges)
 async function fetchPendCum(ctx) {
-  const r = await fetch('http://localhost:8001/materia/ActividadesPenyCum', {
+  const r = await fetch(`${ENV.API_URL}/materia/ActividadesPenyCum`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -146,7 +146,7 @@ async function renderTarjetasPendientes() {
 
 // ========== (2) Cuadro de honor ==========
 async function fetchCuadroHonor(ctx) {
-  const r = await fetch('http://localhost:8001/calificacion/promedioAlumnos', {
+  const r = await fetch(`${ENV.API_URL}/calificacion/promedioAlumnos`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',

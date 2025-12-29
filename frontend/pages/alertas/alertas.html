@@ -111,7 +111,7 @@
         <ul class="menu-inner py-1" id="accordionSidebar">
 
           <!-- Dashboard/Inicio -->
-          <li class="menu-item" >
+          <li class="menu-item">
             <a href="../dashboard.html" class="menu-link" id="EnlaceInicio">
               <span class="menu-icon material-symbols-outlined">home</span>
               <div class="menu-text" data-i18n="Analytics">Inicio</div>
@@ -120,7 +120,7 @@
 
           <!-- Modulo de Tareas -->
           <li class="menu-item" id="menuTareas">
-            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceTarea"> 
+            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceTarea">
               <span class="menu-icon material-symbols-outlined">assignment</span>
               <div class="menu-text" data-i18n="Layouts">Tareas</div>
             </a>
@@ -285,7 +285,7 @@
           <!-- Mensaje Bienvenida -->
           <div class="container-xxl flex-grow-1 container-p-y">
             <div class="row mb-4">
-              <div class="col-lg-12 order-0">
+              <div class="col-lg-6 order-0">
                 <div class="card">
                   <div class="card-body py-3">
                     <h2 class="card-title text-primary mb-2">Alertas</h2>
@@ -295,25 +295,25 @@
                   </div>
                 </div>
               </div>
-              <!-- Total Revenue -->
+              <div class="col-lg-6 mb-3 d-flex" id="Selec-gradSec" style="display: none;">
+                <div class="col-4 form-container me-3">
+                  <label for="combo_grado_direc" class="select-label">Seleccionar grado:</label>
+                  <select id="combo_grado_direc" class="custom-select">
+                    <option value="" disabled selected>-- Elija una opción --</option>
+                  </select>
+                </div>
+                <div class="col-4 form-container">
+                  <label for="combo_seccion_direc" class="select-label">Seleccionar sección:</label>
+                  <select id="combo_seccion_direc" class="custom-select">
+                    <option value="" disabled selected>-- Elija una opción --</option>
+                  </select>
+                </div>
+                <div class="col-12 justify-content-center" style="padding-top: 2.5rem; padding-left: 2.5rem;">
+                  <button type="button" class="btn btn-primary">Ver</button>
+                </div>
+              </div>
             </div>
-            <div class="col-lg-12 mb-3 d-flex" id="Selec-gradSec" style="display: none;">
-              <div class="col-4 form-container me-3">
-                <label for="combo_grado_direc" class="select-label">Seleccionar grado:</label>
-                <select id="combo_grado_direc" class="custom-select">
-                  <option value="" disabled selected>-- Elija una opción --</option>
-                </select>
-              </div>
-              <div class="col-4 form-container">
-                <label for="combo_seccion_direc" class="select-label">Seleccionar sección:</label>
-                <select id="combo_seccion_direc" class="custom-select">
-                  <option value="" disabled selected>-- Elija una opción --</option>
-                </select>
-              </div>
-              <div class="col-12 justify-content-center" style="padding-top: 2.5rem; padding-left: 2.5rem;">
-                <button type="button" class="btn btn-primary">Ver</button>
-              </div>
-            </div>
+
             <div class="row">
               <h3>Alerta 7 días</h3>
               <div class="col-lg-12 mb-4 order-0">
@@ -395,7 +395,7 @@
   <!-- JS Geovanny-->
   <script src="../../assets/js/Calendar/index.global.min.js"></script>
   <script src="../../assets/js/Menu/sidebar.js"></script>
-
+  <script src="../../assets/js/Menu/comboGradSec.js"></script>
 </body>
 
 </html>

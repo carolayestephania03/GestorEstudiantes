@@ -8,6 +8,7 @@ const http = require('http');
 const path = require('path');
 const compression = require('compression');
 const helmet = require('helmet');
+const swagger = require('./config/swagger.js');
 
 const app = express();
 app.set('trust proxy', 1);
@@ -77,6 +78,9 @@ app.use(RouteCalificacion);
 app.use(RoutePromedioAmbito);
 app.use(RoutePromedioCiclo);
 app.use(AuthDevRoute);
+
+// Documentación Swagger
+app.use('/api-docs', swagger.swaggerUi.serve, swagger.swaggerUi.setup(swagger.specs));
 
 /* ======== 404 estático básico ======== */
 app.use((req, res, next) => {

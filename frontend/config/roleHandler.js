@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-    let rol_id = sessionStorage.getItem("role_id"); // Asegúrate de obtener el rol correctamente
+
+    const rol_id = (userData?.rol_id || '').trim().toUpperCase();
     // Seleccionamos solo el <ul> con id="accordionSidebar"
     let sidebarMenu = document.getElementById("accordionSidebar");
     let comboBoxGradSec = document.getElementById("Selec-gradSec");

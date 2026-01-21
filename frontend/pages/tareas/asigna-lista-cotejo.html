@@ -76,6 +76,60 @@
     color: #2c3e50;
     background-color: #e9f1fd;
   }
+
+  /* Permite scroll horizontal y evita que las columnas se aplasten */
+  .table-responsive .tabla-notas {
+    min-width: 1100px;
+    /* ajusta: 1000-1400 según columnas */
+    table-layout: auto;
+    /* controla ancho consistente */
+  }
+
+  /* Encabezados y celdas con buen espacio */
+  .tabla-notas th,
+  .tabla-notas td {
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  /* Celdas de notas (inputs) más legibles */
+  .tabla-notas .nota-input {
+    min-width: 64px;
+    /* clave: que el número respire */
+    height: 32px;
+    font-size: 0.95rem;
+    padding: 0.25rem 0.35rem;
+  }
+
+.tabla-notas thead th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+  /* Columna Nombre más amplia */
+  .tabla-notas td:nth-child(2),
+  .tabla-notas th:nth-child(2) {
+    width: 220px;
+    /* ajusta a tu gusto */
+  }
+
+  /* Columna No. */
+  .tabla-notas td:nth-child(1),
+  .tabla-notas th:nth-child(1) {
+    width: 50px;
+  }
+
+  /* Columna Total */
+  .tabla-notas .total-cell,
+  .tabla-notas th:last-child {
+    width: 90px;
+  }
+
+  /* Acciones */
+  .tabla-notas td:last-child,
+  .tabla-notas th:last-child {
+    width: 120px;
+  }
 </style>
 
 <body>
@@ -285,64 +339,185 @@
           <!-- Mensaje Bienvenida -->
           <div class="container-xxl flex-grow-1 container-p-y">
             <div class="row mb-4">
-              <div class="col-lg-6 order-0">
+              <div class="col-12 col-lg-4">
                 <div class="card">
                   <div class="card-body py-3">
                     <h2 class="card-title text-primary mb-2">Lista de Cotejo</h2>
-                    <p class="mb-0">
-                      Enseñar es un trabajo que se hace desde el corazón!
-                    </p>
+                    <p class="mb-0">Enseñar es un trabajo que se hace desde el corazón!</p>
                   </div>
                 </div>
               </div>
-              <div class="col-lg-6 mb-3 d-flex" id="Selec-gradSec" style="display: none;">
-                <div class="col-4 form-container me-3">
-                  <label for="combo_grado_direc" class="select-label">Seleccionar grado:</label>
-                  <select id="combo_grado_direc" class="custom-select">
-                    <option value="" disabled selected>-- Elija una opción --</option>
-                  </select>
-                </div>
-                <div class="col-4 form-container">
-                  <label for="combo_seccion_direc" class="select-label">Seleccionar sección:</label>
-                  <select id="combo_seccion_direc" class="custom-select">
-                    <option value="" disabled selected>-- Elija una opción --</option>
-                  </select>
-                </div>
-                <div class="col-12 justify-content-center" style="padding-top: 2.5rem; padding-left: 2.5rem;">
-                  <button type="button" class="btn btn-primary">Ver</button>
+              <div class="col-12 col-lg-8 mb-3" id="Selec-gradSec">
+                <div class="row g-2 align-items-end">
+                  <div class="col-12 col-sm-6 col-md-3 form-container">
+                    <label for="combo_grado_direc" class="select-label">grado:</label>
+                    <select id="combo_grado_direc" class="custom-select">
+                      <option value="" disabled selected>-- Elija una opción --</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-3 form-container">
+                    <label for="combo_seccion_direc" class="select-label">sección:</label>
+                    <select id="combo_seccion_direc" class="custom-select">
+                      <option value="" disabled selected>-- Elija una opción --</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-3 form-container">
+                    <label for="combo_ciclo_direc" class="select-label">bimestre:</label>
+                    <select id="combo_ciclo_direc" class="custom-select">
+                      <option value="1">1er Bimestre</option>
+                      <option value="2">2do Bimestre</option>
+                      <option value="3">3er Bimestre</option>
+                      <option value="4">4to Bimestre</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-3 form-container">
+                    <label for="combo_materia" class="select-label">Materia:</label>
+                    <select id="combo_materia" class="custom-select">
+                      <option value="" disabled selected>-- Elija una opción --</option>
+                    </select>
+                  </div>
+                  <div class="col-12 d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary" id="VisualizarInfo">Ver</button>
+                  </div>
                 </div>
               </div>
             </div>
             <div class="row">
-              <!-- Lista de cotejo -->
-              <div class="col-lg-12">
+              <div class="col-12">
                 <div class="card card-custom h-100">
                   <div class="card-body">
-                    <h3 class="card-title">Matematicas</h3>
+                    <div class="text-md">
+                      <span class="badge bg-label-primary mb-2">Materia</span>
+                      <h3 class="mb-0 mb-3  ">Matemáticas</h3>
+                    </div>
                     <div class="table-responsive">
-                      <table class="table table-honor">
+                      <table class="table table-bordered align-middle table-sm w-100 tabla-notas">
                         <thead>
+                          <!-- Fila 1: Grupos -->
                           <tr>
-                            <th>No.</th>
-                            <th>Nombre del Estudiante</th>
-                            <th>Trabajo, proyecto o ejercicio</th>
-                            <th>Actitudinal</th>
-                            <th>Evaluación</th>
-                            <th>Total</th>
+                            <th rowspan="2" class="text-nowrap">No.</th>
+                            <th rowspan="2" class="text-nowrap">Nombre</th>
+
+                            <th colspan="4" class="text-center text-nowrap">Tareas</th>
+                            <th colspan="3" class="text-center text-nowrap">Tipo_actividad_id = 2</th>
+                            <th colspan="1" class="text-center text-nowrap">Tipo_actividad_id = 3</th>
+
+                            <th colspan="1" class="text-center text-nowrap">Total</th>
+                            <th rowspan="2" class="text-center text-nowrap">Acciones</th>
+                          </tr>
+
+                          <!-- Fila 2: Subcolumnas -->
+                          <tr>
+                            <!-- Tipo 1 -->
+                            <th class="text-center text-nowrap">Act 1</th>
+                            <th class="text-center text-nowrap">Act 2</th>
+                            <th class="text-center text-nowrap">Act 3</th>
+                            <th class="text-center text-nowrap">Act 4</th>
+
+                            <!-- Tipo 2 -->
+                            <th class="text-center text-nowrap">Act 1</th>
+                            <th class="text-center text-nowrap">Act 2</th>
+                            <th class="text-center text-nowrap">Act 3</th>
+
+                            <!-- Tipo 3 -->
+                            <th class="text-center text-nowrap">Act 1</th>
+
+                            <!-- Total -->
+                            <th class="text-center text-nowrap">Cantidad</th>
                           </tr>
                         </thead>
+
                         <tbody>
+                          <!-- Datos quemados -->
                           <tr>
-                            <td>No. <i class="bi bi-award gold medal"></i></td>
-                            <td>María González</td>
-                            <td>10</td>
-                            <td>10</td>
-                            <td>10</td>
-                            <td>30</td>
+                            <td class="text-nowrap">1</td>
+                            <td class="text-nowrap">María González</td>
+
+                            <td class="text-center">10</td>
+                            <td class="text-center">9</td>
+                            <td class="text-center">10</td>
+                            <td class="text-center">8</td>
+
+                            <td class="text-center">10</td>
+                            <td class="text-center">10</td>
+                            <td class="text-center">9</td>
+
+                            <td class="text-center">10</td>
+
+                            <td class="text-center fw-bold">86</td>
+
+                            <td class="text-center text-nowrap">
+                              <button type="button" class="btn btn-sm btn-outline-primary">Editar</button>
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td class="text-nowrap">2</td>
+                            <td class="text-nowrap">Juan Pérez</td>
+
+                            <td class="text-center">8</td>
+                            <td class="text-center">7</td>
+                            <td class="text-center">9</td>
+                            <td class="text-center">8</td>
+
+                            <td class="text-center">9</td>
+                            <td class="text-center">8</td>
+                            <td class="text-center">9</td>
+
+                            <td class="text-center">8</td>
+
+                            <td class="text-center fw-bold">76</td>
+
+                            <td class="text-center text-nowrap">
+                              <button type="button" class="btn btn-sm btn-outline-primary">Editar</button>
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td class="text-nowrap">3</td>
+                            <td class="text-nowrap">Ana López</td>
+
+                            <td class="text-center">10</td>
+                            <td class="text-center">10</td>
+                            <td class="text-center">9</td>
+                            <td class="text-center">10</td>
+
+                            <td class="text-center">9</td>
+                            <td class="text-center">10</td>
+                            <td class="text-center">10</td>
+
+                            <td class="text-center">9</td>
+
+                            <td class="text-center fw-bold">86</td>
+
+                            <td class="text-center text-nowrap">
+                              <button type="button" class="btn btn-sm btn-outline-primary">Editar</button>
+                            </td>
                           </tr>
                         </tbody>
+
+                        <tfoot>
+                          <tr>
+                            <th colspan="2" class="text-end text-nowrap">Promedio del grupo:</th>
+
+                            <th class="text-center">9.3</th>
+                            <th class="text-center">8.7</th>
+                            <th class="text-center">9.3</th>
+                            <th class="text-center">8.7</th>
+
+                            <th class="text-center">9.3</th>
+                            <th class="text-center">9.3</th>
+                            <th class="text-center">9.3</th>
+
+                            <th class="text-center">9.0</th>
+
+                            <th class="text-center fw-bold">82.7</th>
+                            <th></th>
+                          </tr>
+                        </tfoot>
                       </table>
                     </div>
+
                   </div>
                 </div>
               </div>
@@ -378,9 +553,9 @@
   <!-- Core JS -->
   <script src="../../assets/js/bootstrap.js"></script>
 
-  <!-- Variables de configuración -->
+  <!-- Variables de configuración 
   <script src="../../config/enviroment.js"></script>
-
+-->
   <!-- endbuild -->
   <!-- Main JS -->
   <script src="../../assets/js/main.js"></script>
@@ -388,6 +563,7 @@
   <script src="../../assets/js/Calendar/index.global.min.js"></script>
   <script src="../../assets/js/Menu/sidebar.js"></script>
   <script src="../../assets/js/Menu/comboGradSec.js"></script>
+  <script src="../../assets/js/Tareas/listaCotejo.js"></script>
 </body>
 
 </html>

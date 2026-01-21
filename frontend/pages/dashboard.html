@@ -337,20 +337,29 @@
               </div>
               <!-- Total Revenue -->
               <div class="col-lg-6 mb-3 d-flex" id="Selec-gradSec" style="display: none;">
-                <div class="col-4 form-container me-3">
-                  <label for="combo_grado_direc" class="select-label">Seleccionar grado:</label>
-                  <select id="combo_grado_direc" class="custom-select">
+                <div class="col-3 form-container me-3">
+                  <label for="combo_grado_direc" class="select-label">grado:</label>
+                  <select id="combo_grado_direc" class="custom-select" >
                     <option value="" disabled selected>-- Elija una opción --</option>
                   </select>
                 </div>
-                <div class="col-4 form-container">
-                  <label for="combo_seccion_direc" class="select-label">Seleccionar sección:</label>
-                  <select id="combo_seccion_direc" class="custom-select">
+                <div class="col-3 form-container me-3">
+                  <label for="combo_seccion_direc" class="select-label">sección:</label>
+                  <select id="combo_seccion_direc" class="custom-select" >
                     <option value="" disabled selected>-- Elija una opción --</option>
                   </select>
                 </div>
-                <div class="col-12 justify-content-center" style="padding-top: 2.5rem; padding-left: 2.5rem;">
-                  <button type="button" class="btn btn-primary">Ver</button>
+                <div class="col-3 form-container">
+                  <label for="combo_ciclo_direc" class="select-label">bimestre:</label>
+                  <select id="combo_ciclo_direc" class="custom-select">
+                    <option value="1">1er Bimestre</option>
+                    <option value="2">2do Bimestre</option>
+                    <option value="3">3er Bimestre</option>
+                    <option value="4">4to Bimestre</option>
+                  </select>
+                </div>
+                <div class="col-3 justify-content-center" style="padding-top: 2.5rem; padding-left: 1.5rem;">
+                  <button type="button" class="btn btn-primary" id="VisualizarInfo">Ver</button>
                 </div>
               </div>
             </div>
@@ -361,7 +370,7 @@
             </div>
             <div class="row">
               <!-- Primera tarjeta: Cuadro de Honor -->
-              <div class="col-lg-6 ">
+              <div class="col-lg-6 mb-4">
                 <div class="card card-custom h-100">
                   <img
                     src="https://ims.evidentscientific.com/es/insights/media_1d36e1ce13e321c2ac45415fa7a096e8978e67fcd.jpg?width=750&format=jpg&optimize=medium"
@@ -466,6 +475,7 @@
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
@@ -497,16 +507,20 @@
   <!-- Core JS -->
   <script src="../assets/js/bootstrap.js"></script>
 
-  <!-- Variables de configuración -->
-  <script src="../config/enviroment.js"></script>
+  <!-- Variables de configuración
+  <script src="../config/enviroment.js"></script> 
+  <script src="../config/roleHandler.js"></script>
+  -->
 
   <!-- endbuild -->
   <!-- Main JS -->
   <script src="../assets/js/main.js"></script>
   <!-- JS Geovanny-->
   <script src="../assets/js/Menu/sidebar.js"></script>
-  <script src="../assets/js/dashboard/dashboard.js"></script>
   <script src="../assets/js/Menu/comboGradSec.js"></script>
+  <script src="../assets/js/dashboard/dashboard.js"></script>
+  <script src="../assets/js/dashboard/estadisticas.js"></script>
+  
 </body>
 
 </html>

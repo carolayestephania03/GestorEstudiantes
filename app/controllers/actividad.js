@@ -976,6 +976,7 @@ exports.getActividadesCalificadasPorMateria = [
   }
 ];
 
+
 exports.getNotasAlumnosTareasCalificadas = [
   body('grado_id')
     .exists().withMessage('grado_id requerido')
@@ -1117,6 +1118,136 @@ exports.getNotasAlumnosTareasCalificadas = [
         return res.status(400).json({ error: msg });
       }
       if (/no existe/i.test(msg)) {
+        return res.status(404).json({ error: msg });
+      }
+
+      return res.status(500).json({ error: msg });
+    }
+  }
+];
+
+exports.getTareasAgrupadasPorAviso = [
+
+  body('grado_id')
+    .exists().withMessage('grado_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ gt: 0 }).withMessage('grado_id debe ser entero > 0'),
+
+  body('seccion_id')
+    .exists().withMessage('seccion_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ gt: 0 }).withMessage('seccion_id debe ser entero > 0'),
+
+  body('ciclo_id')
+    .exists().withMessage('ciclo_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ min: 1, max: 4 }).withMessage('ciclo_id debe estar entre 1 y 4'),
+
+  body('anio')
+    .exists().withMessage('anio requerido')
+    .bail()
+    .toInt()
+    .isInt({ min: 2000, max: 2100 }).withMessage('anio fuera de rango (2000–2100)'),
+
+  async (req, res) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+
+      const grado_id   = Number(req.body.grado_id);
+      const seccion_id = Number(req.body.seccion_id);
+      const ciclo_id   = Number(req.body.ciclo_id);
+      const anio       = Number(req.body.anio);
+
+      const raw = await sequelize.query(
+        'CALL sp_tareas_pendientes_por_grado_seccion_ciclo_anio(:grado,:seccion,:ciclo,:anio);',
+        {
+          replacements: {
+            grado: grado_id,
+            seccion: seccion_id,
+            ciclo: ciclo_id,
+            anio: anio
+          }
+        }
+      );
+
+      // Normalización robusta
+      let rows = [];
+      if (Array.isArray(raw)) {
+        if (Array.isArray(raw[0])) rows = raw[0];
+        else rows = raw;
+      } else if (raw && typeof raw === 'object') {
+        rows = [raw];
+      }
+
+      if (!rows || rows.length === 0) {
+        return res.status(404).json({
+          error: 'No hay tareas pendientes para esos parámetros'
+        });
+      }
+
+      // ============================================
+      // Agrupar por aviso_actividad (1 a 4)
+      // ============================================
+      const agrupado = new Map();
+
+      for (const r of rows) {
+
+        const aviso = Number(r.aviso_actividad);
+
+        if (!aviso || aviso < 1 || aviso > 4) {
+          // Si viene algo fuera de rango lo ignoramos
+          continue;
+        }
+
+        if (!agrupado.has(aviso)) {
+          agrupado.set(aviso, {
+            aviso_actividad: aviso,
+            total_actividades: 0,
+            actividades: []
+          });
+        }
+
+        const bucket = agrupado.get(aviso);
+
+        bucket.actividades.push({
+          id_actividad: r.id_actividad,
+          nombre_actividad: r.nombre_actividad,
+          descripcion: r.descripcion,
+          fecha_creacion: r.fecha_creacion,
+          fecha_entrega: r.fecha_entrega,
+          puntaje_maximo: r.puntaje_maximo,
+          aviso_actividad: aviso,
+          materia_id: r.materia_id,
+          nombre_materia: r.nombre_materia
+        });
+
+        bucket.total_actividades += 1;
+      }
+
+      const data = Array.from(agrupado.values())
+        .sort((a, b) => a.aviso_actividad - b.aviso_actividad);
+
+      return res.status(200).json({ data });
+
+    } catch (error) {
+
+      const msg = (error && error.message)
+        ? String(error.message)
+        : 'Error interno';
+
+      if (/parámetro inválido/i.test(msg) || /inválido/i.test(msg)) {
+        return res.status(400).json({ error: msg });
+      }
+
+      if (/no existe/i.test(msg) || /no hay tareas pendientes/i.test(msg)) {
         return res.status(404).json({ error: msg });
       }
 

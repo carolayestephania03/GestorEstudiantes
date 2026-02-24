@@ -1,11 +1,13 @@
 const express = require('express');
-const controller = require('../controllers/Usuario');
+const controller = require('../controllers/usuario');
 const router = express.Router();
 const auth = require('../middleware/auth');
 
 const path = 'usuario';
 
 router.get(`/${path}`, controller.getData);
+
+router.post(`/${path}/BuscarIndividual`, controller.getDataUsuarioInd);
 
 router.post(`/${path}/Crear`, controller.postData);
 /**

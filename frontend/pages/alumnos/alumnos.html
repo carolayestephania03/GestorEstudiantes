@@ -36,7 +36,108 @@
   <link rel="stylesheet" href="../../assets/css/theme-default.css" class="template-customizer-theme-css" />
   <link rel="stylesheet" href="../../assets/css/sidebar.css" />
   <!-- Scroll CSS -->
+  <style>
+    .custom-select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #3b71ca;
+      border-radius: 8px;
+      font-size: 16px;
+      color: #333;
+      background-color: #f8f9fa;
+      background-image: linear-gradient(45deg, transparent 50%, #3b71ca 50%),
+        linear-gradient(135deg, #3b71ca 50%, transparent 50%);
+      background-position: calc(100% - 20px) center, calc(100% - 15px) center;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      appearance: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
 
+    .custom-select:focus {
+      border-color: #2a5cad;
+      box-shadow: 0 0 0 0.25rem rgba(59, 113, 202, 0.25);
+      outline: none;
+    }
+
+    .select-label {
+      font-weight: 600;
+      color: #3b71ca;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .option-group {
+      padding: 8px 12px;
+      font-weight: 500;
+      color: #2c3e50;
+      background-color: #e9f1fd;
+    }
+
+    /* Permite scroll horizontal y evita que las columnas se aplasten */
+    .table-responsive .tabla-notas {
+      min-width: 1100px;
+      /* ajusta: 1000-1400 según columnas */
+      table-layout: auto;
+      /* controla ancho consistente */
+    }
+
+    /* Encabezados y celdas con buen espacio */
+    .tabla-notas th,
+    .tabla-notas td {
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    /* Celdas de notas (inputs) más legibles */
+    .tabla-notas .nota-input {
+      min-width: 64px;
+      /* clave: que el número respire */
+      height: 32px;
+      font-size: 0.95rem;
+      padding: 0.25rem 0.35rem;
+    }
+
+    .tabla-notas thead th {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Columna Nombre más amplia */
+    .tabla-notas td:nth-child(2),
+    .tabla-notas th:nth-child(2) {
+      width: 220px;
+      /* ajusta a tu gusto */
+    }
+
+    /* Columna No. */
+    .tabla-notas td:nth-child(1),
+    .tabla-notas th:nth-child(1) {
+      width: 50px;
+    }
+
+    /* Columna Total */
+    .tabla-notas .total-cell,
+    .tabla-notas th:last-child {
+      width: 90px;
+    }
+
+    /* Acciones */
+    .tabla-notas td:last-child,
+    .tabla-notas th:last-child {
+      width: 120px;
+    }
+
+    @media (max-width: 991.98px) {
+      #Tarjeta-Reportes-actividades {
+        margin-bottom: 0.75rem;
+      }
+
+      .card img {
+        max-height: 260px;
+      }
+    }
+  </style>
   <!-- Helpers -->
 </head>
 
@@ -201,7 +302,7 @@
                           </div>
                         </div>
                         <div class="flex-grow-1">
-                          <span class="fw-semibold d-block">Carolay Canté</span>
+                          <span class="fw-semibold d-block">Juan Hernández</span>
                           <small class="text-muted">Docente</small>
                         </div>
                       </div>
@@ -216,12 +317,7 @@
                       <span class="align-middle">Mi Perfil</span>
                     </a>
                   </li>
-                  <li>
-                    <a class="dropdown-item" href="#">
-                      <i class="bx bx-cog me-2"></i>
-                      <span class="align-middle">Configuraciones</span>
-                    </a>
-                  </li>
+
                   <li>
 
                   </li>
@@ -229,7 +325,7 @@
                     <div class="dropdown-divider"></div>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="../../index.html">
+                    <a class="dropdown-item" href="/">
                       <i class="bx bx-power-off me-2"></i>
                       <span class="align-middle">Cerrar Sesión</span>
                     </a>
@@ -247,78 +343,90 @@
           <!-- Mensaje Bienvenida -->
           <div class="container-xxl flex-grow-1 container-p-y">
             <div class="row mb-4">
-              <div class="col-lg-12 order-0">
+              <div class="col-12 col-lg-12">
                 <div class="card">
                   <div class="card-body py-3">
                     <h2 class="card-title text-primary mb-2">Alumnos</h2>
-                    <p class="mb-0">
-                      Hoy se aprende, mañana se conquista. ¡El conocimiento es un superpoder!
-                    </p>
+                    <p class="mb-0"> Hoy se aprende, mañana se conquista. ¡El conocimiento es un superpoder!</p>
                   </div>
                 </div>
               </div>
-              <!-- Total Revenue -->
             </div>
-
-            <div class="row">
-              <div class="col-lg-9 mb-3">
-                <div class="card shadow mb-4" id="Tarjeta-Reportes-actividades" style="height: 100%;">
-                  <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
-                      Buscar Alumno
-                    </h6>
+            <div class="row g-3 align-items-stretch mb-3">
+              <!-- Buscar Alumno (Derecha) -->
+              <div class="col-12 col-lg-6">
+                <div class="card shadow mb-4 h-100" id="Tarjeta-Reportes-actividades">
+                  <div class="card-header">
+                    <h6 class="m-0 font-weight-bold text-primary">Buscar Alumno</h6>
                   </div>
                   <div class="card-body">
                     <div class="add-task">
                       <form class="row g-3">
-                        <div class="col-3">
+                        <div class="col-12 col-md-4">
                           <label for="Cod_alumno" class="form-label">Codigo de Alumno</label>
                           <input type="number" class="form-control" id="Cod_alumno" />
                         </div>
-                        <div class="col-9">
+                        <div class="col-12 col-md-8">
                           <label for="nombre_alumno" class="form-label">Nombre alumno</label>
                           <input type="text" class="form-control" id="nombre_alumno" />
                         </div>
-                        <div class="col-3">
-                          <label for="grado_alumno" class="form-label">Grado del alumno</label>
-                          <select class="form-control" id="grado_alumno">
-                            <option value="0">Elija grado</option>
-                          </select>
-                        </div>
-                        <div class="col-3">
-                          <label for="seccion_alumno" class="form-label">Seccion del alumno</label>
-                          <select class="form-control" id="seccion_alumno">
-                            <option value="0">Elija seccion</option>
-                          </select>
-                        </div>
-                        <div class="col-6">
+                        <div class="col-12 col-md-4">
                           <label for="dpi_alumno" class="form-label">DPI del alumno</label>
                           <input type="number" class="form-control" id="dpi_alumno" />
                         </div>
-
-
+                        <div class="col-12 col-md-8">
+                          <label for="nombre_maestro" class="form-label">Nombre Maestro</label>
+                          <input type="text" class="form-control" id="nombre_maestro" />
+                        </div>
                       </form>
-                      <br />
-                      <button class="btn-sm btn-primary" id="search-btn">
-                        Buscar
-                      </button>
-                      <button class="btn-sm btn-warning" id="create-btn">
-                        Crear Alumno
-                      </button>
-                      <!-- Botón de imprimir -->
+
+                      <div class="d-flex gap-2 mt-3">
+                        <button class="btn btn-sm btn-primary" id="search-btn">Buscar</button>
+                        <button class="btn btn-sm btn-warning" id="create-btn">Crear Alumno</button>
+                      </div>
+
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="col-lg-3 mb-3">
-                <div class="card shadow mb-4" style="height: 100%;">
-                  <div class="card-body p-0" style="height: 100%;">
+              <!-- Filtros (Centro) -->
+              <div class="col-12 col-lg-3">
+                <div id="Selec-gradSec" class="card shadow-sm h-100">
+                  <div class="card-body">
+                    <div class="row g-2 align-items-end">
+
+                      <!-- Grado (arriba) -->
+                      <div class="col-12 form-container">
+                        <label for="combo_grado_direc" class="select-label">grado:</label>
+                        <select id="combo_grado_direc" class="custom-select">
+                          <option value="" disabled selected>-- Elija una opción --</option>
+                        </select>
+                      </div>
+
+                      <!-- Sección (abajo) -->
+                      <div class="col-12 form-container">
+                        <label for="combo_seccion_direc" class="select-label">sección:</label>
+                        <select id="combo_seccion_direc" class="custom-select">
+                          <option value="" disabled selected>-- Elija una opción --</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Imagen (derecha) -->
+              <div class="col-12 col-lg-3">
+                <div class="card shadow mb-4 h-100">
+                  <div class="card-body p-0 h-100">
                     <img src="../../assets/img/alumnos.png" alt="Imagen de alumnos" class="img-fluid w-100 h-100"
                       style="object-fit: cover; border-radius: 0.375rem;">
                   </div>
                 </div>
               </div>
+
             </div>
+
             <div class="col-lg-12 mb-3">
               <div class="card shadow mb-4" id="Tarjeta-Tablas">
                 <div class="card-header py-3">
@@ -330,9 +438,10 @@
                       <tr>
                         <th>No</th>
                         <th>Cod. Alumno</th>
-                        <th>Nombre del Alumno</th>
-                        <th>Grado y Sección</th>
-                        <th>DPI del alumno</th>
+                        <th>DPI alumno</th>
+                        <th>Nombre Alumno</th>
+                        <th>No. Tel.</th>
+                        <th>Maestros asignados</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                       </tr>
@@ -346,6 +455,157 @@
             </div>
           </div>
 
+          <!-- ===================================== -->
+          <!-- MODAL ALUMNO -->
+          <!-- ===================================== -->
+          <div class="modal fade" id="modalAlumno" tabindex="-1">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content shadow-lg border-0">
+
+                <!-- HEADER -->
+                <div class="modal-header bg-primary text-white">
+                  <h5 class="modal-title" id="modalAlumnoTitle">Registrar Alumno</h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- BARRA PROGRESO -->
+                <div class="px-4 pt-3">
+                  <div class="progress" style="height:6px;">
+                    <div id="wizardProgressAlumno" class="progress-bar" style="width:50%;"></div>
+                  </div>
+                </div>
+
+                <!-- BODY -->
+                <div class="modal-body">
+
+                  <form id="formAlumno">
+
+                    <input type="hidden" id="modal_alumno_id">
+
+                    <!-- ========================= -->
+                    <!-- PASO 1 -->
+                    <!-- ========================= -->
+                    <div class="wizard-step" id="step-1-alumno">
+
+                      <h6 class="mb-3 text-primary">Información Personal</h6>
+
+                      <div class="row g-3">
+
+                        <div class="col-md-4">
+                          <label class="form-label">Nombre</label>
+                          <input type="text" class="form-control" id="modal_nombre" required>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Apellido</label>
+                          <input type="text" class="form-control" id="modal_apellido" required>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Teléfono</label>
+                          <input type="text" class="form-control" id="modal_telefono">
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Género</label>
+                          <select class="form-control" id="modal_genero">
+                            <option value="" disabled selected>Elija género</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                          </select>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">DPI</label>
+                          <input type="number" class="form-control" id="modal_dpi" required>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">NIT</label>
+                          <input type="text" class="form-control" id="modal_nit">
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Fecha nacimiento</label>
+                          <input type="text" class="form-control" id="modal_fecha_nacimiento">
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Correo</label>
+                          <input type="email" class="form-control" id="modal_correo" required>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Residencia</label>
+                          <input type="text" class="form-control" id="modal_residencia">
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <!-- ========================= -->
+                    <!-- PASO 2 -->
+                    <!-- ========================= -->
+                    <div class="wizard-step d-none" id="step-2-alumno">
+
+                      <h6 class="mb-3 text-primary">Información Académica</h6>
+
+                      <div class="row g-3">
+
+                        <div class="col-md-3">
+                          <label class="form-label">Grado</label>
+                          <select id="modal_grado_alumno" class="form-control">
+                            <option value="" disabled selected>Elija grado</option>
+                            <option value="1">1er Grado</option>
+                            <option value="2">2do Grado</option>
+                            <option value="3">3er Grado</option>
+                            <option value="4">4to Grado</option>
+                            <option value="5">5to Grado</option>
+                            <option value="6">6to Grado</option>
+                          </select>
+                        </div>
+
+                        <div class="col-md-3">
+                          <label class="form-label">Sección</label>
+                          <select id="modal_seccion_alumno" class="form-control">
+                            <option value="" disabled selected>Elija sección</option>
+                            <option value="A">Sección A</option>
+                            <option value="B">Sección B</option>
+                          </select>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </form>
+
+                </div>
+
+                <!-- FOOTER -->
+                <div class="modal-footer d-flex justify-content-between">
+
+                  <button type="button" class="btn btn-outline-secondary" id="btnPrevAlumno" disabled>
+                    ← Anterior
+                  </button>
+
+                  <div>
+                    <button type="button" class="btn btn-primary" id="btnNextAlumno">
+                      Siguiente →
+                    </button>
+
+                    <button type="button" class="btn btn-success d-none" id="btnGuardarAlumno">
+                      Guardar
+                    </button>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+
         </div>
         <!-- / Content -->
 
@@ -353,7 +613,7 @@
         <footer class="content-footer footer bg-footer-theme">
           <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
             <div class="mb-2 mb-md-0">
-              Carolay Canté © 2026, "Construyendo herramientas que facilitan el aprendizaje."
+              carolay Canté© 2026, "Construyendo herramientas que facilitan el aprendizaje."
             </div>
             <div>
               <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
@@ -384,6 +644,8 @@
   <!-- JS Geovanny-->
   <script src="../../assets/js/Calendar/index.global.min.js"></script>
   <script src="../../assets/js/Menu/sidebar.js"></script>
+  <script src="../../assets/js/Menu/comboGradSec.js"></script>
+  <script src="../../assets/js/alumno/alumno.js"></script>
 
 </body>
 

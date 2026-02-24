@@ -5,5 +5,6 @@ const auth = require('../middleware/auth');
 
 const path = 'persona';
 
+router.post(`/${path}/BuscarMaestro`, controller.buscarMaestros);
 
 module.exports = router;

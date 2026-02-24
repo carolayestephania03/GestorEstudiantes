@@ -3,17 +3,17 @@
 
   // ====== reglas de materias (materia_id) ======
   const PrimeroATercero = [1, 2, 3, 4, 5];
-  const CuartoASexto   = [1, 2, 6, 7, 5, 4, 8];
-  const Fisica         = [9];
-  const Computacion    = [10];
+  const CuartoASexto = [1, 2, 6, 7, 5, 4, 8];
+  const Fisica = [9];
+  const Computacion = [10];
 
   // ====== DOM ======
-  const selGrado   = document.getElementById('combo_grado_direc');
+  const selGrado = document.getElementById('combo_grado_direc');
   const selSeccion = document.getElementById('combo_seccion_direc');
-  const selCiclo   = document.getElementById('combo_ciclo_direc');
+  const selCiclo = document.getElementById('combo_ciclo_direc');
   const selMateria = document.getElementById('combo_materia');
-  const btnVer     = document.getElementById('VisualizarInfo');
-  const wrap       = document.querySelector('.actividades-wrap');
+  const btnVer = document.getElementById('VisualizarInfo');
+  const wrap = document.querySelector('.actividades-wrap');
 
   if (!wrap) return;
 
@@ -25,7 +25,7 @@
   } catch {
     userData = null;
   }
-  const ROL  = (userData?.rol_id || '').trim().toUpperCase();
+  const ROL = (userData?.rol_id || '').trim().toUpperCase();
   const ANIO = new Date().getFullYear();
 
   // ====== defaults requeridos ======
@@ -54,9 +54,9 @@
   }
 
   function getIdsSeleccion() {
-    const grado_id  = toInt(selGrado?.value, 0);
+    const grado_id = toInt(selGrado?.value, 0);
     const seccion_id = toInt(selSeccion?.value, 0);
-    const ciclo_id  = Math.max(1, toInt(selCiclo?.value, CICLO_DEFAULT));
+    const ciclo_id = Math.max(1, toInt(selCiclo?.value, CICLO_DEFAULT));
     return { grado_id, seccion_id, ciclo_id, anio: ANIO };
   }
 
@@ -76,15 +76,15 @@
   // Render UI (h3 + contador) + cards por tipo
   // =========================================================
   const SECCIONES = [
-    { key: 'tarea',      title: 'Trabajo, proyecto o ejercicio', match: /tarea/i },
-    { key: 'evaluacion', title: 'Evaluación',                    match: /examen|evalu/i },
-    { key: 'miscelaneo', title: 'Misceláneos',                   match: /actitud|misc/i }
+    { key: 'tarea', title: 'Trabajo, proyecto o ejercicio', match: /tarea/i },
+    { key: 'evaluacion', title: 'Evaluación', match: /examen|evalu/i },
+    { key: 'miscelaneo', title: 'Misceláneos', match: /actitud|misc/i }
   ];
 
   function cardTemplate(a) {
     const titulo = safeText(a?.nombre_actividad || 'Actividad');
-    const desc   = safeText(a?.descripcion || '—');
-    const pts    = safeText(a?.puntaje_maximo ?? '0');
+    const desc = safeText(a?.descripcion || '—');
+    const pts = safeText(a?.puntaje_maximo ?? '0');
 
     return `
       <div class="card actividad-card shadow-sm mb-3">
@@ -97,7 +97,12 @@
             </div>
 
             <div class="col-8">
-              <h2 class="actividad-title mb-1 text-primary">${titulo}</h2>
+              <h2 class="actividad-title mb-1 text-primary actividad-click"
+    style="cursor:pointer"
+    data-actividad='${JSON.stringify(a)}'>
+    ${titulo}
+</h2>
+
               <p class="actividad-desc mb-0">${desc}</p>
             </div>
 
@@ -110,14 +115,20 @@
     `;
   }
 
-  function headingTemplate(title, count) {
+  function headingTemplate(title, count, key) {
     return `
-      <div class="d-flex align-items-center justify-content-between mb-2">
+    <div class="d-flex align-items-center justify-content-between mb-2 section-header"
+         data-section="${key}"
+         style="cursor:pointer;">
+      <div class="d-flex align-items-center gap-2">
+        <span class="toggle-icon" data-icon="${key}">▼</span>
         <h3 class="mb-0">${safeText(title)}</h3>
-        <span class="badge bg-primary">${count}</span>
       </div>
-    `;
+      <span class="badge bg-primary">${count}</span>
+    </div>
+  `;
   }
+
 
   function renderNoDisponible() {
     wrap.innerHTML = `
@@ -161,13 +172,44 @@
         : `<p class="text-muted">Datos no disponibles</p>`;
 
       return `
-        ${headingTemplate(sec.title, count)}
+      ${headingTemplate(sec.title, count, sec.key)}
+      <div class="section-content mb-4" data-content="${sec.key}">
         ${cards}
-      `;
+      </div>
+    `;
     });
 
     wrap.innerHTML = htmlParts.join('\n');
+
+    activarCollapseSecciones();
+    activarEventosModal();
   }
+
+  function activarCollapseSecciones() {
+    document.querySelectorAll('.section-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const key = header.dataset.section;
+        const content = document.querySelector(`[data-content="${key}"]`);
+        const icon = document.querySelector(`[data-icon="${key}"]`);
+
+        if (!content) return;
+
+        const isHidden = content.style.display === 'none';
+
+        content.style.display = isHidden ? 'block' : 'none';
+        icon.textContent = isHidden ? '▼' : '▶';
+      });
+    });
+  }
+
+  function activarEventosModal() {
+  document.querySelectorAll('.actividad-click').forEach(el => {
+    el.addEventListener('click', () => {
+      const data = JSON.parse(el.dataset.actividad || '{}');
+      abrirModalActividad(data);
+    });
+  });
+}
 
   // =========================================================
   // Combo Materia: llenar solo permitidas + auto-selección materia 1
@@ -303,6 +345,53 @@
       }
     }, 200);
   }
+
+  function abrirModalActividad(data) {
+
+  // eliminar modal anterior si existe
+  const oldModal = document.getElementById('modalActividad');
+  if (oldModal) oldModal.remove();
+
+  const modalHTML = `
+    <div class="modal fade" id="modalActividad" tabindex="-1">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title">${safeText(data.nombre_actividad || 'Actividad')}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <div class="modal-body">
+            <p><strong>Descripción:</strong></p>
+            <p>${safeText(data.descripcion || 'Sin descripción')}</p>
+
+            <hr>
+
+            <p><strong>Puntaje máximo:</strong> ${safeText(data.puntaje_maximo || 0)} pts</p>
+
+            <p><strong>Fecha de entrega:</strong> ${safeText(data.fecha_entrega.substring(0,10) || 'No definida')}</p>
+
+            <!-- Aquí luego agregamos más información -->
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cerrar
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+  const modal = new bootstrap.Modal(document.getElementById('modalActividad'));
+  modal.show();
+}
+
 
   // =========================================================
   // Bootstrap + listeners

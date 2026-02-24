@@ -73,6 +73,16 @@
       color: #2c3e50;
       background-color: #e9f1fd;
     }
+
+    @media (max-width: 991.98px) {
+      #Tarjeta-Reportes-actividades {
+        margin-bottom: 0.75rem;
+      }
+
+      .card img {
+        max-height: 260px;
+      }
+    }
   </style>
   <!-- Helpers -->
 </head>
@@ -110,7 +120,7 @@
         <ul class="menu-inner py-1" id="accordionSidebar">
 
           <!-- Dashboard/Inicio -->
-          <li class="menu-item" >
+          <li class="menu-item">
             <a href="../dashboard.html" class="menu-link" id="EnlaceInicio">
               <span class="menu-icon material-symbols-outlined">home</span>
               <div class="menu-text" data-i18n="Analytics">Inicio</div>
@@ -119,7 +129,7 @@
 
           <!-- Modulo de Tareas -->
           <li class="menu-item" id="menuTareas">
-            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceTarea"> 
+            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceTarea">
               <span class="menu-icon material-symbols-outlined">assignment</span>
               <div class="menu-text" data-i18n="Layouts">Tareas</div>
             </a>
@@ -238,7 +248,7 @@
                           </div>
                         </div>
                         <div class="flex-grow-1">
-                          <span class="fw-semibold d-block">Carolay Canté</span>
+                          <span class="fw-semibold d-block">Juan Hernández</span>
                           <small class="text-muted">Docente</small>
                         </div>
                       </div>
@@ -253,12 +263,7 @@
                       <span class="align-middle">Mi Perfil</span>
                     </a>
                   </li>
-                  <li>
-                    <a class="dropdown-item" href="#">
-                      <i class="bx bx-cog me-2"></i>
-                      <span class="align-middle">Configuraciones</span>
-                    </a>
-                  </li>
+
                   <li>
 
                   </li>
@@ -266,7 +271,7 @@
                     <div class="dropdown-divider"></div>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="../../index.html">
+                    <a class="dropdown-item" href="/">
                       <i class="bx bx-power-off me-2"></i>
                       <span class="align-middle">Cerrar Sesión</span>
                     </a>
@@ -297,62 +302,86 @@
             </div>
             <div class="row">
               <div class="col-lg-9 mb-3">
-                <div class="card shadow mb-4" id="Tarjeta-Reportes-actividades" style="height: 100%;">
-                  <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
-                      Buscar Encargado
-                    </h6>
+                <div class="card shadow-sm h-100" id="Tarjeta-Reportes-actividades">
+                  <div class="card-header py-4">
+                    <h6 class="m-0 font-weight-bold text-primary">Buscar Encargado</h6>
                   </div>
-                  <div class="card-body">
-                    <div class="add-task">
-                      <form class="row g-3">
-                        <div class="col-4">
-                          <label for="DPI_enc" class="form-label">DPI</label>
-                          <input type="number" class="form-control" id="DPI_enc" />
-                        </div>
-                        <div class="col-3">
-                          <label for="telefono" class="form-label">Telefono</label>
-                          <input type="number" class="form-control" id="telefono" />
-                        </div>
-                        <div class="col-5">
-                          <label for="nombre_encargado" class="form-label">Nombre
-                            encargado</label>
-                          <input type="text" class="form-control" id="nombre_encargado" />
-                        </div>
-                        <div class="col-4">
-                          <h6 class="m-0 font-weight-bold"
-                            style="padding-top: 1.5rem; color: black; font-size: medium;">Buscar por estudiante:</h6>
-                        </div>
-                        <div class="col-3">
-                          <label for="Cod_estudiante" class="form-label">Codigo Estudiante</label>
-                          <input type="number" class="form-control" id="Cod_estudiante" />
-                        </div>
-                        <div class="col-5">
-                          <label for="nombre_estudiante" class="form-label">Nombre
-                            estudiante</label>
-                          <input type="text" class="form-control" id="nombre_estudiante" />
-                        </div>
 
-                      </form>
-                      <br />
-                      <button class="btn-sm btn-primary" id="search-btn">
-                        Buscar
-                      </button>
-                      <button class="btn-sm btn-warning" id="create-btn">
-                        Crear
-                      </button>
-                      <!-- Botón de imprimir -->
-                    </div>
+                  <div class="card-body">
+                    <form class="row g-3">
+
+                      <div class="col-12 col-md-4">
+                        <label for="DPI_enc" class="form-label">DPI</label>
+                        <input type="number" class="form-control" id="DPI_enc" placeholder="Ingrese DPI">
+                      </div>
+
+                      <div class="col-12 col-md-3">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="number" class="form-control" id="telefono" placeholder="Teléfono">
+                      </div>
+
+                      <div class="col-12 col-md-5">
+                        <label for="nombre_encargado" class="form-label">Nombre del encargado</label>
+                        <input type="text" class="form-control" id="nombre_encargado" placeholder="Nombre completo">
+                      </div>
+
+                      <!-- Separador -->
+                      <div class="col-12">
+                        <hr class="my-2 py-1">
+                      </div>
+
+                      <div class="col-12 col-md-3">
+                        <label for="Cod_estudiante" class="form-label">Código estudiante</label>
+                        <input type="number" class="form-control" id="Cod_estudiante" placeholder="Código">
+                      </div>
+
+                      <div class="col-12 col-md-5">
+                        <label for="nombre_estudiante" class="form-label">Nombre del estudiante</label>
+                        <input type="text" class="form-control" id="nombre_estudiante" placeholder="Nombre completo">
+                      </div>
+
+                      <div class="col-6 col-md-2">
+                        <label for="combo_grado_direc" class="form-label">Grado</label>
+                        <select id="combo_grado_direc" class="form-select">
+                          <option value="">Seleccione</option>
+                        </select>
+                      </div>
+
+                      <div class="col-6 col-md-2">
+                        <label for="combo_seccion_direc" class="form-label">Sección</label>
+                        <select id="combo_seccion_direc" class="form-select">
+                          <option value="">Seleccione</option>
+                        </select>
+                      </div>
+
+                      <!-- Botones -->
+                      <div class="col-12 mt-3">
+                        <div class="d-flex flex-wrap gap-2">
+                          <button type="button" class="btn btn-primary" id="search-btn">
+                            <i class="bi bi-search"></i> Buscar
+                          </button>
+
+                          <button type="button" class="btn btn-warning" id="create-btn">
+                            <i class="bi bi-plus-circle"></i> Crear
+                          </button>
+                        </div>
+                      </div>
+
+                    </form>
                   </div>
                 </div>
               </div>
+
+              <!-- Imagen lateral -->
               <div class="col-lg-3 mb-3">
-                <div class="card shadow mb-4" style="height: 100%;">
-                  <div class="card-body p-0" style="height: 100%;">
-                    <img src="../../assets/img/encargados.png" alt="Imagen de encargados" class="img-fluid w-100 h-100" style="object-fit: cover; border-radius: 0.375rem;">
+                <div class="card shadow-sm h-100">
+                  <div class="card-body p-0 h-100">
+                    <img src="../../assets/img/encargados.png" alt="Imagen de encargados"
+                      class="img-fluid w-100 h-100 rounded" style="object-fit: cover;">
                   </div>
                 </div>
               </div>
+
               <div class="col-lg-12 mb-3">
                 <div class="card shadow mb-4" id="Tarjeta-Tablas">
                   <div class="card-header py-3">
@@ -366,7 +395,7 @@
                           <th>DPI</th>
                           <th>Nombre encargado</th>
                           <th>telefono</th>
-                          <th>NIT</th>
+                          <th>Residencia</th>
                           <th>Niños a su cargo</th>
                           <th>Acciones</th>
                         </tr>
@@ -381,97 +410,131 @@
               <!-- Total Revenue -->
             </div>
           </div>
-
           <!-- / MODAL -->
-           
-                    <div class="container-xxl flex-grow-1 container-p-y">
-                        <div class="row">
-                            <div class="col-lg-12 mb-3">
-                                <div class="card shadow mb-4" id="Tarjeta-Reportes-actividades">
-                                    <div class="card-header py-3">
-                                        <h6 class="m-0 font-weight-bold text-primary">
-                                            Información encargado...
-                                        </h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="add-task">
-                                            <form class="row g-3">
-                                                <div class="col-3">
-                                                    <label for="Cod_empleado" class="form-label">DPI</label>
-                                                    <input type="number" class="form-control" id="Cod_empleado" />
-                                                </div>
-                                                <div class="col-3">
-                                                    <label for="nombre_maestro" class="form-label">Nombre</label>
-                                                    <input type="text" class="form-control" id="nombre_maestro" />
-                                                </div>
-                                                <div class="col-3">
-                                                    <label for="nombre_maestro" class="form-label">Apellido</label>
-                                                    <input type="text" class="form-control" id="nombre_maestro" />
-                                                </div>
-                                                <div class="col-3">
-                                                    <label for="nombre_maestro" class="form-label">Telefono</label>
-                                                    <input type="text" class="form-control" id="nombre_maestro" />
-                                                </div>
-                                                <div class="col-3">
-                                                    <label for="Cod_empleado" class="form-label">NIT</label>
-                                                    <input type="number" class="form-control" id="Cod_empleado" />
-                                                </div>
-                                                <div class="col-3">
-                                                    <label for="nombre_maestro" class="form-label">Correo</label>
-                                                    <input type="text" class="form-control" id="nombre_maestro" />
-                                                </div>
-                                                <div class="col-4">
-                                                    <label for="nombre_maestro" class="form-label">Residencia</label>
-                                                    <input type="text" class="form-control" id="nombre_maestro" />
-                                                </div>
-                                                <div class="col-2">
-                                                    <label for="escalafon_maestro" class="form-label">Estado</label>
-                                                    <select class="form-control" id="escalafon_maestro">
-                                                        <option value="0">Elija estado</option>
-                                                    </select>
-                                                </div>
-                                            </form>
-                                            <br />
-                                            <button class="btn-sm btn-primary" id="search-btn">
-                                                editar
-                                            </button>
-                                            <!-- Botón de imprimir -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-12 mb-3">
-                                <div class="card shadow mb-4" id="Tarjeta-Tablas">
-                                    <div class="card-header py-3">
-                                        <h6 class="m-0 font-weight-bold text-primary">Información de los niños a su
-                                            cargo</h6>
-                                    </div>
-                                    <div class="table-responsive" id="tableContainerActivities"
-                                        style="display: block; padding: 15px">
-                                        <table class="table table-bordered" id="dataTableActivities" width="100%"
-                                            cellspacing="0">
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Cod. Alumno</th>
-                                                    <th>Nombre del Alumno</th>
-                                                    <th>Grado y Sección</th>
-                                                    <th>DPI del alumno</th>
-                                                    <th>Estado</th>
-                                                    <th>Acciones</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="tableBodyActivities">
-                                                <!-- Las filas se insertarán aquí dinámicamente -->
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Total Revenue -->
+          <!-- Body -->
+          <div class="modal fade" id="modalEncargado" tabindex="-1">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content shadow-lg border-0">
+
+                <!-- Header -->
+                <div class="modal-header bg-primary text-white">
+                  <h5 class="modal-title" id="modalEncargadoTitle">Registrar Encargado</h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Barra progreso -->
+                <div class="px-4 pt-3">
+                  <div class="progress" style="height:6px;">
+                    <div id="wizardProgressEnc" class="progress-bar" style="width:50%;"></div>
+                  </div>
+                </div>
+
+                <div class="modal-body">
+
+                  <form id="formEncargado">
+
+                    <!-- ID oculto corregido -->
+                    <input type="hidden" id="modal_encargado_id">
+
+                    <!-- PASO 1 -->
+                    <div class="wizard-step" id="step-1-enc">
+                      <h6 class="mb-3 text-primary">Información Personal</h6>
+                      <div class="row g-3">
+                        <div class="col-md-4">
+                          <label class="form-label">Nombre</label>
+                          <input type="text" class="form-control" id="modal_nombre" required>
                         </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Apellido</label>
+                          <input type="text" class="form-control" id="modal_apellido" required>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Teléfono</label>
+                          <input type="text" class="form-control" id="modal_telefono">
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Género</label>
+                          <select class="form-control" id="modal_genero">
+                            <option value="" disabled selected>Elija género</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                          </select>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">DPI</label>
+                          <input type="number" class="form-control" id="modal_dpi" required>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">NIT</label>
+                          <input type="text" class="form-control" id="modal_nit">
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Fecha nacimiento</label>
+                          <input type="text" class="form-control" id="modal_fecha_nacimiento">
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Correo</label>
+                          <input type="email" class="form-control" id="modal_correo" required>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Residencia</label>
+                          <input type="text" class="form-control" id="modal_residencia">
+                        </div>
+                      </div>
                     </div>
 
+                    <!-- PASO 2 -->
+                    <div class="wizard-step d-none" id="step-2-enc">
+
+                      <h6 class="mb-3 text-primary">Asignar Alumnos</h6>
+
+                      <div class="table-responsive mt-3">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th>No</th>
+                              <th>Nombre Alumno</th>
+                              <th>Asignar</th>
+                            </tr>
+                          </thead>
+                          <tbody id="tableBodyModalEncargado">
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </div>
+
+                  </form>
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer d-flex justify-content-between">
+                  <button type="button" class="btn btn-outline-secondary" id="btnPrevEnc" disabled>
+                    ← Anterior
+                  </button>
+
+                  <div>
+                    <button type="button" class="btn btn-primary" id="btnNextEnc">
+                      Siguiente →
+                    </button>
+
+                    <button type="button" class="btn btn-success d-none" id="btnGuardarEnc">
+                      Guardar
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
           <!-- / MODAL -->
         </div>
         <!-- / Content -->
@@ -480,7 +543,7 @@
         <footer class="content-footer footer bg-footer-theme">
           <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
             <div class="mb-2 mb-md-0">
-              Carolay Canté © 2026, "Construyendo herramientas que facilitan el aprendizaje."
+              carolay Canté© 2026, "Construyendo herramientas que facilitan el aprendizaje."
             </div>
             <div>
               <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
@@ -511,6 +574,8 @@
   <!-- JS Geovanny-->
   <script src="../../assets/js/Calendar/index.global.min.js"></script>
   <script src="../../assets/js/Menu/sidebar.js"></script>
+  <script src="../../assets/js/Encargado/encargado.js"></script>
+  <script src="../../assets/js/Menu/comboGradSec.js"></script>
 
 </body>
 

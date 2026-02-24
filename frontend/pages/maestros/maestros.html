@@ -37,41 +37,68 @@
   <link rel="stylesheet" href="../../assets/css/sidebar.css" />
   <!-- Scroll CSS -->
   <style>
-    .custom-select {
-      width: 100%;
-      padding: 12px 16px;
-      border: 2px solid #3b71ca;
-      border-radius: 8px;
-      font-size: 16px;
-      color: #333;
-      background-color: #f8f9fa;
-      background-image: linear-gradient(45deg, transparent 50%, #3b71ca 50%),
-        linear-gradient(135deg, #3b71ca 50%, transparent 50%);
-      background-position: calc(100% - 20px) center, calc(100% - 15px) center;
-      background-size: 5px 5px, 5px 5px;
-      background-repeat: no-repeat;
-      appearance: none;
-      transition: border-color 0.3s, box-shadow 0.3s;
+    /* Permite scroll horizontal y evita que las columnas se aplasten */
+    .table-responsive .tabla-notas {
+      min-width: 1100px;
+      /* ajusta: 1000-1400 según columnas */
+      table-layout: auto;
+      /* controla ancho consistente */
     }
 
-    .custom-select:focus {
-      border-color: #2a5cad;
-      box-shadow: 0 0 0 0.25rem rgba(59, 113, 202, 0.25);
-      outline: none;
+    /* Encabezados y celdas con buen espacio */
+    .tabla-notas th,
+    .tabla-notas td {
+      white-space: nowrap;
+      vertical-align: middle;
     }
 
-    .select-label {
-      font-weight: 600;
-      color: #3b71ca;
-      margin-bottom: 10px;
-      display: block;
+    /* Celdas de notas (inputs) más legibles */
+    .tabla-notas .nota-input {
+      min-width: 64px;
+      /* clave: que el número respire */
+      height: 32px;
+      font-size: 0.95rem;
+      padding: 0.25rem 0.35rem;
     }
 
-    .option-group {
-      padding: 8px 12px;
-      font-weight: 500;
-      color: #2c3e50;
-      background-color: #e9f1fd;
+    .tabla-notas thead th {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Columna Nombre más amplia */
+    .tabla-notas td:nth-child(2),
+    .tabla-notas th:nth-child(2) {
+      width: 220px;
+      /* ajusta a tu gusto */
+    }
+
+    /* Columna No. */
+    .tabla-notas td:nth-child(1),
+    .tabla-notas th:nth-child(1) {
+      width: 50px;
+    }
+
+    /* Columna Total */
+    .tabla-notas .total-cell,
+    .tabla-notas th:last-child {
+      width: 90px;
+    }
+
+    /* Acciones */
+    .tabla-notas td:last-child,
+    .tabla-notas th:last-child {
+      width: 120px;
+    }
+
+    @media (max-width: 991.98px) {
+      #Tarjeta-Reportes-actividades {
+        margin-bottom: 0.75rem;
+      }
+
+      .card img {
+        max-height: 260px;
+      }
     }
   </style>
   <!-- Helpers -->
@@ -110,7 +137,7 @@
         <ul class="menu-inner py-1" id="accordionSidebar">
 
           <!-- Dashboard/Inicio -->
-          <li class="menu-item" >
+          <li class="menu-item">
             <a href="../dashboard.html" class="menu-link" id="EnlaceInicio">
               <span class="menu-icon material-symbols-outlined">home</span>
               <div class="menu-text" data-i18n="Analytics">Inicio</div>
@@ -119,7 +146,7 @@
 
           <!-- Modulo de Tareas -->
           <li class="menu-item" id="menuTareas">
-            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceTarea"> 
+            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceTarea">
               <span class="menu-icon material-symbols-outlined">assignment</span>
               <div class="menu-text" data-i18n="Layouts">Tareas</div>
             </a>
@@ -238,7 +265,7 @@
                           </div>
                         </div>
                         <div class="flex-grow-1">
-                          <span class="fw-semibold d-block">Carolay Canté</span>
+                          <span class="fw-semibold d-block">Juan Hernández</span>
                           <small class="text-muted">Docente</small>
                         </div>
                       </div>
@@ -253,12 +280,7 @@
                       <span class="align-middle">Mi Perfil</span>
                     </a>
                   </li>
-                  <li>
-                    <a class="dropdown-item" href="#">
-                      <i class="bx bx-cog me-2"></i>
-                      <span class="align-middle">Configuraciones</span>
-                    </a>
-                  </li>
+
                   <li>
 
                   </li>
@@ -266,7 +288,7 @@
                     <div class="dropdown-divider"></div>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="../../index.html">
+                    <a class="dropdown-item" href="/">
                       <i class="bx bx-power-off me-2"></i>
                       <span class="align-middle">Cerrar Sesión</span>
                     </a>
@@ -296,88 +318,278 @@
               </div>
               <!-- Total Revenue -->
             </div>
-            <div class="row">
-              <div class="col-lg-9 mb-3">
-                <div class="card shadow mb-4" id="Tarjeta-Reportes-actividades" style="height: 100%;">
-                  <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
-                      Buscar Maestro
-                    </h6>
+            <div class="row g-3 align-items-stretch">
+              <!-- Formulario -->
+              <div class="col-12 col-lg-9">
+                <div class="card shadow mb-4 h-100" id="Tarjeta-Reportes-actividades">
+                  <div class="card-header">
+                    <h6 class="m-0 font-weight-bold text-primary">Buscar Maestro</h6>
                   </div>
+
                   <div class="card-body">
                     <div class="add-task">
-                      <form class="row g-3">
-                        <div class="col-3">
+                      <form class="row g-3 align-items-end">
+                        <!-- Código empleado -->
+                        <div class="col-12 col-sm-6 col-lg-3">
                           <label for="Cod_empleado" class="form-label">Codigo de Empleado</label>
                           <input type="number" class="form-control" id="Cod_empleado" />
                         </div>
-                        <div class="col-9">
-                          <label for="nombre_maestro" class="form-label">Nombre maestro</label>
-                          <input type="text" class="form-control" id="nombre_maestro" />
-                        </div>
-                        <div class="col-3">
+
+                        <!-- Renglón -->
+                        <div class="col-12 col-sm-6 col-lg-3">
                           <label for="renglon_maestro" class="form-label">Renglon</label>
                           <select class="form-control" id="renglon_maestro">
-                            <option value="0">Elija renglon</option>
+                            <option value="" disabled selected>Elija renglon</option>
                           </select>
                         </div>
-                        <div class="col-3">
+
+                        <!-- Escalafón -->
+                        <div class="col-12 col-sm-6 col-lg-3">
                           <label for="escalafon_maestro" class="form-label">Escalafon</label>
                           <select class="form-control" id="escalafon_maestro">
                             <option value="0">Elija escalafon</option>
                           </select>
                         </div>
-                        <div class="col-6">
+
+                        <!-- Nombre maestro -->
+                        <div class="col-12 col-lg-3">
+                          <label for="nombre_maestro" class="form-label">Nombre maestro</label>
+                          <input type="text" class="form-control" id="nombre_maestro" />
+                        </div>
+
+                        <!-- DPI -->
+                        <div class="col-12 col-sm-6 col-lg-4">
                           <label for="dpi_maestro" class="form-label">DPI del maestro</label>
                           <input type="number" class="form-control" id="dpi_maestro" />
                         </div>
 
+                        <!-- Grado -->
+                        <div class="col-12 col-sm-6 col-lg-4">
+                          <label for="combo_grado_direc" class="form-label">grado:</label>
+                          <select id="combo_grado_direc" class="form-control">
+                            <option value="" disabled selected>-- Elija una opción --</option>
+                          </select>
+                        </div>
 
+                        <!-- Sección -->
+                        <div class="col-12 col-sm-6 col-lg-4">
+                          <label for="combo_seccion_direc" class="form-label">sección:</label>
+                          <select id="combo_seccion_direc" class="form-control">
+                            <option value="" disabled selected>-- Elija una opción --</option>
+                          </select>
+                        </div>
                       </form>
-                      <br />
-                      <button class="btn-sm btn-primary" id="search-btn">
-                        Buscar
-                      </button>
-                      <!-- Botón de imprimir -->
+
+                      <!-- Botones -->
+                      <div class="d-flex flex-wrap gap-2 justify-content-end mt-3">
+                        <button type="button" class="btn btn-primary btn-sm" id="search-btn">Buscar</button>
+                        <button type="button" class="btn btn-warning btn-sm" id="create-btn">Crear Nuevo
+                          Maestro</button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="col-lg-3 mb-3">
-                <div class="card shadow mb-4" style="height: 100%;">
-                  <div class="card-body p-0" style="height: 100%;">
-                    <img src="../../assets/img/maestro1.png" alt="Imagen de maestros" class="img-fluid w-100 h-100" style="object-fit: cover; border-radius: 0.375rem;">
+
+              <!-- Imagen -->
+              <div class="col-12 col-lg-3">
+                <div class="card shadow mb-4 h-100">
+                  <div class="card-body p-0 h-100">
+                    <img src="../../assets/img/maestro1.png" alt="Imagen de maestros" class="img-fluid w-100 h-100"
+                      style="object-fit: cover; border-radius: 0.375rem;">
                   </div>
                 </div>
               </div>
-              <div class="col-lg-12 mb-3">
+
+              <!-- Tabla -->
+              <div class="col-12">
                 <div class="card shadow mb-4" id="Tarjeta-Tablas">
                   <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Información</h6>
                   </div>
-                  <div class="table-responsive" id="tableContainerActivities" style="display: block; padding: 15px">
-                    <table class="table table-bordered" id="dataTableActivities" width="100%" cellspacing="0">
+
+                  <div class="table-responsive" id="tableContainerMaestro" style="padding: 15px;">
+                    <table class="table table-bordered table-sm align-middle w-100" id="dataTableMaestro"
+                      cellspacing="0">
                       <thead>
                         <tr>
-                          <th>No</th>
-                          <th>Cod. Empleado</th>
-                          <th>Nombre del maestro</th>
-                          <th>Grado y Sección</th>
-                          <th>Renglón</th>
-                          <th>Escalafón</th>
-                          <th>DPI</th>
-                          <th>Estado</th>
-                          <th>Acciones</th>
+                          <th class="text-nowrap">No</th>
+                          <th class="text-nowrap">Cod. Empleado</th>
+                          <th class="text-nowrap">Nombre del maestro</th>
+                          <th class="text-nowrap">No. Teléfono.</th>
+                          <th class="text-nowrap">Renglón</th>
+                          <th class="text-nowrap">Escalafón</th>
+                          <th class="text-nowrap">Cátedra</th>
+                          <th class="text-nowrap">Acciones</th>
                         </tr>
                       </thead>
-                      <tbody id="tableBodyActivities">
+                      <tbody id="tableBodyMaestro">
                         <!-- Las filas se insertarán aquí dinámicamente -->
                       </tbody>
                     </table>
                   </div>
                 </div>
               </div>
-              <!-- Total Revenue -->
+            </div>
+
+          </div>
+
+          <!-- Modal Crear / Editar Maestro -->
+          <!-- Modal Maestro Wizard -->
+          <div class="modal fade" id="modalMaestro" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content shadow-lg border-0">
+
+                <!-- Header -->
+                <div class="modal-header bg-primary text-white">
+                  <h5 class="modal-title" style="color: white;" id="modalMaestroTitle">Registrar Maestro</h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Progress -->
+                <div class="px-4 pt-3">
+                  <div class="progress" style="height:6px;">
+                    <div id="wizardProgress" class="progress-bar" style="width:50%;"></div>
+                  </div>
+                </div>
+
+                <!-- Body -->
+                <div class="modal-body">
+
+                  <form id="formMaestro">
+
+                    <input type="hidden" id="modal_codigo_empleado">
+
+                    <!-- ========================= -->
+                    <!-- PASO 1 - PERSONA -->
+                    <!-- ========================= -->
+                    <div class="wizard-step" id="step-1">
+
+                      <h6 class="mb-3 text-primary">Información Personal</h6>
+
+                      <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                          <label class="form-label">Nombre</label>
+                          <input type="text" class="form-control" id="modal_nombre" required>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                          <label class="form-label">Apellido</label>
+                          <input type="text" class="form-control" id="modal_apellido" required>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                          <label class="form-label">Teléfono</label>
+                          <input type="text" class="form-control" id="modal_telefono">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                          <label class="form-label">Género</label>
+                          <select class="form-control" id="modal_genero">
+                            <option value="" disabled selected>Elija género</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                          </select>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                          <label class="form-label">DPI</label>
+                          <input type="number" class="form-control" id="modal_dpi" required>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                          <label class="form-label">NIT</label>
+                          <input type="text" class="form-control" id="modal_nit">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                          <label class="form-label">Fecha de nacimiento</label>
+                          <input type="text" class="form-control" id="modal_fecha_nacimiento" placeholder="dd/mm/yyyy">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                          <label class="form-label">Correo eléctronico</label>
+                          <input type="email" class="form-control" id="modal_correo" required>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                          <label class="form-label">Residencia</label>
+                          <input type="text" class="form-control" id="modal_residencia">
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <!-- ========================= -->
+                    <!-- PASO 2 - MAESTRO -->
+                    <!-- ========================= -->
+                    <div class="wizard-step d-none" id="step-2">
+
+                      <h6 class="mb-3 text-primary">Información Laboral</h6>
+                      <div class="row g-3">
+                        <div class="col-12 col-md-3">
+                          <label class="form-label">Nombre de usuario</label>
+                          <input type="text" class="form-control" id="modal_usuario">
+                        </div>
+
+                        <div class="col-12 col-md-3">
+                          <label class="form-label">Codigo de empleado</label>
+                          <input type="text" class="form-control" id="modal_codigo_empleado">
+                        </div>
+
+                        <div class="col-12 col-md-3">
+                          <label class="form-label">cedula del docente</label>
+                          <input type="text" class="form-control" id="modal_cedula_docente">
+                        </div>
+                        <div class="col-12 col-md-3">
+                          <label class="form-label">codigo institucional</label>
+                          <input type="text" class="form-control" id="modal_codigo_institucional">
+                        </div>
+
+                          <div class="col-12 col-md-4">
+                            <label class="form-label">Renglón</label>
+                            <select class="form-control" id="modal_renglon" required></select>
+                          </div>
+
+                          <div class="col-12 col-md-4">
+                            <label class="form-label">Escalafón</label>
+                            <select class="form-control" id="modal_escalafon" required></select>
+                          </div>
+
+                        <div class="col-12 col-md-4">
+                          <label class="form-label">fecha de inicio de labores</label>
+                          <input type="text" class="form-control" id="modal_fecha_inicio_labores"
+                            placeholder="dd/mm/yyyy">
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </form>
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer d-flex justify-content-between">
+
+                  <button type="button" class="btn btn-outline-secondary" id="btnPrev" disabled>
+                    ← Anterior
+                  </button>
+
+                  <div>
+                    <button type="button" class="btn btn-primary" id="btnNext">
+                      Siguiente →
+                    </button>
+
+                    <button type="button" class="btn btn-success d-none" id="btnGuardarMaestro">
+                      Guardar
+                    </button>
+                  </div>
+
+                </div>
+
+              </div>
             </div>
           </div>
 
@@ -389,7 +601,7 @@
         <footer class="content-footer footer bg-footer-theme">
           <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
             <div class="mb-2 mb-md-0">
-              Carolay Canté © 2026, "Construyendo herramientas que facilitan el aprendizaje."
+              carolay Canté© 2026, "Construyendo herramientas que facilitan el aprendizaje."
             </div>
             <div>
               <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
@@ -420,6 +632,8 @@
   <!-- JS Geovanny-->
   <script src="../../assets/js/Calendar/index.global.min.js"></script>
   <script src="../../assets/js/Menu/sidebar.js"></script>
+  <script src="../../assets/js/Menu/comboGradSec.js"></script>
+  <script src="../../assets/js/maestro/maestro.js"></script>
 
 </body>
 

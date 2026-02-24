@@ -26,5 +26,6 @@ router.post(`/${path}/ActividadesCalificadasPorTipo`, controller.getActividadesC
 
 router.post(`/${path}/ActividadesCalificadasPorAlumno`, controller.getNotasAlumnosTareasCalificadas);
 
+router.post(`/${path}/ActividadesAgrupadasPorAviso`, controller.getTareasAgrupadasPorAviso);
 
 module.exports = router;

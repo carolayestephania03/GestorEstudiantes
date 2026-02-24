@@ -57,6 +57,52 @@ exports.getData = async (req, res) => {
   }
 };
 
+exports.getDataUsuarioInd = [
+
+  body('id_usuario')
+    .exists().withMessage('id_usuario requerido')
+    .bail()
+    .toInt()
+    .isInt({ gt: 0 }).withMessage('id_usuario debe ser entero > 0'),
+
+  async (req, res) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+
+      const id_usuario = Number(req.body.id_usuario);
+
+      const [rows] = await sequelize.query(
+        `SELECT *
+         FROM vista_usuario_publico
+         WHERE usuario_id = :id`,
+        {
+          replacements: { id: id_usuario }
+        }
+      );
+
+      if (!rows || rows.length === 0) {
+        return res.status(404).json({
+          error: 'Usuario no encontrado'
+        });
+      }
+
+      return res.status(200).json({
+        data: rows[0]
+      });
+
+    } catch (error) {
+      return res.status(500).json({
+        error: error.message || 'Error interno'
+      });
+    }
+  }
+];
+
 exports.postData = [
   // ========== PERSONA ==========
   body('nombre')

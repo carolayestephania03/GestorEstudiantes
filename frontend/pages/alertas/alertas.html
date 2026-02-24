@@ -239,7 +239,7 @@
                           </div>
                         </div>
                         <div class="flex-grow-1">
-                          <span class="fw-semibold d-block">Carolay Canté</span>
+                          <span class="fw-semibold d-block">Juan Hernández</span>
                           <small class="text-muted">Docente</small>
                         </div>
                       </div>
@@ -255,19 +255,13 @@
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#">
-                      <i class="bx bx-cog me-2"></i>
-                      <span class="align-middle">Configuraciones</span>
-                    </a>
-                  </li>
-                  <li>
 
                   </li>
                   <li>
                     <div class="dropdown-divider"></div>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="../../index.html">
+                    <a class="dropdown-item" href="/">
                       <i class="bx bx-power-off me-2"></i>
                       <span class="align-middle">Cerrar Sesión</span>
                     </a>
@@ -285,77 +279,78 @@
           <!-- Mensaje Bienvenida -->
           <div class="container-xxl flex-grow-1 container-p-y">
             <div class="row mb-4">
-              <div class="col-lg-6 order-0">
+              <div class="col-12 col-lg-6">
                 <div class="card">
                   <div class="card-body py-3">
                     <h2 class="card-title text-primary mb-2">Alertas</h2>
-                    <p class="mb-0">
-                      Enseñar es un trabajo que se hace desde el corazón!
-                    </p>
+                    <p class="mb-0">Estar informado es lo mejor!</p>
                   </div>
                 </div>
               </div>
-              <div class="col-lg-6 mb-3 d-flex" id="Selec-gradSec" style="display: none;">
-                <div class="col-4 form-container me-3">
-                  <label for="combo_grado_direc" class="select-label">Seleccionar grado:</label>
-                  <select id="combo_grado_direc" class="custom-select">
-                    <option value="" disabled selected>-- Elija una opción --</option>
-                  </select>
-                </div>
-                <div class="col-4 form-container">
-                  <label for="combo_seccion_direc" class="select-label">Seleccionar sección:</label>
-                  <select id="combo_seccion_direc" class="custom-select">
-                    <option value="" disabled selected>-- Elija una opción --</option>
-                  </select>
-                </div>
-                <div class="col-12 justify-content-center" style="padding-top: 2.5rem; padding-left: 2.5rem;">
-                  <button type="button" class="btn btn-primary">Ver</button>
+
+              <div class="col-12 col-lg-6 mb-3" id="Selec-gradSec">
+                <div class="row g-2 align-items-end">
+                  <div class="col-12 col-sm-6 col-md-4 form-container">
+                    <label for="combo_grado_direc" class="select-label">grado:</label>
+                    <select id="combo_grado_direc" class="custom-select">
+                      <option value="" disabled selected>-- Elija una opción --</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-4 form-container">
+                    <label for="combo_seccion_direc" class="select-label">sección:</label>
+                    <select id="combo_seccion_direc" class="custom-select">
+                      <option value="" disabled selected>-- Elija una opción --</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-4 form-container">
+                    <label for="combo_ciclo_direc" class="select-label">bimestre:</label>
+                    <select id="combo_ciclo_direc" class="custom-select">
+                      <option value="1">1er Bimestre</option>
+                      <option value="2">2do Bimestre</option>
+                      <option value="3">3er Bimestre</option>
+                      <option value="4">4to Bimestre</option>
+                    </select>
+                  </div>
+                  <div class="col-12 d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary" id="VisualizarInfo">Ver</button>
+                  </div>
                 </div>
               </div>
             </div>
 
             <div class="row">
-              <h3>Alerta 7 días</h3>
-              <div class="col-lg-12 mb-4 order-0">
-                <div class="card">
-                  <div class="d-flex align-items-end row">
-                    <div class="col-sm-7">
-                      <div class="card-body">
-                        <h2 class="card-title text-primary">Actividades</h2>
-                        <p class="mb-4">
-                          Enseñar es un trabajo que se hace desde el corazón!
-                        </p>
-                      </div>
-                    </div>
-                    <div class="col-sm-5 text-end">
-                      <div class="card-body pb-3 px-0 px-md-8">
-                        <img src="../../assets/img/mochila.jpg" height="130" alt="View Badge User" />
-                      </div>
-                    </div>
-                  </div>
+              <!-- ALERTA 7 DÍAS -->
+              <div class="col-12 mb-4">
+                <h3 class="text-warning">
+                  <i class="bx bx-time-five"></i> Actividades en los próximos 7 días
+                </h3>
+                <div class="row" id="alerta-7-dias">
+                  <!-- JS inyecta aquí -->
                 </div>
               </div>
-              <h3>Alerta 14 días </h3>
-              <div class="col-lg-12 mb-4 order-0">
-                <div class="card">
-                  <div class="d-flex align-items-end row">
-                    <div class="col-sm-7">
-                      <div class="card-body">
-                        <h2 class="card-title text-primary">Actividades</h2>
-                        <p class="mb-4">
-                          Enseñar es un trabajo que se hace desde el corazón!
-                        </p>
-                      </div>
-                    </div>
-                    <div class="col-sm-5 text-end">
-                      <div class="card-body pb-3 px-0 px-md-8">
-                        <img src="../../assets/img/mochila.jpg" height="130" alt="View Badge User" />
-                      </div>
-                    </div>
-                  </div>
+
+              <!-- ALERTA 14 DÍAS -->
+              <div class="col-12 mb-4">
+                <h3 class="text-primary">
+                  <i class="bx bx-calendar"></i> Actividades en los próximos 14 días
+                </h3>
+                <div class="row" id="alerta-14-dias">
+                  <!-- JS inyecta aquí -->
+                </div>
+              </div>
+
+              <!-- ALERTA 21 DÍAS -->
+              <div class="col-12 mb-4">
+                <h3 class="text-success">
+                  <i class="bx bx-calendar-check"></i> Actividades en los próximos 21 días
+                </h3>
+                <div class="row" id="alerta-21-dias">
+                  <!-- JS inyecta aquí -->
                 </div>
               </div>
             </div>
+
+
           </div>
         </div>
         <!-- / Content -->
@@ -364,7 +359,7 @@
         <footer class="content-footer footer bg-footer-theme">
           <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
             <div class="mb-2 mb-md-0">
-              Carolay Canté © 2026, "Construyendo herramientas que facilitan el aprendizaje."
+              carolay Canté© 2026, "Construyendo herramientas que facilitan el aprendizaje."
             </div>
             <div>
               <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
@@ -396,6 +391,8 @@
   <script src="../../assets/js/Calendar/index.global.min.js"></script>
   <script src="../../assets/js/Menu/sidebar.js"></script>
   <script src="../../assets/js/Menu/comboGradSec.js"></script>
+  <script src="../../assets/js/Alertas/alertas.js"></script>
+
 </body>
 
 </html>

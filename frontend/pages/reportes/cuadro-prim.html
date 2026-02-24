@@ -44,11 +44,11 @@
 
   <!-- Layout -->
   <div class="layout-wrapper layout-content-navbar" id="mainContainer">
-    
-  <!-- Botón hamburguesa para móvil (oculto en desktop) -->
-  <button id="menuToggleMobile" class="hamburger-btn d-xl-none">
-    <img src="../../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" class="hamburger-img">
-  </button>
+
+    <!-- Botón hamburguesa para móvil (oculto en desktop) -->
+    <button id="menuToggleMobile" class="hamburger-btn d-xl-none">
+      <img src="../../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" class="hamburger-img">
+    </button>
 
     <div class="layout-container">
 
@@ -73,7 +73,7 @@
         <ul class="menu-inner py-1" id="accordionSidebar">
 
           <!-- Dashboard/Inicio -->
-          <li class="menu-item" >
+          <li class="menu-item">
             <a href="../dashboard.html" class="menu-link" id="EnlaceInicio">
               <span class="menu-icon material-symbols-outlined">home</span>
               <div class="menu-text" data-i18n="Analytics">Inicio</div>
@@ -82,7 +82,7 @@
 
           <!-- Modulo de Tareas -->
           <li class="menu-item" id="menuTareas">
-            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceTarea"> 
+            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceTarea">
               <span class="menu-icon material-symbols-outlined">assignment</span>
               <div class="menu-text" data-i18n="Layouts">Tareas</div>
             </a>
@@ -174,8 +174,9 @@
       <div class="layout-page">
         <!-- Navbar -->
 
-<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
-  id="layout-navbar">
+        <nav
+          class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+          id="layout-navbar">
 
           <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
 
@@ -240,27 +241,71 @@
 
           <!-- Mensaje Bienvenida -->
           <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="row">
-              <div class="col-lg-12 mb-4 order-0">
-                <div class="card">
-                  <div class="d-flex align-items-end row">
-                    <div class="col-sm-7">
-                      <div class="card-body">
-                        <h2 class="card-title text-primary">Reporte Cuadro PRIM</h2>
-                        <p class="mb-4">
-                          Enseñar es un trabajo que se hace desde el corazón!
-                        </p>
-                      </div>
-                    </div>
-                    <div class="col-sm-5 text-end">
-                      <div class="card-body pb-3 px-0 px-md-8">
-                        <img src="../../assets/img/mochila.jpg" height="130" alt="View Badge User" />
-                      </div>
-                    </div>
+            <!-- HEADER -->
+            <div class="card shadow-sm border-0 rounded-3 mb-4">
+              <div class="card-body py-4">
+                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+
+                  <div>
+                    <h2 class="text-primary mb-2">
+                      Reporte Cuadro PRIM
+                    </h2>
+                    <p class="text-muted mb-0">
+                      Enseñar es un trabajo que se hace desde el corazón
+                    </p>
                   </div>
                 </div>
               </div>
-              <!-- Total Revenue -->
+            </div>
+
+            <!-- CONTENIDO PRINCIPAL -->
+            <div class="row g-4">
+
+              <!-- PANEL CONFIGURACIÓN -->
+              <div class="col-12 col-lg-3 col-xl-3">
+
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                  <div class="card-body d-flex flex-column">
+
+                    <h5 class="fw-bold text-primary mb-3">
+                      Configuración
+                    </h5>
+
+                    <div class="mt-auto d-grid gap-2">
+                      <button type="button" class="btn btn-primary" id="btnGenerarCuadroPRIM">
+                        Generar Cuadro PRIM
+                      </button>
+
+                      <button type="button" class="btn btn-outline-success" id="btnVistaPrevia">
+                        Vista Previa
+                      </button>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- IMAGEN -->
+              <div class="col-12 col-lg-3">
+                <div class="card shadow mb-4 h-100">
+                  <div class="card-body p-0 h-100">
+                    <img src="../../assets/img/CuadroPrim.jpg" alt="Imagen de calificaciones"
+                      class="img-fluid w-100 h-100" style="object-fit: cover; border-radius: 0.375rem;">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- VISTA PREVIA -->
+            <div class="card shadow-sm border-0 rounded-3 mt-4 d-none" id="vistaPreviaContainerCuadroPrim">
+              <div class="card-header bg-success text-white">
+                Vista Previa - Cuadro PRIM
+              </div>
+              <div class="card-body text-center py-4">
+                <div id="CuadroPRIMContainer"></div>
+              </div>
             </div>
           </div>
 
@@ -273,10 +318,7 @@
             <div class="mb-2 mb-md-0">
               carolay Canté© 2026, "Construyendo herramientas que facilitan el aprendizaje."
             </div>
-            <div>
-              <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
-                target="_blank" class="footer-link me-4">Documentación</a>
-            </div>
+
           </div>
         </footer>
         <!-- / Footer -->

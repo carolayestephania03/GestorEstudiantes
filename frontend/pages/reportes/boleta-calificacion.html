@@ -38,7 +38,7 @@
   <!-- Scroll CSS -->
 
   <!-- Helpers -->
-  
+
   <!-- Estilos para la boleta de calificaciones -->
   <link rel="stylesheet" href="../../assets/css/Reportes/boleta-calificacion.css">
 </head>
@@ -76,7 +76,7 @@
         <ul class="menu-inner py-1" id="accordionSidebar">
 
           <!-- Dashboard/Inicio -->
-          <li class="menu-item" >
+          <li class="menu-item">
             <a href="../dashboard.html" class="menu-link" id="EnlaceInicio">
               <span class="menu-icon material-symbols-outlined">home</span>
               <div class="menu-text" data-i18n="Analytics">Inicio</div>
@@ -85,7 +85,7 @@
 
           <!-- Modulo de Tareas -->
           <li class="menu-item" id="menuTareas">
-            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceTarea"> 
+            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceTarea">
               <span class="menu-icon material-symbols-outlined">assignment</span>
               <div class="menu-text" data-i18n="Layouts">Tareas</div>
             </a>
@@ -241,91 +241,125 @@
 
         <!-- Content wrapper -->
         <div class="content-wrapper">
-          <!-- Mensaje Bienvenida -->
-          <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="row mb-4">
-              <div class="col-lg-12 order-0">
-                <div class="card">
-                  <div class="card-body py-3">
-                    <h2 class="card-title text-primary mb-2">Reporte Boleta de calificaciones</h2>
-                    <p class="mb-0">
-                      Enseñar es un trabajo que se hace desde el corazón!
+          <div class="container-xxl py-4">
+
+            <!-- HEADER -->
+            <div class="card shadow-sm border-0 rounded-3 mb-4">
+              <div class="card-body py-4">
+                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+
+                  <div>
+                    <h2 class="text-primary mb-2">
+                      Reporte Boleta de Calificaciones
+                    </h2>
+                    <p class="text-muted mb-0">
+                      Enseñar es un trabajo que se hace desde el corazón
                     </p>
                   </div>
                 </div>
               </div>
-              <!-- Total Revenue -->
             </div>
 
-            <!-- Controles para generar boleta -->
-            <div class="col-lg-12 mb-3">
-              <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">
-                    Generar Boleta de Calificaciones
-                  </h6>
-                </div>
-                <div class="card-body">
-                  <div class="row mb-3">
-                    <div class="col-md-6">
-                      <label class="form-label">Tipo de impresión:</label>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="tipoImpresion" id="estudianteEspecifico" value="especifico" checked>
-                        <label class="form-check-label" for="estudianteEspecifico">
-                          Estudiante específico
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="tipoImpresion" id="todosEstudiantes" value="todos">
-                        <label class="form-check-label" for="todosEstudiantes">
-                          Todos los estudiantes
-                        </label>
-                      </div>
+            <!-- CONTENIDO PRINCIPAL -->
+            <div class="row g-4">
+
+              <!-- PANEL CONFIGURACIÓN -->
+              <div class="col-12 col-lg-4 col-xl-3">
+
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                  <div class="card-body d-flex flex-column">
+
+                    <h5 class="fw-bold text-primary mb-3">
+                      Configuración
+                    </h5>
+
+                    <label class="fw-semibold mb-2">Tipo de impresión</label>
+
+                    <div class="form-check mb-2">
+                      <input class="form-check-input" type="radio" name="tipoImpresion" id="estudianteEspecifico"
+                        value="especifico" checked>
+                      <label class="form-check-label" for="estudianteEspecifico">
+                        Estudiantes seleccionados
+                      </label>
                     </div>
-                    <div class="col-md-6" id="selectAlumnoContainer">
-                      <label for="selectAlumno" class="form-label">Alumno:</label>
-                      <select class="form-select" id="selectAlumno">
-                        <option value="">Seleccionar alumno</option>
-                      </select>
+
+                    <div class="form-check mb-4">
+                      <input class="form-check-input" type="radio" name="tipoImpresion" id="todosEstudiantes"
+                        value="todos">
+                      <label class="form-check-label" for="todosEstudiantes">
+                        Todos los estudiantes
+                      </label>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12">
+
+                    <div class="mt-auto d-grid gap-2">
                       <button type="button" class="btn btn-primary" id="btnGenerarBoleta">
-                        <i class="material-symbols-outlined me-2">print</i>
-                        <span id="btnText">Generar Boleta</span>
+                        Generar Boleta
                       </button>
-                      <button type="button" class="btn btn-success ms-2" id="btnVistaPrevia">
-                        <i class="material-symbols-outlined me-2">visibility</i>
+
+                      <button type="button" class="btn btn-outline-success" id="btnVistaPrevia">
                         Vista Previa
                       </button>
                     </div>
+
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <!-- Vista previa de la boleta -->
-            <div class="col-lg-12 mb-3" id="vistaPreviaContainer" style="display: none;">
-              <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">
-                    Vista Previa - Boleta de Calificaciones
-                  </h6>
-                </div>
-                <div class="card-body">
-                  <div class="d-flex justify-content-center">
-                    <div id="boletaContainer" class="boleta-container">
-                      <!-- La boleta se generará aquí -->
+              </div>
+
+              <!-- TABLA -->
+              <div class="col-12 col-lg-8 col-xl-6">
+
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                  <div class="card-header bg-white border-bottom">
+                    <h6 class="fw-bold text-primary mb-0">
+                      Seleccionar Alumnos
+                    </h6>
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="table-responsive">
+                      <table class="table table-hover align-middle table-bordered mb-0">
+                        <thead class="table-primary text-center">
+                          <tr>
+                            <th style="width:80px;">✔</th>
+                            <th>Cod. Alumno</th>
+                            <th>Nombre Alumno</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tableBodyAlumnoNotas"></tbody>
+                      </table>
                     </div>
+
+                  </div>
+                </div>
+
+              </div>
+              
+              <!-- IMAGEN -->
+              <div class="col-12 col-lg-3">
+                <div class="card shadow mb-4 h-100">
+                  <div class="card-body p-0 h-100">
+                    <img src="../../assets/img/Calificaciones.png" alt="Imagen de calificaciones"
+                      class="img-fluid w-100 h-100" style="object-fit: cover; border-radius: 0.375rem;">
                   </div>
                 </div>
               </div>
             </div>
+
+            <!-- VISTA PREVIA -->
+            <div class="card shadow-sm border-0 rounded-3 mt-4 d-none" id="vistaPreviaContainer">
+              <div class="card-header bg-success text-white">
+                Vista Previa - Boleta de Calificaciones
+              </div>
+              <div class="card-body text-center py-4">
+                <div id="boletaContainer"></div>
+              </div>
+            </div>
+
           </div>
-
-
         </div>
+
         <!-- / Content -->
 
         <!-- Footer -->
@@ -334,10 +368,7 @@
             <div class="mb-2 mb-md-0">
               carolay Canté© 2026, "Construyendo herramientas que facilitan el aprendizaje."
             </div>
-            <div>
-              <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
-                target="_blank" class="footer-link me-4">Documentación</a>
-            </div>
+
           </div>
         </footer>
         <!-- / Footer -->

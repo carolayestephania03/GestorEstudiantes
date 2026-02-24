@@ -279,35 +279,39 @@
           <!-- Mensaje Bienvenida -->
           <div class="container-xxl flex-grow-1 container-p-y">
             <div class="row mb-4">
-              <div class="col-lg-6 order-0">
+              <div class="col-12 col-lg-5">
                 <div class="card">
                   <div class="card-body py-3">
                     <h2 class="card-title text-primary mb-2">Calendario</h2>
-                    <p class="mb-0">
-                      Enseñar es un trabajo que se hace desde el corazón!
-                    </p>
+                    <p class="mb-0">Enseñar es un trabajo que se hace desde el corazón!</p>
                   </div>
                 </div>
               </div>
-
-              <div class="col-lg-6 mb-3 d-flex" id="Selec-gradSec" style="display: none;">
-                <div class="col-4 form-container me-3">
-                  <label for="combo_grado_direc" class="select-label">Seleccionar grado:</label>
-                  <select id="combo_grado_direc" class="custom-select">
-                    <option value="" disabled selected>-- Elija una opción --</option>
-                  </select>
-                </div>
-                <div class="col-4 form-container">
-                  <label for="combo_seccion_direc" class="select-label">Seleccionar sección:</label>
-                  <select id="combo_seccion_direc" class="custom-select">
-                    <option value="" disabled selected>-- Elija una opción --</option>
-                  </select>
-                </div>
-                <div class="col-12 justify-content-center" style="padding-top: 2.5rem; padding-left: 2.5rem;">
-                  <button type="button" class="btn btn-primary">Ver</button>
+              <div class="col-12 col-lg-7 mb-3" id="Selec-gradSec">
+                <div class="row g-2 align-items-end">
+                  <div class="col-12 col-sm-6 col-md-4 form-container">
+                    <label for="combo_grado_direc" class="select-label">grado:</label>
+                    <select id="combo_grado_direc" class="custom-select">
+                      <option value="" disabled selected>-- Elija una opción --</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-4 form-container">
+                    <label for="combo_seccion_direc" class="select-label">sección:</label>
+                    <select id="combo_seccion_direc" class="custom-select">
+                      <option value="" disabled selected>-- Elija una opción --</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-4 form-container">
+                    <label for="combo_materia" class="select-label">Materia:</label>
+                    <select id="combo_materia" class="custom-select">
+                      <option value="" disabled selected>-- Elija una opción --</option>
+                    </select>
+                  </div>
+                  <div class="col-12 d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary" id="VisualizarInfo">Ver</button>
+                  </div>
                 </div>
               </div>
-
             </div>
 
             <div class="row">
@@ -322,96 +326,99 @@
                 </div>
               </div>
             </div>
-            
+
             <!-- MODAL INSERCIÓN -->
-            <div id="eventModal" class="modal">
 
-              <div class="modal-content mb-4" id="Formulario-actividades">
-                <span class="close">&times;</span>
-                <div class="card-body">
-                  <h1 class="h4 text-gray-900 mb-4 text-center">Agregar
-                    actividad</h1>
-                  <form class="row g-3" id="eventForm">
-                    <!-- Nombre de la Actividad -->
-                    <div class="col-10 mb-2">
-                      <label class="form-label">Nombre de la actividad</label>
-                      <input type="text" class="form-control" id="nombre_actividad">
-                    </div>
-                    <!-- Punteo de la Actividad -->
-                    <div class="col-2 mb-2">
-                      <label class="form-label">Punteo</label>
-                      <input type="number" class="form-control" id="punteo">
-                    </div>
-                    <!-- Descripción de la Actividad -->
-                    <div class="col-10 mb-2">
-                      <label class="form-label">Descripción</label>
-                      <input type="text" class="form-control" id="descripcion">
-                    </div>
-                    <!-- Fecha de Finalización -->
-                    <div class="col-2 mb-2">
-                      <label class="form-label">Fecha Finalización</label>
-                      <input type="date" class="form-control" id="endDate">
-                    </div>
-                    <!-- Selección del Materia -->
-                    <div class="col-4 mb-2">
-                      <label class="form-label">Materia</label>
-                      <select class="form-control" id="materia">
-                        <option value="0">Elija la materia</option>
-                      </select>
-                    </div>
-                    <!-- Selección del Tipo -->
-                    <div class="col-4 mb-2">
-                      <label class="form-label">Tipo de tarea</label>
-                      <select class="form-control" id="tipo_tarea">
-                        <option value="0">Elija la tarea</option>
-                      </select>
-                    </div>
-                    <!-- Selección del Bloque -->
-                    <div class="col-4 mb-2">
-                      <label class="form-label">Bloque</label>
-                      <select class="form-control" id="Bloque">
-                        <option value="0">Elija el bloque</option>
-                      </select>
-                    </div>
+            <!-- MODAL ACTIVIDAD -->
+            <div class="modal fade" id="eventModal" tabindex="-1">
+              <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content shadow-lg border-0">
 
-                    <!-- Chequeo del es responsable -->
-                    <div class="col-4 mb-2">
-                      <label class="form-check-label">Responsabilidad</label>
-                      <div class="btn-group" role="group" aria-label="Basic radio toggle button group"
-                        id="radio_responsabilidad">
-                        <input type="radio" class="btn-check" name="cumplimiento" id="btn_no_cumplimiento"
-                          autocomplete="off" />
-                        <label class="btn btn-outline-secondary" for="btn_no_cumplimiento">No es responsable</label>
+                  <!-- HEADER -->
+                  <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Agregar Actividad</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                  </div>
 
-                        <input type="radio" class="btn-check" name="cumplimiento" id="btn_cumplimiento"
-                          autocomplete="off" />
-                        <label class="btn btn-outline-secondary" for="btn_cumplimiento">Es responsable</label>
+                  <!-- BODY -->
+                  <div class="modal-body">
+
+                    <form id="eventForm">
+
+                      <div class="row g-3">
+
+                        <!-- Nombre -->
+                        <div class="col-md-8">
+                          <label class="form-label">Nombre de la actividad</label>
+                          <input type="text" class="form-control" id="nombre_actividad" required>
+                        </div>
+
+                        <!-- Punteo -->
+                        <div class="col-md-4">
+                          <label class="form-label">Punteo</label>
+                          <input type="number" class="form-control" id="punteo" min="0" max="100" required>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="col-md-8">
+                          <label class="form-label">Descripción</label>
+                          <input type="text" class="form-control" id="descripcion">
+                        </div>
+
+                        <!-- Fecha -->
+                        <div class="col-md-4">
+                          <label class="form-label">Fecha de Entrega</label>
+                          <input type="date" class="form-control" id="endDate">
+                        </div>
+
+                        <!-- Materia -->
+                        <div class="col-md-4">
+                          <label class="form-label">Materia</label>
+                          <select class="form-control" id="materia" required>
+                            <option value="" disabled selected>Elija la materia</option>
+                          </select>
+                        </div>
+
+                        <!-- Tipo -->
+                        <div class="col-md-4">
+                          <label class="form-label">Tipo de tarea</label>
+                          <select class="form-control" id="tipo_tarea" required>
+                            <option value="" disabled selected>Elija la tarea</option>
+                          </select>
+                        </div>
+
+                        <!-- Unidad -->
+                        <div class="col-md-4">
+                          <label class="form-label">Unidad</label>
+                          <select class="form-control" id="Unidad" required>
+                            <option value="" disabled selected>Elija la unidad</option>
+                          </select>
+                        </div>
+
                       </div>
-                    </div>
-                    <!-- Botón de Guardar -->
-                    <div class="col-12 text-center mt-3">
-                      <button type="submit" class="btn-sm btn-primary" id="Boton-guardar-act">Guardar</button>
-                    </div>
-                  </form>
+
+                    </form>
+
+                  </div>
+
+                  <!-- FOOTER -->
+                  <div class="modal-footer d-flex justify-content-between">
+
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                      Cancelar
+                    </button>
+
+                    <button type="submit" form="eventForm" class="btn btn-primary" id="Boton-guardar-act">
+                      Guardar
+                    </button>
+
+                  </div>
+
                 </div>
-
               </div>
             </div>
+
             <!-- MODAL INSERCIÓN -->
-
-            <!-- MODAL DE VISUALIZACIÓN -->
-            <div id="infoModal" class="modal">
-              <div class="modal-content" id="Informacion-actividad">
-                <span class="close-info-modal">&times;</span>
-                <h2>Detalles del Evento</h2>
-                <p><strong>Título:</strong> <span id="eventTitle"></span></p>
-                <p><strong>Fecha de Inicio:</strong> <span id="eventStart"></span></p>
-                <p><strong>Fecha de Finalización:</strong> <span id="eventEnd"></span></p>
-                <p><strong>Todo el Día:</strong> <span id="eventAllDay"></span></p>
-                <button id="redirectButton" class="btn-sm btn-primary">Ir a
-                  Detalles</button>
-              </div>
-            </div>
           </div>
         </div>
         <!-- / Content -->
@@ -426,14 +433,10 @@
           </div>
         </footer>
         <!-- / Footer -->
-
-        <div class="content-backdrop fade"></div>
       </div>
     </div>
     <!-- / Layout page -->
   </div>
-  <!-- Overlay -->
-  <div class="layout-overlay layout-menu-toggle"></div>
   </div>
   <!-- / Layout wrapper -->
   <!-- Core JS -->
@@ -453,57 +456,5 @@
   <script src="../../assets/js/Menu/comboGradSec.js"></script>
 
 </body>
-
-<style>
-  .modal {
-    display: none;
-    /* Oculto por defecto */
-    position: fixed;
-    z-index: 1000;
-    left: 8.5%;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    /* Evitar el scroll en el modal */
-    background-color: rgba(0, 0, 0, 0.5);
-    padding-top: 10px;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .modal-content {
-    background-color: #e6ebec;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    /* Ajustar el ancho según tus necesidades */
-    max-width: 90%;
-    /* Aumentar el ancho máximo */
-    max-height: 90%;
-    border-radius: 8px;
-    /* Añadir bordes redondeados */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    /* Añadir sombra para un efecto de profundidad */
-    /*overflow: auto; Desplazamiento dentro del modal*/
-  }
-
-  .close {
-    color: #aaa;
-    float: right;
-    font-size: 40px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  .close:hover,
-  .close:focus {
-    color: black;
-    text-decoration: none;
-  }
-
-  /* styles.css */
-</style>
 
 </html>

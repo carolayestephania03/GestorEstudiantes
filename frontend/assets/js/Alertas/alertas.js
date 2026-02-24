@@ -81,6 +81,11 @@
             <small class="text-danger">
               Entrega: ${fmtFecha(a.fecha_entrega)}
             </small>
+            <button type="button"
+              class="btn btn-sm btn-outline-primary btn-ver"
+              /*Ajustar la url para rediriguir a actividades*/  direccion='https://valor'>
+              Ver
+            </button>
           </div>
         </div>
       </div>

@@ -9,4 +9,8 @@ router.get(`/${path}`, controller.getData);
 
 router.post(`/${path}/BuscarEncargado`, controller.buscarEncargadosConAlumnos);
 
+router.post(`/${path}/CrearEncargado`, controller.crearEncargado);
+
+router.put(`/${path}/ActualizarEncargado`, controller.actualizarEncargado);
+
 module.exports = router;

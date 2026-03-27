@@ -509,9 +509,9 @@
                         <div class="col-md-4">
                           <label class="form-label">Género</label>
                           <select class="form-control" id="modal_genero">
-                            <option value="" disabled selected>Elija género</option>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Femenino">Femenino</option>
+                            <option value="" selected>Elija género</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
                           </select>
                         </div>
 
@@ -527,7 +527,7 @@
 
                         <div class="col-md-4">
                           <label class="form-label">Fecha nacimiento</label>
-                          <input type="text" class="form-control" id="modal_fecha_nacimiento">
+                          <input type="date" class="form-control" id="modal_fecha_nacimiento">
                         </div>
 
                         <div class="col-md-4">
@@ -548,35 +548,109 @@
                     <!-- ========================= -->
                     <div class="wizard-step d-none" id="step-2-alumno">
 
-                      <h6 class="mb-3 text-primary">Información Académica</h6>
+                      <h5 class="mb-4 text-primary fw-bold">Información Académica</h5>
 
-                      <div class="row g-3">
+                      <div class="row g-4">
 
-                        <div class="col-md-3">
-                          <label class="form-label">Grado</label>
-                          <select id="modal_grado_alumno" class="form-control">
-                            <option value="" disabled selected>Elija grado</option>
-                            <option value="1">1er Grado</option>
-                            <option value="2">2do Grado</option>
-                            <option value="3">3er Grado</option>
-                            <option value="4">4to Grado</option>
-                            <option value="5">5to Grado</option>
-                            <option value="6">6to Grado</option>
-                          </select>
+                        <!-- ============================= -->
+                        <!-- BLOQUE 1: GRADO Y SECCIÓN -->
+                        <!-- ============================= -->
+                        <div class="col-12 col-lg-3">
+                          <div class="card shadow-sm h-100">
+                            <div class="card-header bg-light">
+                              <h6 class="mb-0 text-primary">Datos Académicos</h6>
+                            </div>
+                            <div class="card-body">
+
+                              <div class="mb-3">
+                                <label class="form-label">Código de Alumno</label>
+                                  <input type="text" class="form-control" id="insert_codigo_alumno"
+                                    placeholder="Insertar código de alumno...">
+                              </div>
+
+                              <div class="mb-3">
+                                <label class="form-label">Grado</label>
+                                <select id="modal_grado_alumno" class="form-select">
+                                  <option value="" disabled selected>Elija grado</option>
+                                  <option value="1">1er Grado</option>
+                                  <option value="2">2do Grado</option>
+                                  <option value="3">3er Grado</option>
+                                  <option value="4">4to Grado</option>
+                                  <option value="5">5to Grado</option>
+                                  <option value="6">6to Grado</option>
+                                </select>
+                              </div>
+
+                              <div>
+                                <label class="form-label">Sección</label>
+                                <select id="modal_seccion_alumno" class="form-select">
+                                  <option value="" disabled selected>Elija sección</option>
+                                  <option value="1">Sección A</option>
+                                  <option value="2">Sección B</option>
+                                </select>
+                              </div>
+
+                            </div>
+                          </div>
                         </div>
 
-                        <div class="col-md-3">
-                          <label class="form-label">Sección</label>
-                          <select id="modal_seccion_alumno" class="form-control">
-                            <option value="" disabled selected>Elija sección</option>
-                            <option value="A">Sección A</option>
-                            <option value="B">Sección B</option>
-                          </select>
+                        <!-- ============================= -->
+                        <!-- BLOQUE 2: ASIGNAR ENCARGADO -->
+                        <!-- ============================= -->
+                        <div class="col-12 col-lg-9">
+                          <div class="card shadow-sm h-100">
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                              <h6 class="mb-0 text-primary">Asignar Encargado</h6>
+                            </div>
+
+                            <div class="card-body">
+
+                              <!-- Buscador -->
+                              <div class="row mb-3">
+
+                                <div class="col-12 col-md-5">
+                                  <label class="form-label">nombre encargado</label>
+                                  <input type="text" class="form-control" id="buscar_nombre_encargado"
+                                    placeholder="Buscar encargado por nombre...">
+                                </div>
+
+                                <div class="col-12 col-md-5">
+                                  <label class="form-label">DPI del encargado</label>
+                                  <input type="text" class="form-control" id="buscar_dpi_encargado"
+                                    placeholder="Buscar encargado por DPI...">
+                                </div>
+
+                                <div class="col-12 col-md-2 d-flex align-items-center">
+                                  <button type="button" class="btn btn-warning"
+                                    id="btnBuscarEncargadoAlumno">Buscar</button>
+                                </div>
+
+                              </div>
+
+                              <!-- Tabla -->
+                              <div class="table-responsive">
+                                <table class="table table-hover table-bordered align-middle">
+                                  <thead class="table-light text-center">
+                                    <tr>
+                                      <th style="width: 60px;">#</th>
+                                      <th>Nombre del Encargado</th>
+                                      <th style="width: 100px;">Asignar</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody id="tableBodyModalEncargado">
+                                    <!-- Se llena dinámicamente -->
+                                  </tbody>
+                                </table>
+                              </div>
+
+                            </div>
+                          </div>
                         </div>
 
                       </div>
 
                     </div>
+
 
                   </form>
 

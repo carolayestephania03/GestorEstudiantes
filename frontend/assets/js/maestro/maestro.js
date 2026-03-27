@@ -35,10 +35,27 @@
 
   const step1 = document.getElementById('step-1');
   const step2 = document.getElementById('step-2');
+  const step3 = document.getElementById('step-3');
+
+  const modalUsuario = document.getElementById('modal_usuario');
+  const modalCedulaDocente = document.getElementById('modal_cedula_docente');
+  const modalCodigoInstitucional = document.getElementById('modal_codigo_institucional');
+  const modalFechaInicioLabores = document.getElementById('modal_fecha_inicio_labores');
+
+  const modalGradoAsignado = document.getElementById('modal_grado_asignado');
+  const modalSeccionAsignada = document.getElementById('modal_seccion_asignada');
 
   const btnNext = document.getElementById('btnNext');
   const btnPrev = document.getElementById('btnPrev');
   const wizardProgress = document.getElementById('wizardProgress');
+
+  const modalEliminarElement = document.getElementById('modalEliminarMaestro');
+  const modalEliminarMaestro = modalEliminarElement ? new bootstrap.Modal(modalEliminarElement) : null;
+
+  const btnConfirmarEliminarMaestro = document.getElementById('btnConfirmarEliminarMaestro');
+  const textoEliminarMaestro = document.getElementById('textoEliminarMaestro');
+
+  let maestroAEliminar = null;
 
   // =========================================================
   // userData (sessionStorage)
@@ -124,40 +141,48 @@
   // Cargar combos (renglón / escalafón)
   // =========================================================
   async function cargarRenglones() {
-    if (!selRenglon) return;
+    const selectsRenglon = [selRenglon, modalRenglon].filter(Boolean);
 
-    // reset
-    selRenglon.innerHTML = `<option value="" disabled selected>Elija renglon</option>`;
+    if (!selectsRenglon.length) return;
 
     const json = await getJSON('http://localhost:8001/renglon');
     const data = Array.isArray(json.data) ? json.data : [];
 
-    data.forEach(r => {
-      const id = toInt(r?.renglon_id, 0);
-      if (!id) return;
-      const opt = document.createElement('option');
-      opt.value = String(id);
-      opt.textContent = r?.descripcion || `Renglón ${id}`;
-      selRenglon.appendChild(opt);
+    selectsRenglon.forEach(select => {
+      select.innerHTML = `<option value="" disabled selected>Elija renglon</option>`;
+
+      data.forEach(r => {
+        const id = toInt(r?.renglon_id, 0);
+        if (!id) return;
+
+        const opt = document.createElement('option');
+        opt.value = String(id);
+        opt.textContent = r?.descripcion || `Renglón ${id}`;
+        select.appendChild(opt);
+      });
     });
   }
 
   async function cargarEscalafones() {
-    if (!selEscalaf) return;
+    const selectsEscalafon = [selEscalaf, modalEscalafon].filter(Boolean);
 
-    // reset
-    selEscalaf.innerHTML = `<option value="" disabled selected>Elija escalafon</option>`;
+    if (!selectsEscalafon.length) return;
 
     const json = await getJSON('http://localhost:8001/escalafon');
     const data = Array.isArray(json.data) ? json.data : [];
 
-    data.forEach(e => {
-      const id = toInt(e?.escalafon_id, 0);
-      if (!id) return;
-      const opt = document.createElement('option');
-      opt.value = String(id);
-      opt.textContent = e?.descripcion || `Escalafón ${id}`;
-      selEscalaf.appendChild(opt);
+    selectsEscalafon.forEach(select => {
+      select.innerHTML = `<option value="" disabled selected>Elija escalafon</option>`;
+
+      data.forEach(e => {
+        const id = toInt(e?.escalafon_id, 0);
+        if (!id) return;
+
+        const opt = document.createElement('option');
+        opt.value = String(id);
+        opt.textContent = e?.descripcion || `Escalafón ${id}`;
+        select.appendChild(opt);
+      });
     });
   }
 
@@ -214,41 +239,44 @@
   // =========================================================
 
 
-let currentStep = 1;
-let modoActual = 'crear'; // crear | editar
+  let currentStep = 1;
+  let modoActual = 'crear'; // crear | editar
 
-function actualizarWizard() {
-
-  if (currentStep === 1) {
-    step1.classList.remove('d-none');
+  function actualizarWizard() {
+    step1.classList.add('d-none');
     step2.classList.add('d-none');
+    step3.classList.add('d-none');
 
-    btnPrev.disabled = true;
+    btnPrev.disabled = false;
     btnNext.classList.remove('d-none');
     btnGuardarMaestro.classList.add('d-none');
 
-    wizardProgress.style.width = '50%';
+    if (currentStep === 1) {
+      step1.classList.remove('d-none');
+      btnPrev.disabled = true;
+      wizardProgress.style.width = '33%';
+    }
+
+    if (currentStep === 2) {
+      step2.classList.remove('d-none');
+      wizardProgress.style.width = '66%';
+    }
+
+    if (currentStep === 3) {
+      step3.classList.remove('d-none');
+      btnNext.classList.add('d-none');
+      btnGuardarMaestro.classList.remove('d-none');
+      wizardProgress.style.width = '100%';
+
+      btnGuardarMaestro.textContent =
+        modoActual === 'editar' ? 'Actualizar' : 'Guardar';
+
+      btnGuardarMaestro.className =
+        modoActual === 'editar'
+          ? 'btn btn-warning'
+          : 'btn btn-success';
+    }
   }
-
-  if (currentStep === 2) {
-    step1.classList.add('d-none');
-    step2.classList.remove('d-none');
-
-    btnPrev.disabled = false;
-    btnNext.classList.add('d-none');
-    btnGuardarMaestro.classList.remove('d-none');
-
-    wizardProgress.style.width = '100%';
-
-    btnGuardarMaestro.textContent =
-      modoActual === 'editar' ? 'Actualizar' : 'Guardar';
-
-    btnGuardarMaestro.className =
-      modoActual === 'editar'
-        ? 'btn btn-warning'
-        : 'btn btn-success';
-  }
-}
 
 
   // =========================================================
@@ -268,37 +296,47 @@ function actualizarWizard() {
       const tel = m?.telefono ?? '—';
       const renglon = m?.renglon ?? '—';
       const escalafon = m?.escalafon ?? '—';
-      const dpi = m?.dpi_maestro ?? '—';
 
       const gruposHTML = gruposToBullets(m?.grupos_donde_imparte);
 
       return `
-        <tr>
-          <td class="text-nowrap">${idx + 1}</td>
-          <td class="text-nowrap">${safeText(cod)}</td>
-          <td class="text-nowrap">${safeText(nombre)}</td>
-          <td class="text-nowrap">${safeText(tel)}</td>
-          <td class="text-nowrap">${safeText(renglon)}</td>
-          <td class="text-nowrap">${safeText(escalafon)}</td>
-          <td>${gruposHTML}</td>
-          <td class="text-nowrap text-center">
-            <button type="button"
-              class="btn btn-sm btn-outline-primary btn-editar"
-              data-maestro='${JSON.stringify(m)}'>
-              Editar
-            </button>
-          </td>
-        </tr>
-      `;
+      <tr>
+        <td class="text-nowrap">${idx + 1}</td>
+        <td class="text-nowrap">${safeText(cod)}</td>
+        <td class="text-nowrap">${safeText(nombre)}</td>
+        <td class="text-nowrap">${safeText(tel)}</td>
+        <td class="text-nowrap">${safeText(renglon)}</td>
+        <td class="text-nowrap">${safeText(escalafon)}</td>
+        <td>${gruposHTML}</td>
+        <td class="text-nowrap text-center">
+          <button type="button"
+            class="btn btn-sm btn-outline-primary btn-editar"
+            data-maestro='${JSON.stringify(m)}'>
+            Editar
+          </button>
+          <button type="button"
+            class="btn btn-sm btn-outline-danger btn-eliminar"
+            data-maestro='${JSON.stringify(m)}'>
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    `;
     }).join('');
 
     tbody.innerHTML = rows;
 
-    // Botón editar (por ahora solo demo)
     tbody.querySelectorAll('.btn-editar').forEach(btn => {
       btn.addEventListener('click', () => {
         const data = JSON.parse(btn.dataset.maestro || '{}');
         abrirModalEditar(data);
+      });
+    });
+
+    tbody.querySelectorAll('.btn-eliminar').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const data = JSON.parse(btn.dataset.maestro || '{}');
+        abrirModalEliminar(data);
       });
     });
   }
@@ -315,41 +353,262 @@ function actualizarWizard() {
     modalTelefono.value = '';
     modalRenglon.value = '';
     modalEscalafon.value = '';
+
+    modalUsuario.value = '';
+    modalCedulaDocente.value = '';
+    modalCodigoInstitucional.value = '';
+    modalFechaInicioLabores.value = '';
+
+    modalGradoAsignado.value = '';
+    modalSeccionAsignada.value = '';
+
+    const hiddenDpiBusqueda = document.getElementById('modal_dpi_busqueda');
+    if (hiddenDpiBusqueda) hiddenDpiBusqueda.value = '';
+
+    const modalCorreo = document.getElementById('modal_correo');
+    const modalResidencia = document.getElementById('modal_residencia');
+    const modalGenero = document.getElementById('modal_genero');
+    const modalNit = document.getElementById('modal_nit');
+    const modalFechaNacimiento = document.getElementById('modal_fecha_nacimiento');
+
+    if (modalCorreo) modalCorreo.value = '';
+    if (modalResidencia) modalResidencia.value = '';
+    if (modalGenero) modalGenero.value = '';
+    if (modalNit) modalNit.value = '';
+    if (modalFechaNacimiento) modalFechaNacimiento.value = '';
   }
 
-function abrirModalCrear() {
-  modoActual = 'crear';
-  currentStep = 1;
+  function abrirModalCrear() {
+    modoActual = 'crear';
+    currentStep = 1;
 
-  document.getElementById('modalMaestroTitle').textContent = 'Registrar Maestro';
+    document.getElementById('modalMaestroTitle').textContent = 'Registrar Maestro';
 
-  limpiarModal();
-  actualizarWizard();
-  modalMaestro.show();
-}
+    limpiarModal();
+    actualizarWizard();
+    modalMaestro.show();
+  }
 
 
-function abrirModalEditar(data) {
+  function abrirModalEditar(data) {
+    modoActual = 'editar';
+    currentStep = 1;
 
-  modoActual = 'editar';
-  currentStep = 1;
+    document.getElementById('modalMaestroTitle').textContent = 'Editar Maestro';
 
-  document.getElementById('modalMaestroTitle').textContent = 'Editar Maestro';
+    limpiarModal();
 
-  limpiarModal();
+    const hiddenDpiBusqueda = document.getElementById('modal_dpi_busqueda');
+    if (hiddenDpiBusqueda) hiddenDpiBusqueda.value = data.dpi_maestro || '';
 
-  modalCodigo.value = data.codigo_empleado || '';
-  modalNombre.value = data.maestro_nombre || '';
-  modalApellido.value = data.maestro_apellido || '';
-  modalDpi.value = data.dpi_maestro || '';
-  modalTelefono.value = data.telefono || '';
-  modalRenglon.value = data.renglon_id || '';
-  modalEscalafon.value = data.escalafon_id || '';
+    modalCodigo.value = data.codigo_empleado || '';
+    modalNombre.value = data.maestro_nombre || '';
+    modalApellido.value = data.maestro_apellido || '';
+    modalDpi.value = data.dpi_maestro || '';
+    modalTelefono.value = data.telefono || '';
+    modalRenglon.value = data.renglon_id || '';
+    modalEscalafon.value = data.escalafon_id || '';
 
-  actualizarWizard();
-  modalMaestro.show();
-}
+    modalUsuario.value = data.nombre_usuario || '';
+    modalCedulaDocente.value = data.cedula_docente || '';
+    modalCodigoInstitucional.value = data.codigo_institucional || '';
+    modalFechaInicioLabores.value = data.fecha_inicio_labores || '';
 
+    modalGradoAsignado.value = data.grado_base_id || '';
+    modalSeccionAsignada.value = data.seccion_base_id || '';
+
+    const modalCorreo = document.getElementById('modal_correo');
+    const modalResidencia = document.getElementById('modal_residencia');
+    const modalGenero = document.getElementById('modal_genero');
+    const modalNit = document.getElementById('modal_nit');
+    const modalFechaNacimiento = document.getElementById('modal_fecha_nacimiento');
+
+    if (modalCorreo) modalCorreo.value = data.correo || '';
+    if (modalResidencia) modalResidencia.value = data.residencia || '';
+    if (modalNit) modalNit.value = data.nit || '';
+    if (modalFechaNacimiento) modalFechaNacimiento.value = data.fecha_nacimiento || '';
+
+    if (modalGenero) {
+      if (data.genero_id === 'M') modalGenero.value = 'Masculino';
+      else if (data.genero_id === 'F') modalGenero.value = 'Femenino';
+      else modalGenero.value = '';
+    }
+
+    actualizarWizard();
+    modalMaestro.show();
+  }
+
+  // =========================================================
+  // Payload eliminar maestro
+  // =========================================================
+
+  async function eliminarMaestro(payload) {
+    const r = await fetch('http://localhost:8001/persona/eliminarMaestro', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(payload)
+    });
+
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({}));
+      throw new Error(err?.error || `EliminarMaestro HTTP ${r.status}`);
+    }
+
+    return r.json();
+  }
+
+  function abrirModalEliminar(data) {
+    maestroAEliminar = data || null;
+
+    if (!maestroAEliminar) return;
+
+    const nombre = `${data?.maestro_nombre ?? ''} ${data?.maestro_apellido ?? ''}`.trim();
+    const dpi = data?.dpi_maestro ?? '—';
+    const codigo = data?.codigo_empleado ?? '—';
+
+    if (textoEliminarMaestro) {
+      textoEliminarMaestro.innerHTML = `
+      <strong>${safeText(nombre || 'Maestro')}</strong><br>
+      DPI: ${safeText(dpi)}<br>
+      Código empleado: ${safeText(codigo)}
+    `;
+    }
+
+    modalEliminarMaestro?.show();
+  }
+
+  // =========================================================
+  // Payload guardar maestro (crear/editar): quitar campos opcionales si vienen vacíos
+  // =========================================================
+
+  function normalizarFechaISO(valor) {
+    const v = String(valor || '').trim();
+    if (!v) return '';
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
+
+    const m = v.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (m) {
+      const [, dd, mm, yyyy] = m;
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    return v;
+  }
+
+  function buildPayloadGuardarMaestro() {
+    const modalGenero = document.getElementById('modal_genero');
+    const modalNit = document.getElementById('modal_nit');
+    const modalFechaNacimiento = document.getElementById('modal_fecha_nacimiento');
+    const modalCorreo = document.getElementById('modal_correo');
+    const modalResidencia = document.getElementById('modal_residencia');
+    const hiddenDpiBusqueda = document.getElementById('modal_dpi_busqueda');
+
+    const nombre = modalNombre.value.trim();
+    const apellido = modalApellido.value.trim();
+    const correo = modalCorreo?.value.trim() || '';
+    const telefono = modalTelefono.value.trim();
+    const residencia = modalResidencia?.value.trim() || '';
+    const dpi = modalDpi.value.trim();
+    const fecha_nacimiento = normalizarFechaISO(modalFechaNacimiento?.value || '');
+    const nit = modalNit?.value.trim() || '';
+
+    const generoTexto = modalGenero?.value || '';
+    const genero_id =
+      generoTexto === 'Masculino' ? 'M' :
+        generoTexto === 'Femenino' ? 'F' :
+          null;
+
+    const nombre_usuario = modalUsuario.value.trim();
+    const codigo_empleado = toInt(modalCodigo.value, 0);
+    const cedula_docente = toInt(modalCedulaDocente.value, 0);
+    const fecha_inicio_labores = normalizarFechaISO(modalFechaInicioLabores.value || '');
+
+    const escalafon_id = modalEscalafon.value ? toInt(modalEscalafon.value, null) : null;
+    const renglon_id = modalRenglon.value ? toInt(modalRenglon.value, null) : null;
+
+    const codigoInstitucionalRaw = modalCodigoInstitucional.value.trim();
+    const codigo_institucional = codigoInstitucionalRaw
+      ? toInt(codigoInstitucionalRaw, null)
+      : null;
+
+    const grado_id = modalGradoAsignado.value ? toInt(modalGradoAsignado.value, null) : null;
+    const seccion_id = modalSeccionAsignada.value ? toInt(modalSeccionAsignada.value, null) : null;
+
+    const asignar_clase = (grado_id && seccion_id) ? 1 : 0;
+
+    if (!nombre) return { error: 'Complete el nombre.' };
+    if (!apellido) return { error: 'Complete el apellido.' };
+    if (!correo) return { error: 'Complete el correo.' };
+    if (!telefono) return { error: 'Complete el teléfono.' };
+    if (!residencia) return { error: 'Complete la residencia.' };
+    if (!dpi) return { error: 'Complete el DPI.' };
+    if (!fecha_nacimiento) return { error: 'Complete la fecha de nacimiento.' };
+    if (!nit) return { error: 'Complete el NIT.' };
+    if (!nombre_usuario) return { error: 'Complete el nombre de usuario.' };
+    if (!codigo_empleado) return { error: 'Complete el código de empleado.' };
+    if (!cedula_docente) return { error: 'Complete la cédula docente.' };
+    if (!fecha_inicio_labores) return { error: 'Complete la fecha de inicio de labores.' };
+
+    // CREAR
+    if (modoActual === 'crear') {
+      return {
+        payload: {
+          nombre,
+          apellido,
+          correo,
+          telefono,
+          residencia,
+          genero_id,
+          dpi,
+          fecha_nacimiento,
+          nit,
+          nombre_usuario,
+          codigo_empleado,
+          cedula_docente,
+          fecha_inicio_labores,
+          escalafon_id,
+          renglon_id,
+          codigo_institucional,
+          asignar_clase,
+          grado_id: asignar_clase ? grado_id : null,
+          seccion_id: asignar_clase ? seccion_id : null
+        }
+      };
+    }
+
+    // ACTUALIZAR
+    const dpi_busqueda = hiddenDpiBusqueda?.value?.trim() || '';
+    if (!dpi_busqueda) {
+      return { error: 'No se encontró el DPI original para actualizar.' };
+    }
+
+    return {
+      payload: {
+        dpi_busqueda,
+        nombre,
+        apellido,
+        correo,
+        telefono,
+        residencia,
+        genero_id,
+        dpi_nuevo: dpi,
+        fecha_nacimiento,
+        nit,
+        nombre_usuario,
+        codigo_empleado,
+        cedula_docente,
+        fecha_inicio_labores,
+        escalafon_id,
+        renglon_id,
+        codigo_institucional,
+        asignar_clase,
+        grado_id: asignar_clase ? grado_id : null,
+        seccion_id: asignar_clase ? seccion_id : null
+      }
+    };
+  }
 
 
   // =========================================================
@@ -399,60 +658,96 @@ function abrirModalEditar(data) {
       abrirModalCrear();
     });
 
+    btnConfirmarEliminarMaestro?.addEventListener('click', async () => {
+      if (!maestroAEliminar) return;
 
-        /*Control formulario modal maestro*/
-btnNext.addEventListener('click', () => {
+      try {
+        const payload = {};
 
-  // Validación paso 1
-  if (!modalNombre.value.trim() || !modalApellido.value.trim()) {
-    alert('Complete nombre y apellido');
-    return;
-  }
+        const dpi = normStr(maestroAEliminar?.dpi_maestro);
+        const codigo = toInt(maestroAEliminar?.codigo_empleado, 0);
 
-  currentStep = 2;
-  actualizarWizard();
-});
+        if (dpi) {
+          payload.dpi = dpi;
+        } else if (codigo > 0) {
+          payload.codigo_empleado = codigo;
+        } else {
+          alert('No se encontró DPI ni código de empleado para eliminar.');
+          return;
+        }
 
-btnPrev.addEventListener('click', () => {
-  currentStep = 1;
-  actualizarWizard();
-});
+        await eliminarMaestro(payload);
 
+        modalEliminarMaestro?.hide();
+        maestroAEliminar = null;
 
-    /*VERIFICAR ACA*/
+        buscarMaestros();
+
+      } catch (e) {
+        console.error('Error al eliminar maestro:', e);
+        alert('No fue posible eliminar el maestro.');
+      }
+    });
+
+    /*Control formulario modal maestro*/
+    btnNext.addEventListener('click', () => {
+      if (currentStep === 1) {
+        if (!modalNombre.value.trim() || !modalApellido.value.trim()) {
+          alert('Complete nombre y apellido');
+          return;
+        }
+
+        if (!modalDpi.value.trim()) {
+          alert('Complete el DPI.');
+          return;
+        }
+
+        currentStep = 2;
+        actualizarWizard();
+        return;
+      }
+
+      if (currentStep === 2) {
+        /*if (!modalRenglon.value || !modalEscalafon.value) {
+          alert('Seleccione renglón y escalafón.');
+          return;
+        }*/
+
+        currentStep = 3;
+        actualizarWizard();
+      }
+    });
+
+    btnPrev.addEventListener('click', () => {
+      if (currentStep > 1) {
+        currentStep -= 1;
+        actualizarWizard();
+      }
+    });
+
     btnGuardarMaestro.addEventListener('click', async () => {
+      const built = buildPayloadGuardarMaestro();
 
-  const payload = {
-    persona: {
-      codigo_empleado: modalCodigo.value || null,
-      nombre: modalNombre.value.trim(),
-      apellido: modalApellido.value.trim(),
-      dpi: modalDpi.value.trim(),
-      telefono: modalTelefono.value.trim()
-    },
-    maestro: {
-      renglon_id: toInt(modalRenglon.value, null),
-      escalafon_id: toInt(modalEscalafon.value, null)
-    }
-  };
+      if (built.error) {
+        alert(built.error);
+        return;
+      }
 
-  try {
+      try {
+        if (modoActual === 'crear') {
+          await postJSON('http://localhost:8001/persona/CrearMaestro', built.payload);
+        } else {
+          await postJSON('http://localhost:8001/persona/ActualizarMaestro', built.payload);
+        }
 
-    if (modoActual === 'crear') {
-      await postJSON('http://localhost:8001/persona/CrearMaestroCompleto', payload);
-    }
+        modalMaestro.hide();
+        buscarMaestros();
 
-    if (modoActual === 'editar') {
-      await postJSON('http://localhost:8001/persona/ActualizarMaestroCompleto', payload);
-    }
-
-    modalMaestro.hide();
-    buscarMaestros();
-
-  } catch (e) {
-    alert('Error al guardar.');
-  }
-});
+      } catch (e) {
+        console.error('Error al guardar maestro:', e);
+        alert('Error al guardar.');
+      }
+    });
 
 
     // Si cambian grado/sección, limpiar tabla (para evitar confusiones)

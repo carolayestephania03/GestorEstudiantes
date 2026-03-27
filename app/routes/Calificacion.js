@@ -9,4 +9,6 @@ router.get(`/${path}`, controller.getData);
 
 router.post(`/${path}/promedioAlumnos`, controller.getAlumnMejProm);
 
+router.post(`/${path}/reporteNotasMateriasBimestre`, controller.repNotasMateriasBimestre);
+
 module.exports = router;

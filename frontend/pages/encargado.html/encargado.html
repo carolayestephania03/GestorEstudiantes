@@ -458,9 +458,9 @@
                         <div class="col-md-4">
                           <label class="form-label">Género</label>
                           <select class="form-control" id="modal_genero">
-                            <option value="" disabled selected>Elija género</option>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Femenino">Femenino</option>
+                            <option value="" selected>Elija género</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
                           </select>
                         </div>
 
@@ -476,7 +476,7 @@
 
                         <div class="col-md-4">
                           <label class="form-label">Fecha nacimiento</label>
-                          <input type="text" class="form-control" id="modal_fecha_nacimiento">
+                          <input type="date" class="form-control" id="modal_fecha_nacimiento">
                         </div>
 
                         <div class="col-md-4">
@@ -493,23 +493,74 @@
 
                     <!-- PASO 2 -->
                     <div class="wizard-step d-none" id="step-2-enc">
+                      <div class="row g-4">
+                        <div class="col-12 col-lg-12">
+                          <div class="card shadow-sm h-100">
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                              <h6 class="mb-0 text-primary">Asignar Alumno</h6>
+                            </div>
 
-                      <h6 class="mb-3 text-primary">Asignar Alumnos</h6>
+                            <div class="card-body">
 
-                      <div class="table-responsive mt-3">
-                        <table class="table table-bordered">
-                          <thead>
-                            <tr>
-                              <th>No</th>
-                              <th>Nombre Alumno</th>
-                              <th>Asignar</th>
-                            </tr>
-                          </thead>
-                          <tbody id="tableBodyModalEncargado">
-                          </tbody>
-                        </table>
+                              <!-- Buscador -->
+                              <div class="row mb-3">
+
+                                <div class="col-12 col-md-4">
+                                  <label class="form-label">nombre alumno</label>
+                                  <input type="text" class="form-control" id="buscar_nombre_alumno"
+                                    placeholder="Buscar alumno por nombre...">
+                                </div>
+
+                                <div class="col-12 col-md-4">
+                                  <label class="form-label">DPI del alumno</label>
+                                  <input type="text" class="form-control" id="buscar_dpi_alumno"
+                                    placeholder="Buscar alumno por DPI...">
+                                </div>
+
+                                <!-- Grado -->
+                                <div class="col-12 col-md-2">
+                                  <label for="combo_grado_direc" class="form-label">grado:</label>
+                                  <select id="modal_grado_alumno_busqueda" class="form-control">
+                                    <option value="" disabled selected>-- Elija una opción --</option>
+                                  </select>
+                                </div>
+
+
+                                <!-- Sección -->
+                                <div class="col-12 col-md-2">
+                                  <label for="combo_seccion_direc" class="form-label">sección:</label>
+                                  <select id="modal_seccion_alumno_busqueda" class="form-control">
+                                    <option value="" disabled selected>-- Elija una opción --</option>
+                                  </select>
+                                </div>
+
+                                <div class="col-12 col-md-2 d-flex align-items-center mt-2">
+                                  <button type="button" class="btn btn-warning"
+                                    id="btnBuscarEncargadoAlumno">Buscar</button>
+                                </div>
+
+                              </div>
+
+                              <!-- Tabla -->
+                              <div class="table-responsive">
+                                <table class="table table-hover table-bordered align-middle">
+                                  <thead class="table-light text-center">
+                                    <tr>
+                                      <th style="width: 60px;">#</th>
+                                      <th>Nombre del Alumno</th>
+                                      <th style="width: 100px;">Asignar</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody id="tableBodyModalAlumnos">
+                                    <!-- Se llena dinámicamente -->
+                                  </tbody>
+                                </table>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
                       </div>
-
                     </div>
 
                   </form>

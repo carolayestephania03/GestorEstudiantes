@@ -244,54 +244,86 @@
             <!-- HEADER -->
             <div class="card shadow-sm border-0 rounded-3 mb-4">
               <div class="card-body py-4">
-                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between">
-
+                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
                   <div>
-                    <h2 class="text-primary mb-2">
-                      Reporte Cuadro PRIM
-                    </h2>
-                    <p class="text-muted mb-0">
-                      Enseñar es un trabajo que se hace desde el corazón
-                    </p>
+                    <h2 class="text-primary mb-2">Reporte Cuadro PRIM</h2>
+                    <p class="text-muted mb-0">Enseñar es un trabajo que se hace desde el corazón</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- CONTENIDO PRINCIPAL -->
-            <div class="row g-4">
+            <div class="row g-4 align-items-stretch">
 
               <!-- PANEL CONFIGURACIÓN -->
-              <div class="col-12 col-lg-3 col-xl-3">
-
+              <div class="col-12 col-xl-4">
                 <div class="card shadow-sm border-0 rounded-3 h-100">
                   <div class="card-body d-flex flex-column">
-
-                    <h5 class="fw-bold text-primary mb-3">
-                      Configuración
-                    </h5>
-
-                    <div class="mt-auto d-grid gap-2">
-                      <button type="button" class="btn btn-primary" id="btnGenerarCuadroPRIM">
-                        Generar Cuadro PRIM
-                      </button>
-
-                      <button type="button" class="btn btn-outline-success" id="btnVistaPrevia">
-                        Vista Previa
-                      </button>
+                    <div class="mb-4">
+                      <h5 class="fw-bold text-primary mb-1">Configuración</h5>
+                      <p class="text-muted mb-0 small">Complete la información necesaria para generar el cuadro PRIM.
+                      </p>
                     </div>
 
+                    <div class="mb-3">
+                      <label for="tituloCuadroPRIM" class="form-label fw-semibold">Título</label>
+                      <input type="text" class="form-control" id="tituloCuadroPRIM"
+                        placeholder="Ingrese el título en el lenguaje indígena">
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="subtituloCuadroPRIM" class="form-label fw-semibold">Subtítulo</label>
+                      <input type="text" class="form-control" id="subtituloCuadroPRIM"
+                        placeholder="Ingrese el subtítulo en el lenguaje indígena">
+                    </div>
+
+                    <div class="mb-4">
+                      <label for="cicloCuadroPRIM" class="form-label fw-semibold">Ciclo / Bimestre</label>
+                      <input type="text" class="form-control" id="cicloCuadroPRIM"
+                        placeholder="Ingrese el ciclo o bimestre en el lenguaje indígena">
+                    </div>
+
+                    <div class="mt-auto">
+                      <div class="d-grid gap-2 d-sm-flex flex-sm-row">
+                        <button type="button" class="btn btn-primary w-100" id="btnGenerarCuadroPRIM">
+                          Generar Cuadro PRIM
+                        </button>
+
+                        <button type="button" class="btn btn-outline-success w-100" id="btnVistaPrevia">
+                          Vista previa
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-
               </div>
 
               <!-- IMAGEN -->
-              <div class="col-12 col-lg-3">
-                <div class="card shadow mb-4 h-100">
-                  <div class="card-body p-0 h-100">
-                    <img src="../../assets/img/CuadroPrim.jpg" alt="Imagen de calificaciones"
-                      class="img-fluid w-100 h-100" style="object-fit: cover; border-radius: 0.375rem;">
+              <div class="col-12 col-md-6 col-xl-4">
+                <div class="card shadow-sm border-0 rounded-3 h-100 overflow-hidden">
+                  <div class="card-header bg-light border-0">
+                    <h6 class="mb-0 text-primary">Referencia visual</h6>
+                  </div>
+                  <div class="card-body p-0">
+                    <img src="../../assets/img/CuadroPrim.jpg" alt="Imagen de referencia Cuadro PRIM"
+                      class="img-fluid w-100">
+                  </div>
+                </div>
+              </div>
+
+              <!-- PANEL INFORMATIVO -->
+              <div class="col-12 col-md-6 col-xl-4">
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                  <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="text-center text-md-start">
+                      <span class="badge bg-label-primary mb-3">Reporte académico</span>
+                      <h5 class="fw-bold text-primary mb-3">Generación de Cuadro PRIM</h5>
+                      <p class="text-muted mb-0">
+                        Utilice este módulo para personalizar el título, subtítulo y ciclo del reporte.
+                        Luego podrá generar el documento o revisar su vista previa antes de utilizarlo.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -300,36 +332,34 @@
 
             <!-- VISTA PREVIA -->
             <div class="card shadow-sm border-0 rounded-3 mt-4 d-none" id="vistaPreviaContainerCuadroPrim">
-              <div class="card-header bg-success text-white">
-                Vista Previa - Cuadro PRIM
+              <div class="card-header bg-success text-white d-flex align-items-center justify-content-between">
+                <span class="fw-semibold mb-0">Vista Previa - Cuadro PRIM</span>
               </div>
               <div class="card-body text-center py-4">
-                <div id="CuadroPRIMContainer"></div>
+                <div id="CuadroPRIMContainer" class="w-100"></div>
               </div>
             </div>
           </div>
+          <!-- / Content -->
 
-        </div>
-        <!-- / Content -->
+          <!-- Footer -->
+          <footer class="content-footer footer bg-footer-theme">
+            <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+              <div class="mb-2 mb-md-0">
+                carolay Canté© 2026, "Construyendo herramientas que facilitan el aprendizaje."
+              </div>
 
-        <!-- Footer -->
-        <footer class="content-footer footer bg-footer-theme">
-          <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
-            <div class="mb-2 mb-md-0">
-              carolay Canté© 2026, "Construyendo herramientas que facilitan el aprendizaje."
             </div>
+          </footer>
+          <!-- / Footer -->
 
-          </div>
-        </footer>
-        <!-- / Footer -->
-
-        <div class="content-backdrop fade"></div>
+          <div class="content-backdrop fade"></div>
+        </div>
       </div>
+      <!-- / Layout page -->
     </div>
-    <!-- / Layout page -->
-  </div>
-  <!-- Overlay -->
-  <div class="layout-overlay layout-menu-toggle"></div>
+    <!-- Overlay -->
+    <div class="layout-overlay layout-menu-toggle"></div>
   </div>
   <!-- / Layout wrapper -->
   <!-- Core JS -->

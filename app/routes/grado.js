@@ -1,5 +1,5 @@
 const express = require('express');
-const controller = require('../controllers/Grado');
+const controller = require('../controllers/grado');
 const router = express.Router();
 const auth = require('../middleware/auth');
 
@@ -21,5 +21,9 @@ const path = 'grado';
  *               type: array
  */
 router.get(`/${path}`, controller.getData);
+
+router.post(`/${path}/obtenerGradoMateria`, controller.obtenerMateriasPorGradoSimple);
+
+router.put(`/${path}/actualizarMateriasActivasPorGrado`, controller.actualizarMateriasActivasPorGrado);
 
 module.exports = router;

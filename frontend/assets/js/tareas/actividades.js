@@ -60,6 +60,77 @@
     return { grado_id, seccion_id, ciclo_id, anio: ANIO };
   }
 
+  async function actualizarActividad(payload) {
+    const r = await fetch('http://localhost:8001/actividad/ActualizarActividad', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(payload)
+    });
+
+    if (!r.ok) throw new Error('ActualizarActividad HTTP ' + r.status);
+
+    return r.json();
+  }
+
+  async function fetchCiclos() {
+    const r = await fetch('http://localhost:8001/ciclo', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include'
+    });
+
+    if (!r.ok) throw new Error('ciclo HTTP ' + r.status);
+
+    const json = await r.json();
+    return Array.isArray(json.data) ? json.data : [];
+  }
+
+  async function fetchEstadosActividad() {
+    const r = await fetch('http://localhost:8001/EstadoActividad', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include'
+    });
+
+    if (!r.ok) throw new Error('EstadoActividad HTTP ' + r.status);
+
+    const json = await r.json();
+    return Array.isArray(json.data) ? json.data : [];
+  }
+
+  async function fetchTiposActividad() {
+    const r = await fetch('http://localhost:8001/tipoActividad', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include'
+    });
+
+    if (!r.ok) throw new Error('tipoActividad HTTP ' + r.status);
+
+    const json = await r.json();
+    return Array.isArray(json.data) ? json.data : [];
+  }
+
+  function buildOptions(items, {
+    valueField,
+    textField,
+    selectedValue,
+    placeholder = '-- Seleccione --'
+  }) {
+    let html = `<option value="">${placeholder}</option>`;
+
+    html += items.map(item => {
+      const value = item?.[valueField];
+      const text = item?.[textField];
+      const selected = Number(value) === Number(selectedValue) ? 'selected' : '';
+
+      return `<option value="${safeText(value)}" ${selected}>${safeText(text)}</option>`;
+    }).join('');
+
+    return html;
+  }
+
   async function fetchActividadesPorTipo(payload) {
     const r = await fetch('http://localhost:8001/actividad/ActividadesPorTipo', {
       method: 'POST',
@@ -72,47 +143,64 @@
     return Array.isArray(json.data) ? json.data : [];
   }
 
+  async function fetchActividadDetalle(actividad_id) {
+    const r = await fetch('http://localhost:8001/actividad/ActividadDetalle', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ actividad_id: Number(actividad_id) })
+    });
+
+    if (!r.ok) throw new Error('ActividadDetalle HTTP ' + r.status);
+
+    const json = await r.json();
+    return Array.isArray(json.data) && json.data.length ? json.data[0] : null;
+  }
+
   // =========================================================
   // Render UI (h3 + contador) + cards por tipo
   // =========================================================
   const SECCIONES = [
     { key: 'tarea', title: 'Trabajo, proyecto o ejercicio', match: /tarea/i },
-    { key: 'evaluacion', title: 'Evaluación', match: /examen|evalu/i },
-    { key: 'miscelaneo', title: 'Misceláneos', match: /actitud|misc/i }
+    { key: 'evaluacion', title: 'Evaluación', match: /examen|evalu/i }
   ];
 
   function cardTemplate(a) {
     const titulo = safeText(a?.nombre_actividad || 'Actividad');
     const desc = safeText(a?.descripcion || '—');
     const pts = safeText(a?.puntaje_maximo ?? '0');
+    const actividadId = Number(a?.actividad_id || 0);
 
     return `
-      <div class="card actividad-card shadow-sm mb-3">
-        <div class="card-body py-3">
-          <div class="row g-3 align-items-center">
-            <div class="col-1 d-flex">
-              <div class="icon-badge mx-auto">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5985E1"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
-              </div>
+    <div class="card actividad-card shadow-sm mb-3">
+      <div class="card-body py-3">
+        <div class="row g-3 align-items-center">
+          <div class="col-12 col-md-1 d-flex">
+            <div class="icon-badge mx-auto mx-md-0">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5985E1">
+                <path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
+              </svg>
             </div>
+          </div>
 
-            <div class="col-8">
-              <h2 class="actividad-title mb-1 text-primary actividad-click"
-    style="cursor:pointer"
-    data-actividad='${JSON.stringify(a)}'>
-    ${titulo}
-</h2>
+          <div class="col-12 col-md-8">
+            <h2
+              class="actividad-title mb-1 text-primary actividad-click"
+              style="cursor:pointer"
+              data-actividad-id="${actividadId}">
+              ${titulo}
+            </h2>
 
-              <p class="actividad-desc mb-0">${desc}</p>
-            </div>
+            <p class="actividad-desc mb-0">${desc}</p>
+          </div>
 
-            <div class="col-3 d-flex justify-content-end">
-              <span class="activity-points">${pts} pts</span>
-            </div>
+          <div class="col-12 col-md-3 d-flex justify-content-md-end">
+            <span class="activity-points">${pts} pts</span>
           </div>
         </div>
       </div>
-    `;
+    </div>
+  `;
   }
 
   function headingTemplate(title, count, key) {
@@ -137,14 +225,15 @@
 
       ${headingTemplate('Evaluación', 0)}
       <p class="text-muted">Datos no disponibles</p>
-
-      ${headingTemplate('Misceláneos', 0)}
-      <p class="text-muted">Datos no disponibles</p>
     `;
   }
 
+  function obtenerActividadIdDesdeSession() {
+    return toInt(sessionStorage.getItem('actividadIdRedireccion'), 0);
+  }
+
   function agruparPorSeccion(dataMaterias) {
-    const bucket = { tarea: [], evaluacion: [], miscelaneo: [] };
+    const bucket = { tarea: [], evaluacion: [] };
 
     for (const mat of dataMaterias) {
       const tipos = Array.isArray(mat?.tipos_actividad) ? mat.tipos_actividad : [];
@@ -159,6 +248,7 @@
         bucket[sec.key].push(...acts);
       }
     }
+
     return bucket;
   }
 
@@ -203,13 +293,32 @@
   }
 
   function activarEventosModal() {
-  document.querySelectorAll('.actividad-click').forEach(el => {
-    el.addEventListener('click', () => {
-      const data = JSON.parse(el.dataset.actividad || '{}');
-      abrirModalActividad(data);
+    document.querySelectorAll('.actividad-click').forEach(el => {
+      el.addEventListener('click', async () => {
+        const actividadIdRaw = el.getAttribute('data-actividad-id');
+        const actividadId = toInt(actividadIdRaw, 0);
+
+        if (!actividadId) {
+          alert('No se encontró el identificador de la actividad.');
+          return;
+        }
+
+        try {
+          const detalle = await fetchActividadDetalle(actividadId);
+
+          if (!detalle) {
+            alert('No se encontró el detalle de la actividad.');
+            return;
+          }
+
+          await abrirModalActividad(detalle);
+        } catch (error) {
+          console.error('Error obteniendo detalle de actividad:', error);
+          alert('No fue posible obtener el detalle de la actividad.');
+        }
+      });
     });
-  });
-}
+  }
 
   // =========================================================
   // Combo Materia: llenar solo permitidas + auto-selección materia 1
@@ -314,6 +423,29 @@
     }
   }
 
+  async function abrirActividadDesdeSessionSiExiste() {
+    const actividadId = obtenerActividadIdDesdeSession();
+
+    if (!actividadId) return;
+
+    try {
+      const detalle = await fetchActividadDetalle(actividadId);
+
+      sessionStorage.removeItem('actividadIdRedireccion');
+
+      if (!detalle) {
+        alert('No se encontró la actividad solicitada.');
+        return;
+      }
+
+      await abrirModalActividad(detalle);
+    } catch (error) {
+      console.error('Error cargando actividad desde sessionStorage:', error);
+      sessionStorage.removeItem('actividadIdRedireccion');
+      alert('No fue posible abrir la actividad solicitada.');
+    }
+  }
+
   // Esperar a que combos grado/sección estén listos (se llenan async por otro JS)
   function esperarCombosListosYcargar(maxIntentos = 40) {
     let i = 0;
@@ -346,38 +478,191 @@
     }, 200);
   }
 
-  function abrirModalActividad(data) {
+  async function abrirModalActividad(data) {
+    const oldModal = document.getElementById('modalActividad');
+    if (oldModal) oldModal.remove();
 
-  // eliminar modal anterior si existe
-  const oldModal = document.getElementById('modalActividad');
-  if (oldModal) oldModal.remove();
+    const fechaCreacion = data?.fecha_creacion
+      ? String(data.fecha_creacion).substring(0, 10)
+      : '';
 
-  const modalHTML = `
-    <div class="modal fade" id="modalActividad" tabindex="-1">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
+    const fechaEntrega = data?.fecha_entrega
+      ? new Date(data.fecha_entrega).toISOString().slice(0, 16)
+      : '';
+
+    let ciclos = [];
+    let estadosActividad = [];
+    let tiposActividad = [];
+
+    try {
+      const [ciclosRes, estadosRes, tiposRes] = await Promise.all([
+        fetchCiclos(),
+        fetchEstadosActividad(),
+        fetchTiposActividad()
+      ]);
+
+      ciclos = ciclosRes.filter(item => item?.estado === true || item?.estado === 1);
+
+      estadosActividad = estadosRes.filter(item => item?.estado === true || item?.estado === 1);
+
+      tiposActividad = tiposRes
+        .filter(item => item?.estado === true || item?.estado === 1)
+        .filter(item => Number(item?.tipo_actividad_id) !== 3); // quitar actitudinal
+    } catch (error) {
+      console.error('Error cargando catálogos del modal:', error);
+      alert('No fue posible cargar los catálogos del detalle de actividad.');
+      return;
+    }
+
+    const optionsCiclo = buildOptions(ciclos.map(item => ({
+      ciclo_id: item.ciclo_id,
+      texto: `Bimestre ${item.numero_ciclo}`
+    })), {
+      valueField: 'ciclo_id',
+      textField: 'texto',
+      selectedValue: data?.ciclo_id,
+      placeholder: '-- Seleccione bimestre --'
+    });
+
+    const optionsTipoActividad = buildOptions(tiposActividad.map(item => ({
+      tipo_actividad_id: item.tipo_actividad_id,
+      texto: item.descripcion_tipo
+    })), {
+      valueField: 'tipo_actividad_id',
+      textField: 'texto',
+      selectedValue: data?.tipo_actividad_id,
+      placeholder: '-- Seleccione tipo --'
+    });
+
+    const optionsEstadoActividad = buildOptions(estadosActividad.map(item => ({
+      estado_actividad_id: item.estado_actividad_id,
+      texto: item.descripcion_estado
+    })), {
+      valueField: 'estado_actividad_id',
+      textField: 'texto',
+      selectedValue: data?.estado_actividad_id,
+      placeholder: '-- Seleccione estado --'
+    });
+
+    const modalHTML = `
+    <div class="modal fade" id="modalActividad" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
 
-          <div class="modal-header">
-            <h5 class="modal-title">${safeText(data.nombre_actividad || 'Actividad')}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title">Detalle de Actividad</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
           </div>
 
           <div class="modal-body">
-            <p><strong>Descripción:</strong></p>
-            <p>${safeText(data.descripcion || 'Sin descripción')}</p>
+            <form id="formDetalleActividad">
+              <input type="hidden" id="detalle_actividad_id" value="${safeText(data.actividad_id || '')}">
 
-            <hr>
+              <div class="row g-3">
 
-            <p><strong>Puntaje máximo:</strong> ${safeText(data.puntaje_maximo || 0)} pts</p>
+                <!-- FILA 1 -->
+                <div class="col-12 col-md-5">
+                  <label class="form-label">Nombre de actividad</label>
+                  <input
+                    type="text"
+                    class="form-control campo-editable-actividad"
+                    id="detalle_nombre_actividad"
+                    value="${safeText(data.nombre_actividad || '')}"
+                    disabled>
+                </div>
 
-            <p><strong>Fecha de entrega:</strong> ${safeText(data.fecha_entrega.substring(0,10) || 'No definida')}</p>
+                <div class="col-12 col-md-2">
+                  <label class="form-label">Puntaje máximo</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    class="form-control campo-editable-actividad"
+                    id="detalle_puntaje_maximo"
+                    value="${safeText(data.puntaje_maximo || '')}"
+                    disabled>
+                </div>
 
-            <!-- Aquí luego agregamos más información -->
+                <div class="col-12 col-md-3">
+                  <label class="form-label">Materia</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="detalle_nombre_materia"
+                    value="${safeText(data.nombre_materia || '')}"
+                    disabled>
+                </div>
+
+                <div class="col-12 col-md-2">
+                  <label class="form-label">Fecha de creación</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="detalle_fecha_creacion"
+                    value="${safeText(fechaCreacion)}"
+                    disabled>
+                </div>
+                <!-- FILA 2 -->
+
+                <div class="col-12 col-md-3">
+                  <label class="form-label">Fecha de entrega</label>
+                  <input
+                    type="datetime-local"
+                    class="form-control campo-editable-actividad"
+                    id="detalle_fecha_entrega"
+                    value="${safeText(fechaEntrega)}"
+                    disabled>
+                </div>
+
+                <div class="col-12 col-md-3">
+                  <label class="form-label">Bimestre</label>
+                  <select
+                    class="form-select campo-editable-actividad"
+                    id="detalle_ciclo_id"
+                    disabled>
+                    ${optionsCiclo}
+                  </select>
+                </div>
+
+                <div class="col-12 col-md-3">
+                  <label class="form-label">Tipo de actividad</label>
+                  <select
+                    class="form-select campo-editable-actividad"
+                    id="detalle_tipo_actividad_id"
+                    disabled>
+                    ${optionsTipoActividad}
+                  </select>
+                </div>
+
+                <div class="col-12 col-md-3">
+                  <label class="form-label">Estado de actividad</label>
+                  <select
+                    class="form-select campo-editable-actividad"
+                    id="detalle_estado_actividad_id"
+                    disabled>
+                    ${optionsEstadoActividad}
+                  </select>
+                </div>
+                <!-- FILA 3 -->
+
+                <div class="col-12 col-md-12">
+                  <label class="form-label">Descripción</label>
+                  <textarea
+                    class="form-control campo-editable-actividad"
+                    id="detalle_descripcion"
+                    rows="4"
+                    disabled>${safeText(data.descripcion || '')}</textarea>
+                </div>
+
+              </div>
+            </form>
           </div>
 
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
               Cerrar
+            </button>
+            <button type="button" class="btn btn-primary" id="btnEditarActividad">
+              Editar
             </button>
           </div>
 
@@ -386,42 +671,151 @@
     </div>
   `;
 
-  document.body.insertAdjacentHTML('beforeend', modalHTML);
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-  const modal = new bootstrap.Modal(document.getElementById('modalActividad'));
-  modal.show();
-}
+    const modalEl = document.getElementById('modalActividad');
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
 
+    initModalActividadEventos(modalEl, data);
+  }
 
+  function toggleCamposEdicionActividad(habilitar) {
+    document.querySelectorAll('.campo-editable-actividad').forEach(el => {
+      el.disabled = !habilitar;
+    });
+  }
+
+  function obtenerPayloadActividadDesdeModal() {
+    const fechaEntregaRaw = document.getElementById('detalle_fecha_entrega')?.value || '';
+
+    return {
+      actividad_id: toInt(document.getElementById('detalle_actividad_id')?.value, 0),
+      nombre_actividad: document.getElementById('detalle_nombre_actividad')?.value?.trim() || '',
+      puntaje_maximo: parseFloat(document.getElementById('detalle_puntaje_maximo')?.value || '0') || 0,
+      fecha_entrega: fechaEntregaRaw
+        ? fechaEntregaRaw.replace('T', ' ') + ':00'
+        : '',
+      ciclo_id: toInt(document.getElementById('detalle_ciclo_id')?.value, 0),
+      tipo_actividad_id: toInt(document.getElementById('detalle_tipo_actividad_id')?.value, 0),
+      estado_actividad_id: toInt(document.getElementById('detalle_estado_actividad_id')?.value, 0),
+      descripcion: document.getElementById('detalle_descripcion')?.value?.trim() || ''
+    };
+  }
+
+  function initModalActividadEventos(modalEl, dataOriginal) {
+    const btnEditarActividad = modalEl.querySelector('#btnEditarActividad');
+    if (!btnEditarActividad) return;
+
+    let modoEdicion = false;
+
+    btnEditarActividad.addEventListener('click', async () => {
+      if (!modoEdicion) {
+        const confirmarEditar = confirm('¿Desea habilitar la edición de esta actividad?');
+        if (!confirmarEditar) return;
+
+        modoEdicion = true;
+        toggleCamposEdicionActividad(true);
+
+        btnEditarActividad.textContent = 'Actualizar';
+        btnEditarActividad.classList.remove('btn-primary');
+        btnEditarActividad.classList.add('btn-success');
+        return;
+      }
+
+      const payload = obtenerPayloadActividadDesdeModal();
+
+      if (!payload.actividad_id) {
+        alert('No se encontró el identificador de la actividad.');
+        return;
+      }
+
+      if (!payload.nombre_actividad) {
+        alert('El nombre de la actividad es obligatorio.');
+        return;
+      }
+
+      if (!payload.puntaje_maximo || payload.puntaje_maximo <= 0) {
+        alert('El puntaje máximo debe ser mayor a 0.');
+        return;
+      }
+
+      if (!payload.fecha_entrega) {
+        alert('La fecha de entrega es obligatoria.');
+        return;
+      }
+
+      if (!payload.ciclo_id) {
+        alert('Debe seleccionar un bimestre.');
+        return;
+      }
+
+      if (!payload.tipo_actividad_id) {
+        alert('Debe seleccionar un tipo de actividad.');
+        return;
+      }
+
+      if (!payload.estado_actividad_id) {
+        alert('Debe seleccionar un estado de actividad.');
+        return;
+      }
+
+      if (!payload.descripcion) {
+        alert('La descripción es obligatoria.');
+        return;
+      }
+
+      const confirmarActualizar = confirm('¿Desea actualizar la información de esta actividad?');
+      if (!confirmarActualizar) return;
+
+      try {
+        await actualizarActividad(payload);
+
+        alert('Actividad actualizada correctamente.');
+
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        if (modalInstance) modalInstance.hide();
+
+        refrescarVista({ forceDefaults: false });
+      } catch (error) {
+        console.error('Error actualizando actividad:', error);
+        alert('No fue posible actualizar la actividad.');
+      }
+    });
+
+    modalEl.addEventListener('hidden.bs.modal', () => {
+      modalEl.remove();
+    });
+  }
   // =========================================================
   // Bootstrap + listeners
   // =========================================================
   document.addEventListener('DOMContentLoaded', () => {
-    // ciclo 1 inicial
     if (selCiclo) selCiclo.value = String(CICLO_DEFAULT);
 
     wrap.innerHTML = `<p class="text-muted">Cargando actividades...</p>`;
 
-    // auto carga con defaults
     esperarCombosListosYcargar();
 
-    // ✅ botón Ver: refresca con ciclo/materia que el usuario eligió
     btnVer?.addEventListener('click', () => {
       refrescarVista({ forceDefaults: false });
     });
 
-    // (opcional) si cambia grado/sección => volver a cargar defaults ciclo 1 + materia 1
     selGrado?.addEventListener('change', () => {
       if (selCiclo) selCiclo.value = String(CICLO_DEFAULT);
       isFirstLoadDone = false;
       esperarCombosListosYcargar();
     });
+
     selSeccion?.addEventListener('change', () => {
       if (selCiclo) selCiclo.value = String(CICLO_DEFAULT);
       isFirstLoadDone = false;
       esperarCombosListosYcargar();
     });
 
+    setTimeout(() => {
+      abrirActividadDesdeSessionSiExiste();
+    }, 800);
   });
 
 })();

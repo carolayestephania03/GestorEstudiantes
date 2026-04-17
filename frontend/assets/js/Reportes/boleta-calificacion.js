@@ -37,6 +37,7 @@
     anio: new Date().getFullYear(),
     grado_id: null,
     seccion_id: null,
+    seccion_desc: "",
     alumnos: [],
     reporte: []
   };
@@ -129,23 +130,36 @@
       "2": 2
     };
 
-    let grado_id =
-      toInt(
-        userData?.grado_id ??
-        userData?.grado_actual_id ??
-        userData?.maestro_grado_id ??
-        userData?.maestro_grado_actual_id,
-        null
-      );
+    const seccionTextoMap = {
+      a: "A",
+      b: "B",
+      "1": "A",
+      "2": "B"
+    };
 
-    let seccion_id =
-      toInt(
-        userData?.seccion_id ??
-        userData?.seccion_actual_id ??
-        userData?.maestro_seccion_id ??
-        userData?.maestro_seccion_actual_id,
-        null
-      );
+    let grado_id = toInt(
+      userData?.grado_id ??
+      userData?.grado_actual_id ??
+      userData?.maestro_grado_id ??
+      userData?.maestro_grado_actual_id,
+      null
+    );
+
+    let seccion_id = toInt(
+      userData?.seccion_id ??
+      userData?.seccion_actual_id ??
+      userData?.maestro_seccion_id ??
+      userData?.maestro_seccion_actual_id,
+      null
+    );
+
+    let seccion_desc = String(
+      userData?.seccion_desc ??
+      userData?.seccion_actual_desc ??
+      userData?.maestro_seccion_desc ??
+      userData?.maestro_seccion_actual_desc ??
+      ""
+    ).trim().toUpperCase();
 
     if (!grado_id) {
       const gradoTexto = String(
@@ -167,6 +181,15 @@
       ).trim().toLowerCase();
 
       seccion_id = seccionMap[seccionTexto] ?? null;
+
+      if (!seccion_desc) {
+        seccion_desc = seccionTextoMap[seccionTexto] ?? "";
+      }
+    }
+
+    if (!seccion_desc) {
+      if (Number(seccion_id) === 1) seccion_desc = "A";
+      else if (Number(seccion_id) === 2) seccion_desc = "B";
     }
 
     const anio = toInt(
@@ -177,7 +200,7 @@
       new Date().getFullYear()
     );
 
-    return { anio, grado_id, seccion_id };
+    return { anio, grado_id, seccion_id, seccion_desc };
   }
 
   async function fetchJSON(url, method = "POST", payload = null) {
@@ -454,7 +477,7 @@
         <div class="boleta-info">
           <div><strong>Alumno:</strong> ${escapeHtml(boleta.nombre_completo)}</div>
           <div><strong>Código:</strong> ${escapeHtml(boleta.codigo_alumno || "—")}</div>
-          <div><strong>Grado:</strong> ${escapeHtml(estado.grado_id)} &nbsp;&nbsp; <strong>Sección:</strong> ${escapeHtml(estado.seccion_id)}</div>
+          <div><strong>Grado:</strong> ${escapeHtml(estado.grado_id)} &nbsp;&nbsp; <strong>Sección:</strong> ${escapeHtml(estado.seccion_desc)}</div>
           <div><strong>Fecha:</strong> ${escapeHtml(formatDateLong())}</div>
         </div>
 
@@ -1061,17 +1084,18 @@
   // =========================================================
   // INIT
   // =========================================================
-  async function init() {
-    const datos = obtenerDatosSessionStorage();
+async function init() {
+  const datos = obtenerDatosSessionStorage();
 
-    estado.anio = datos.anio;
-    estado.grado_id = datos.grado_id;
-    estado.seccion_id = datos.seccion_id;
+  estado.anio = datos.anio;
+  estado.grado_id = datos.grado_id;
+  estado.seccion_id = datos.seccion_id;
+  estado.seccion_desc = datos.seccion_desc || "";
 
-    actualizarModoImpresionUI();
-    bindEvents();
-    await cargarAlumnos();
-  }
+  actualizarModoImpresionUI();
+  bindEvents();
+  await cargarAlumnos();
+}
 
   document.addEventListener("DOMContentLoaded", init);
 })();

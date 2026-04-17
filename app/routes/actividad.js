@@ -7,7 +7,7 @@ const path = 'actividad';
 
 router.post(`/${path}`, controller.getActividadesData);
 
-router.post(`/${path}/ActividadDetalle`, controller.getActividadDetalle);
+router.post(`/${path}/ActividadDetalle`, controller.obtenerActividadPorId);
 
 router.post(`/${path}/GradoMateria`, controller.getActividadesPorMateria);
 
@@ -27,5 +27,9 @@ router.post(`/${path}/ActividadesCalificadasPorTipo`, controller.getActividadesC
 router.post(`/${path}/ActividadesCalificadasPorAlumno`, controller.getNotasAlumnosTareasCalificadas);
 
 router.post(`/${path}/ActividadesAgrupadasPorAviso`, controller.getTareasAgrupadasPorAviso);
+
+router.post(`/${path}/CrearActividad`, controller.crearActividad);
+
+router.put(`/${path}/ActualizarActividad`, controller.actualizarActividad);
 
 module.exports = router;

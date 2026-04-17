@@ -289,26 +289,29 @@
               </div>
               <div class="col-12 col-lg-7 mb-3" id="Selec-gradSec">
                 <div class="row g-2 align-items-end">
-                  <div class="col-12 col-sm-6 col-md-4 form-container">
+                  <div class="col-12 col-sm-6 col-md-3 form-container">
                     <label for="combo_grado_direc" class="select-label">grado:</label>
                     <select id="combo_grado_direc" class="custom-select">
                       <option value="" disabled selected>-- Elija una opción --</option>
                     </select>
                   </div>
-                  <div class="col-12 col-sm-6 col-md-4 form-container">
+                  <div class="col-12 col-sm-6 col-md-3 form-container">
                     <label for="combo_seccion_direc" class="select-label">sección:</label>
                     <select id="combo_seccion_direc" class="custom-select">
                       <option value="" disabled selected>-- Elija una opción --</option>
                     </select>
                   </div>
-                  <div class="col-12 col-sm-6 col-md-4 form-container">
-                    <label for="combo_materia" class="select-label">Materia:</label>
-                    <select id="combo_materia" class="custom-select">
+                  <div class="col-12 col-sm-6 col-md-3 form-container">
+                    <label for="combo_bimestre" class="select-label">Bimestre:</label>
+                    <select id="combo_bimestre" class="custom-select">
                       <option value="" disabled selected>-- Elija una opción --</option>
                     </select>
                   </div>
-                  <div class="col-12 d-flex justify-content-end">
-                    <button type="button" class="btn btn-primary" id="VisualizarInfo">Ver</button>
+                  <div class="col-12 col-sm-6 col-md-3 form-container">
+                    <label for="combo_materia" class="select-label">Materia:</label>
+                    <select id="combo_materia" class="custom-select">
+                      <option value="Todas las materias" disabled selected>-- Todas las materias --</option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -328,7 +331,6 @@
             </div>
 
             <!-- MODAL INSERCIÓN -->
-
             <!-- MODAL ACTIVIDAD -->
             <div class="modal fade" id="eventModal" tabindex="-1">
               <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -368,7 +370,7 @@
                         <!-- Fecha -->
                         <div class="col-md-4">
                           <label class="form-label">Fecha de Entrega</label>
-                          <input type="date" class="form-control" id="endDate">
+                          <input type="datetime-local" class="form-control" id="endDate">
                         </div>
 
                         <!-- Materia -->
@@ -417,8 +419,67 @@
                 </div>
               </div>
             </div>
-
             <!-- MODAL INSERCIÓN -->
+            <!-- MODAL DETALLE ACTIVIDAD -->
+            <div class="modal fade" id="eventDetailModal" tabindex="-1">
+              <div class="modal-dialog modal-md modal-dialog-centered">
+                <div class="modal-content shadow-lg border-0">
+
+                  <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title">Detalle de Actividad</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                  </div>
+
+                  <div class="modal-body">
+                    <div class="mb-2">
+                      <strong>Actividad:</strong>
+                      <div id="detalle_nombre_actividad">--</div>
+                    </div>
+
+                    <div class="mb-2">
+                      <strong>Materia:</strong>
+                      <div id="detalle_materia">--</div>
+                    </div>
+
+                    <div class="mb-2">
+                      <strong>Tipo de actividad:</strong>
+                      <div id="detalle_tipo_actividad">--</div>
+                    </div>
+
+                    <div class="mb-2">
+                      <strong>Descripción:</strong>
+                      <div id="detalle_descripcion">--</div>
+                    </div>
+
+                    <div class="mb-2">
+                      <strong>Fecha de entrega:</strong>
+                      <div id="detalle_fecha_entrega">--</div>
+                    </div>
+
+                    <div class="mb-2">
+                      <strong>Punteo máximo:</strong>
+                      <div id="detalle_punteo">--</div>
+                    </div>
+
+                    <div class="mb-0">
+                      <strong>Estado:</strong>
+                      <div id="detalle_estado">--</div>
+                    </div>
+                  </div>
+
+                  <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                      Cerrar
+                    </button>
+
+                    <button type="button" class="btn btn-primary" id="btnIrActividad">
+                      Ir a actividad
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <!-- / Content -->

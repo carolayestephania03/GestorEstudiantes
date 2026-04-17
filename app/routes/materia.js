@@ -9,4 +9,8 @@ router.get(`/${path}`, controller.getData);
 
 router.post(`/${path}/ActividadesPenyCum`, controller.getActPenyCum);
 
+router.post(`/${path}/crearMateria`, controller.crearMateria);
+
+router.put(`/${path}/actualizarMateria`, controller.actualizarMateria);
+
 module.exports = router;

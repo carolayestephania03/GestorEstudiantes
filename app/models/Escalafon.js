@@ -13,6 +13,10 @@ const Escalafon = sequelize.define('Escalafon', {
     descripcion: {
         type: DataTypes.STRING(50),
         allowNull: false
+    },
+    estado_escalafon: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
     }
 }, {
     tableName: 'Escalafon',

@@ -101,10 +101,10 @@
     padding: 0.25rem 0.35rem;
   }
 
-.tabla-notas thead th {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  .tabla-notas thead th {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   /* Columna Nombre más amplia */
   .tabla-notas td:nth-child(2),
@@ -129,6 +129,19 @@
   .tabla-notas td:last-child,
   .tabla-notas th:last-child {
     width: 120px;
+  }
+
+  .btn-toggle-card {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #collapseNotasMateria,
+  #collapseNotasActitudinal {
+    transition: all 0.25s ease;
   }
 </style>
 
@@ -380,143 +393,281 @@
             <div class="row">
               <div class="col-12">
                 <div class="card card-custom h-100">
-                  <div class="card-body">
-                    <div class="text-md">
-                      <span class="badge bg-label-primary mb-2">Materia</span>
-                      <h3 class="mb-0 mb-3  ">Matemáticas</h3>
-                    </div>
-                    <div class="table-responsive">
-                      <table class="table table-bordered align-middle table-sm w-100 tabla-notas">
-                        <thead>
-                          <!-- Fila 1: Grupos -->
-                          <tr>
-                            <th rowspan="2" class="text-nowrap">No.</th>
-                            <th rowspan="2" class="text-nowrap">Nombre</th>
 
-                            <th colspan="4" class="text-center text-nowrap">Tareas</th>
-                            <th colspan="3" class="text-center text-nowrap">Tipo_actividad_id = 2</th>
-                            <th colspan="1" class="text-center text-nowrap">Tipo_actividad_id = 3</th>
+                  <!-- ===================================================== -->
+                  <!-- TARJETA: CALIFICACIONES POR MATERIA -->
+                  <!-- ===================================================== -->
+                  <div class="card-body border-bottom">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                      <div class="text-md">
+                        <span class="badge bg-label-primary mb-2">Materia</span>
+                        <h3 class="mb-0" id="tituloMateriaCard">Matemáticas</h3>
+                      </div>
 
-                            <th colspan="1" class="text-center text-nowrap">Total</th>
-                            <th rowspan="2" class="text-center text-nowrap">Acciones</th>
-                          </tr>
+                      <div class="d-flex align-items-center gap-2 ms-auto">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnConfigNotasMateria">
+                          Configuración de notas
+                        </button>
 
-                          <!-- Fila 2: Subcolumnas -->
-                          <tr>
-                            <!-- Tipo 1 -->
-                            <th class="text-center text-nowrap">Act 1</th>
-                            <th class="text-center text-nowrap">Act 2</th>
-                            <th class="text-center text-nowrap">Act 3</th>
-                            <th class="text-center text-nowrap">Act 4</th>
-
-                            <!-- Tipo 2 -->
-                            <th class="text-center text-nowrap">Act 1</th>
-                            <th class="text-center text-nowrap">Act 2</th>
-                            <th class="text-center text-nowrap">Act 3</th>
-
-                            <!-- Tipo 3 -->
-                            <th class="text-center text-nowrap">Act 1</th>
-
-                            <!-- Total -->
-                            <th class="text-center text-nowrap">Cantidad</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          <!-- Datos quemados -->
-                          <tr>
-                            <td class="text-nowrap">1</td>
-                            <td class="text-nowrap">María González</td>
-
-                            <td class="text-center">10</td>
-                            <td class="text-center">9</td>
-                            <td class="text-center">10</td>
-                            <td class="text-center">8</td>
-
-                            <td class="text-center">10</td>
-                            <td class="text-center">10</td>
-                            <td class="text-center">9</td>
-
-                            <td class="text-center">10</td>
-
-                            <td class="text-center fw-bold">86</td>
-
-                            <td class="text-center text-nowrap">
-                              <button type="button" class="btn btn-sm btn-outline-primary">Editar</button>
-                            </td>
-                          </tr>
-
-                          <tr>
-                            <td class="text-nowrap">2</td>
-                            <td class="text-nowrap">Juan Pérez</td>
-
-                            <td class="text-center">8</td>
-                            <td class="text-center">7</td>
-                            <td class="text-center">9</td>
-                            <td class="text-center">8</td>
-
-                            <td class="text-center">9</td>
-                            <td class="text-center">8</td>
-                            <td class="text-center">9</td>
-
-                            <td class="text-center">8</td>
-
-                            <td class="text-center fw-bold">76</td>
-
-                            <td class="text-center text-nowrap">
-                              <button type="button" class="btn btn-sm btn-outline-primary">Editar</button>
-                            </td>
-                          </tr>
-
-                          <tr>
-                            <td class="text-nowrap">3</td>
-                            <td class="text-nowrap">Ana López</td>
-
-                            <td class="text-center">10</td>
-                            <td class="text-center">10</td>
-                            <td class="text-center">9</td>
-                            <td class="text-center">10</td>
-
-                            <td class="text-center">9</td>
-                            <td class="text-center">10</td>
-                            <td class="text-center">10</td>
-
-                            <td class="text-center">9</td>
-
-                            <td class="text-center fw-bold">86</td>
-
-                            <td class="text-center text-nowrap">
-                              <button type="button" class="btn btn-sm btn-outline-primary">Editar</button>
-                            </td>
-                          </tr>
-                        </tbody>
-
-                        <tfoot>
-                          <tr>
-                            <th colspan="2" class="text-end text-nowrap">Promedio del grupo:</th>
-
-                            <th class="text-center">9.3</th>
-                            <th class="text-center">8.7</th>
-                            <th class="text-center">9.3</th>
-                            <th class="text-center">8.7</th>
-
-                            <th class="text-center">9.3</th>
-                            <th class="text-center">9.3</th>
-                            <th class="text-center">9.3</th>
-
-                            <th class="text-center">9.0</th>
-
-                            <th class="text-center fw-bold">82.7</th>
-                            <th></th>
-                          </tr>
-                        </tfoot>
-                      </table>
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-toggle-card"
+                          data-bs-toggle="collapse" data-bs-target="#collapseNotasMateria" aria-expanded="true"
+                          aria-controls="collapseNotasMateria">
+                          <span class="material-symbols-outlined icon-toggle">
+                            keyboard_arrow_down
+                          </span>
+                        </button>
+                      </div>
                     </div>
 
+                    <div class="collapse show" id="collapseNotasMateria">
+                      <div class="table-responsive">
+                        <table class="table table-bordered align-middle table-sm w-100 tabla-notas"
+                          id="tablaNotasMateria">
+                          <thead id="theadNotasMateria">
+                            <tr id="trGrupoMateria">
+                              <th rowspan="2" class="text-nowrap">No.</th>
+                              <th rowspan="2" class="text-nowrap">Nombre</th>
+
+                              <th colspan="4" class="text-center text-nowrap">Tareas</th>
+                              <th colspan="3" class="text-center text-nowrap">Procedimentales</th>
+
+                              <th colspan="1" class="text-center text-nowrap">Total</th>
+                              <th rowspan="2" class="text-center text-nowrap">Acciones</th>
+                            </tr>
+
+                            <tr id="trSubcolsMateria">
+                              <th class="text-center text-nowrap">Act 1</th>
+                              <th class="text-center text-nowrap">Act 2</th>
+                              <th class="text-center text-nowrap">Act 3</th>
+                              <th class="text-center text-nowrap">Act 4</th>
+
+                              <th class="text-center text-nowrap">Act 1</th>
+                              <th class="text-center text-nowrap">Act 2</th>
+                              <th class="text-center text-nowrap">Act 3</th>
+
+                              <th class="text-center text-nowrap">Cantidad</th>
+                            </tr>
+                          </thead>
+
+                          <tbody id="tbodyNotasMateria">
+                            <tr>
+                              <td colspan="10" class="text-center text-muted py-4">Sin datos</td>
+                            </tr>
+                          </tbody>
+                          <tfoot></tfoot>
+                        </table>
+                      </div>
+                    </div>
                   </div>
+
+                  <!-- ===================================================== -->
+                  <!-- TARJETA: ACTITUDINAL -->
+                  <!-- ===================================================== -->
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                      <div class="text-md">
+                        <span class="badge bg-label-success mb-2">Actitudinal</span>
+                        <h3 class="mb-0">Asignación de actitudinal</h3>
+                      </div>
+
+                      <div class="d-flex align-items-center gap-2 ms-auto">
+                        <button type="button" class="btn btn-sm btn-warning" id="btnConfigNotasActitudinal">
+                          Configuración de notas
+                        </button>
+
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-toggle-card"
+                          data-bs-toggle="collapse" data-bs-target="#collapseNotasActitudinal" aria-expanded="true"
+                          aria-controls="collapseNotasActitudinal">
+                          <span class="material-symbols-outlined icon-toggle">
+                            keyboard_arrow_down
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="collapse show" id="collapseNotasActitudinal">
+                      <div class="table-responsive">
+                        <table class="table table-bordered align-middle table-sm w-100 tabla-notas"
+                          id="tablaNotasActitudinal">
+                          <thead>
+                            <tr>
+                              <th rowspan="2" class="text-nowrap">No.</th>
+                              <th rowspan="2" class="text-nowrap">Nombre</th>
+
+                              <th colspan="5" class="text-center text-nowrap" id="thGrupoActitudinal">Actitudinal</th>
+
+                              <th colspan="1" class="text-center text-nowrap">Total</th>
+                              <th rowspan="2" class="text-center text-nowrap">Acciones</th>
+                            </tr>
+
+                            <tr id="trSubcolsActitudinal">
+                              <th class="text-center text-nowrap">Act 1</th>
+                              <th class="text-center text-nowrap">Act 2</th>
+                              <th class="text-center text-nowrap">Act 3</th>
+                              <th class="text-center text-nowrap">Act 4</th>
+                              <th class="text-center text-nowrap">Act 5</th>
+                              <th class="text-center text-nowrap">Cantidad</th>
+                            </tr>
+                          </thead>
+
+                          <tbody id="tbodyNotasActitudinal">
+                            <tr>
+                              <td colspan="9" class="text-center text-muted py-4">Sin datos</td>
+                            </tr>
+                          </tbody>
+
+                          <tfoot></tfoot>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </div>
+
+            <!-- ===================================== -->
+            <!-- MODAL CONFIGURACION NOTAS -->
+            <!-- ===================================== -->
+            <div class="modal fade" id="modalConfiguracionNotas" tabindex="-1">
+              <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content shadow-lg border-0">
+
+                  <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="modalConfiguracionNotasTitle">Configurar Notas</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                  </div>
+
+                  <div class="modal-body">
+                    <form id="formConfiguracionNotas">
+                      <input type="hidden" id="modal_ciclo_id">
+                      <input type="hidden" id="modal_grado_id">
+                      <input type="hidden" id="modal_seccion_id">
+                      <input type="hidden" id="modal_anio">
+
+                      <div class="row g-4">
+
+                        <!-- Datos académicos -->
+                        <div class="col-12 col-lg-3">
+                          <div class="card shadow-sm h-100">
+                            <div class="card-header bg-light">
+                              <h6 class="mb-0 text-primary">Datos académicos</h6>
+                            </div>
+                            <div class="card-body">
+
+                              <div class="mb-3">
+                                <label class="form-label">Grado</label>
+                                <select id="modal_grado_alumno" class="form-select">
+                                  <option value="" disabled>Elija grado</option>
+                                  <option value="1">1er Grado</option>
+                                  <option value="2">2do Grado</option>
+                                  <option value="3">3er Grado</option>
+                                  <option value="4">4to Grado</option>
+                                  <option value="5">5to Grado</option>
+                                  <option value="6">6to Grado</option>
+                                </select>
+                              </div>
+
+                              <div class="mb-3">
+                                <label class="form-label">Sección</label>
+                                <select id="modal_seccion_alumno" class="form-select">
+                                  <option value="" disabled>Elija sección</option>
+                                  <option value="1">Sección A</option>
+                                  <option value="2">Sección B</option>
+                                </select>
+                              </div>
+
+                              <div class="mb-3">
+                                <label class="form-label">Bimestre</label>
+                                <select id="modal_bimestre_alumno" class="form-select">
+                                  <option value="" disabled>Elija bimestre</option>
+                                  <option value="1">Bimestre 1</option>
+                                  <option value="2">Bimestre 2</option>
+                                  <option value="3">Bimestre 3</option>
+                                  <option value="4">Bimestre 4</option>
+                                </select>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Ponderación -->
+                        <div class="col-12 col-lg-3">
+                          <div class="card shadow-sm h-100">
+                            <div class="card-header bg-light">
+                              <h6 class="mb-0 text-primary">Distribución de ponderación</h6>
+                            </div>
+                            <div class="card-body">
+
+                              <div class="mb-3">
+                                <label class="form-label">Declarativo</label>
+                                <input type="number" class="form-control" id="modal_ponderacion_declarativo" min="0"
+                                  step="0.01" placeholder="Ponderación Declarativo">
+                              </div>
+
+                              <div class="mb-3">
+                                <label class="form-label">Procedimental</label>
+                                <input type="number" class="form-control" id="modal_ponderacion_procedimental" min="0"
+                                  step="0.01" placeholder="Ponderación Procedimental">
+                              </div>
+
+                              <div class="mb-3">
+                                <label class="form-label">Actitudinal</label>
+                                <input type="number" class="form-control" id="modal_ponderacion_actitudinal" min="0"
+                                  step="0.01" placeholder="Ponderación Actitudinal">
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Tópicos -->
+                        <div class="col-12 col-lg-6">
+                          <div class="card shadow-sm h-100">
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                              <h6 class="mb-0 text-primary">Asignar tópicos de actitudinal</h6>
+                            </div>
+
+                            <div class="card-body">
+                              <div class="table-responsive">
+                                <table class="table table-hover table-bordered align-middle">
+                                  <thead class="table-light text-center">
+                                    <tr>
+                                      <th style="width: 60px;">#</th>
+                                      <th>Nombre del tópico</th>
+                                      <th>Descripción</th>
+                                      <th style="width: 140px;">Puntaje</th>
+                                      <th style="width: 100px;">Orden</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody id="tableBodyModalTopicosActitudinal">
+                                    <!-- Se llena dinámicamente -->
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+
+                      </div>
+                    </form>
+                  </div>
+
+                  <div class="modal-footer d-flex justify-content-end">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                      Cerrar
+                    </button>
+                    <button type="button" class="btn btn-success" id="btnGuardarConfigNotas">
+                      Guardar configuración
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
           </div>
 
         </div>

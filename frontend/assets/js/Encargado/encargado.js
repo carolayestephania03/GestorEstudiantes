@@ -218,9 +218,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     alumnos.forEach(alumno => {
       const alumnoId = alumno.alumno_id ?? "";
-      const nombreCompleto = alumno.nombre_completo || "";
-      const grado = alumno.grado_des || "";
-      const seccion = alumno.seccion_des || "";
+      const nombreCompleto = alumno.nombre_completo
+        || `${alumno.nombre || ""} ${alumno.apellido || ""}`.trim();
+      const grado = alumno.grado_des || alumno.grado || "";
+      const seccion = alumno.seccion_des || alumno.seccion || "";
       const estadoAlumno = alumno.estado_alumno || "";
       const checked = seleccionadosSet.has(Number(alumnoId)) ? "checked" : "";
 
@@ -354,28 +355,30 @@ document.addEventListener("DOMContentLoaded", async () => {
         <td>${enc.residencia || ""}</td>
         <td>${alumnosHTML}</td>
         <td>
-          <button 
-            type="button" 
-            class="btn btn-sm btn-info btn-editar-encargado"
-            data-dpi="${enc.dpi || ""}"
-            data-nombre="${enc.nombre || ""}"
-            data-apellido="${enc.apellido || ""}"
-            data-telefono="${enc.telefono || ""}"
-            data-residencia="${enc.residencia || ""}"
-            data-correo="${enc.correo || ""}"
-            data-genero="${enc.genero_id || enc.genero || ""}"
-            data-fecha_nacimiento="${enc.fecha_nacimiento || ""}"
-            data-nit="${enc.nit || ""}"
-          >
-            Ver
-          </button>
+          <div class="d-flex gap-2">
+            <button 
+              type="button" 
+              class="btn btn-sm btn-info btn-ver-encargado"
+              data-dpi="${enc.dpi || ""}"
+            >
+              Ver
+            </button>
+
+            <button 
+              type="button" 
+              class="btn btn-sm btn-danger btn-eliminar-encargado"
+              data-dpi="${enc.dpi || ""}"
+            >
+              Eliminar
+            </button>
+          </div>
         </td>
       `;
 
       tableBody.appendChild(row);
     });
 
-    asociarEventosEditar();
+    asociarEventosAccionesEncargado();
   }
 
   async function buscarEncargados() {
@@ -446,49 +449,159 @@ document.addEventListener("DOMContentLoaded", async () => {
     return "";
   }
 
-  function cargarDatosModalEditarDesdeBoton(btn) {
-    modoEncargado = "editar";
-    currentStepEnc = 1;
+  async function verDetalleEncargado(dpiEncargado) {
+    if (!dpiEncargado) {
+      alert("No se encontró el DPI del encargado");
+      return;
+    }
 
-    const title = document.getElementById("modalEncargadoTitle");
-    if (title) title.textContent = "Actualizar Encargado";
+    const payload = {
+      dpi_encargado: dpiEncargado,
+      nombre_encargado: null,
+      telefono_encargado: null,
+      grado_id: comboGrado?.value ? parseInt(comboGrado.value, 10) : null,
+      seccion_id: comboSeccion?.value ? parseInt(comboSeccion.value, 10) : null,
+      codigo_alumno: null,
+      nombre_alumno: null
+    };
 
-    limpiarModalEncargado();
+    try {
+      const response = await fetch("http://localhost:8001/encargado/buscarEncargado", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(payload)
+      });
 
-    const dpiOriginal = btn.getAttribute("data-dpi") || "";
-    const nombre = btn.getAttribute("data-nombre") || "";
-    const apellido = btn.getAttribute("data-apellido") || "";
-    const telefono = btn.getAttribute("data-telefono") || "";
-    const residencia = btn.getAttribute("data-residencia") || "";
-    const correo = btn.getAttribute("data-correo") || "";
-    const genero = btn.getAttribute("data-genero") || "";
-    const fechaNacimiento = btn.getAttribute("data-fecha_nacimiento") || "";
-    const nit = btn.getAttribute("data-nit") || "";
+      const result = await response.json();
 
-    const hiddenId = document.getElementById("modal_encargado_id");
-    if (hiddenId) hiddenId.value = dpiOriginal;
+      if (!response.ok) {
+        let mensaje = `Error HTTP ${response.status}`;
 
-    document.getElementById("modal_nombre").value = nombre;
-    document.getElementById("modal_apellido").value = apellido;
-    document.getElementById("modal_telefono").value = telefono;
-    document.getElementById("modal_residencia").value = residencia;
-    document.getElementById("modal_correo").value = correo;
-    document.getElementById("modal_dpi").value = dpiOriginal;
-    document.getElementById("modal_nit").value = nit;
-    document.getElementById("modal_fecha_nacimiento").value = normalizarFechaParaInput(fechaNacimiento);
-    document.getElementById("modal_genero").value = normalizarGeneroParaBackend(genero);
+        if (result?.error) {
+          mensaje = result.error;
+        } else if (Array.isArray(result?.errors) && result.errors.length > 0) {
+          mensaje = result.errors.map(err => err.msg).join("\n");
+        }
 
-    actualizarWizardEnc();
-    modalEncargado?.show();
+        throw new Error(mensaje);
+      }
+
+      const encargado = Array.isArray(result?.data) && result.data.length > 0
+        ? result.data[0]
+        : null;
+
+      if (!encargado) {
+        alert("No se encontró información del encargado");
+        return;
+      }
+
+      modoEncargado = "editar";
+      currentStepEnc = 1;
+
+      const title = document.getElementById("modalEncargadoTitle");
+      if (title) title.textContent = "Ver / Actualizar Encargado";
+
+      limpiarModalEncargado();
+      await cargarCombosModalAlumno();
+
+      const hiddenId = document.getElementById("modal_encargado_id");
+      if (hiddenId) hiddenId.value = encargado.dpi || "";
+
+      document.getElementById("modal_nombre").value = encargado.nombre || "";
+      document.getElementById("modal_apellido").value = encargado.apellido || "";
+      document.getElementById("modal_telefono").value = encargado.telefono || "";
+      document.getElementById("modal_residencia").value = encargado.residencia || "";
+      document.getElementById("modal_correo").value = encargado.correo || "";
+      document.getElementById("modal_dpi").value = encargado.dpi || "";
+      document.getElementById("modal_nit").value = encargado.nit || "";
+      document.getElementById("modal_fecha_nacimiento").value = normalizarFechaParaInput(encargado.fecha_nacimiento || "");
+      document.getElementById("modal_genero").value = normalizarGeneroParaBackend(encargado.genero_id || "");
+
+      const alumnosNormalizados = Array.isArray(encargado.alumnos)
+        ? encargado.alumnos.map(al => ({
+            alumno_id: al.alumno_id,
+            nombre_completo: `${al.nombre || ""} ${al.apellido || ""}`.trim(),
+            grado: al.grado || "",
+            seccion: al.seccion || "",
+            estado_alumno: al.estado_alumno || ""
+          }))
+        : [];
+
+      const alumnosAsignados = alumnosNormalizados
+        .map(al => Number(al.alumno_id))
+        .filter(id => !Number.isNaN(id));
+
+      renderTablaAlumnosModal(alumnosNormalizados, alumnosAsignados);
+
+      actualizarWizardEnc();
+      modalEncargado?.show();
+    } catch (error) {
+      console.error("Error en verDetalleEncargado:", error);
+      alert(error.message || "Error al consultar el detalle del encargado");
+    }
   }
 
-  function asociarEventosEditar() {
-    const botonesEditar = document.querySelectorAll(".btn-editar-encargado");
+  async function eliminarEncargado(dpiEncargado) {
+    if (!dpiEncargado) {
+      alert("No se encontró el DPI del encargado");
+      return;
+    }
 
-    botonesEditar.forEach(btn => {
+    const confirmado = confirm(`¿Seguro que desea eliminar este encargado?`);
+    if (!confirmado) return;
+
+    try {
+      const response = await fetch("http://localhost:8001/encargado/EliminarEncargado", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          dpi: dpiEncargado
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        let mensaje = `Error HTTP ${response.status}`;
+
+        if (result?.error) {
+          mensaje = result.error;
+        } else if (Array.isArray(result?.errors) && result.errors.length > 0) {
+          mensaje = result.errors.map(err => err.msg).join("\n");
+        }
+
+        throw new Error(mensaje);
+      }
+
+      alert(result?.message || "Encargado eliminado correctamente");
+      await buscarEncargados();
+    } catch (error) {
+      console.error("Error en eliminarEncargado:", error);
+      alert(error.message || "Error al eliminar el encargado");
+    }
+  }
+
+  function asociarEventosAccionesEncargado() {
+    const botonesVer = document.querySelectorAll(".btn-ver-encargado");
+    const botonesEliminar = document.querySelectorAll(".btn-eliminar-encargado");
+
+    botonesVer.forEach(btn => {
       btn.addEventListener("click", async () => {
-        await cargarCombosModalAlumno();
-        cargarDatosModalEditarDesdeBoton(btn);
+        const dpi = btn.getAttribute("data-dpi") || "";
+        await verDetalleEncargado(dpi);
+      });
+    });
+
+    botonesEliminar.forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const dpi = btn.getAttribute("data-dpi") || "";
+        await eliminarEncargado(dpi);
       });
     });
   }

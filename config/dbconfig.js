@@ -16,6 +16,7 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.passw
     dialect: 'mysql',
     port: dbConfig.port,
     logging: false, // Desactiva los logs de SQL
+    timezone: '-06:00'
 });
 
 module.exports = sequelize;

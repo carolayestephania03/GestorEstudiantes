@@ -28,8 +28,7 @@ const Actividad = sequelize.define('Actividad', {
     },
     fecha_creacion: {
         type: DataTypes.DATE,
-        allowNull: true,
-        defaultValue: DataTypes.NOW
+        allowNull: true
     },
     fecha_entrega: {
         type: DataTypes.DATE,

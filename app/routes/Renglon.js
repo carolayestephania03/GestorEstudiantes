@@ -7,4 +7,10 @@ const path = 'renglon';
 
 router.get(`/${path}`, controller.getData);
 
+router.post(`/${path}/CrearRenglon`, controller.postData);
+
+router.put(`/${path}/ActualizarRenglon`, controller.putData);
+
+router.delete(`/${path}/EliminarRenglon`, controller.deleteData);
+
 module.exports = router;

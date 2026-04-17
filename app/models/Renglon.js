@@ -13,6 +13,10 @@ const Renglon = sequelize.define('Renglon', {
     descripcion: {
         type: DataTypes.STRING(50),
         allowNull: false
+    },
+    estado_renglon: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
     }
 }, {
     tableName: 'Renglon',

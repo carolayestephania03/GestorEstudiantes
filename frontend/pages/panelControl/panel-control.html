@@ -41,15 +41,118 @@
 </head>
 
 <style>
-@media (max-width: 991.98px) {
-      #Tarjeta-Reportes-actividades {
-        margin-bottom: 0.75rem;
-      }
-
-      .card img {
-        max-height: 260px;
-      }
+  @media (max-width: 991.98px) {
+    #Tarjeta-Reportes-actividades {
+      margin-bottom: 0.75rem;
     }
+
+    .card img {
+      max-height: 260px;
+    }
+  }
+
+  .tabla-scroll-catalogo {
+    max-height: 210px;
+    overflow-y: auto;
+    overflow-x: auto;
+  }
+
+  .tabla-scroll-catalogo table {
+    margin-bottom: 0;
+  }
+
+  .tabla-scroll-catalogo thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #f8f9fa;
+  }
+
+  @media (max-width: 576px) {
+    .tabla-scroll-catalogo {
+      max-height: 180px;
+    }
+  }
+
+  .tabla-scroll-catalogo {
+    max-height: 190px;
+    overflow-y: auto;
+  }
+
+  .materias-grid-wrap {
+    min-height: 180px;
+  }
+
+  .materia-check-card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.75rem;
+    background: #fff;
+    transition: all 0.2s ease;
+    height: 100%;
+  }
+
+  .materia-check-card.activa {
+    border-color: #696cff;
+    box-shadow: 0 0 0 0.15rem rgba(105, 108, 255, 0.12);
+    background: #f8f9ff;
+  }
+
+  .materia-check-card .form-check {
+    margin: 0;
+  }
+
+  .materia-check-card .form-check-input {
+    cursor: pointer;
+  }
+
+  .materia-check-card .form-check-label {
+    cursor: pointer;
+    width: 100%;
+    display: block;
+  }
+
+  .materia-check-nombre {
+    font-weight: 600;
+    color: #566a7f;
+    word-break: break-word;
+  }
+
+  .materia-check-id {
+    font-size: 0.8rem;
+    color: #a1acb8;
+  }
+
+  .materia-check-card.disabled-card {
+    background: #f5f5f9;
+    opacity: 0.8;
+  }
+
+  @media (max-width: 767.98px) {
+    .materias-grid-wrap {
+      min-height: auto;
+    }
+  }
+
+  .grado-check-item {
+  border: 1px solid #dee2e6;
+  border-radius: 0.6rem;
+  padding: 0.65rem 0.75rem;
+  background: #fff;
+  height: 100%;
+}
+
+.grado-check-item .form-check {
+  margin: 0;
+}
+
+.grado-check-item .form-check-label {
+  cursor: pointer;
+  width: 100%;
+}
+
+.grado-check-item .form-check-input {
+  cursor: pointer;
+}
 </style>
 
 <body>
@@ -264,51 +367,19 @@
               </div>
             </div>
 
-            <div class="row g-4">
+            <div class="row g-4 align-items-stretch">
 
-              <!-- ================= SECCIONES ================= -->
-              <div class="col-12 col-md-6 col-lg-4">
+              <!-- ESCALAFONES -->
+              <div class="col-12 col-md-6 col-xl-4">
                 <div class="card shadow-sm h-100">
-                  <div class="card-header bg-light">
-                    <h6 class="text-primary mb-0">Control de Secciones</h6>
-                  </div>
-                  <div class="card-body">
-
-                    <div class="mb-3">
-                      <label class="form-label">Nueva Sección</label>
-                      <input type="text" class="form-control" id="inputSeccion">
-                    </div>
-
-                    <div class="d-grid mb-3">
-                      <button class="btn btn-primary btn-sm" id="btnCrearSeccion">
-                        Crear
-                      </button>
-                    </div>
-
-                    <div class="table-responsive">
-                      <table class="table table-hover table-bordered align-middle">
-                        <thead class="table-light">
-                          <tr>
-                            <th width="10%">#</th>
-                            <th>Descripción</th>
-                            <th width="25%" class="text-center">Acciones</th>
-                          </tr>
-                        </thead>
-                        <tbody id="tbodySecciones"></tbody>
-                      </table>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-
-              <!-- ================= ESCALAFONES ================= -->
-              <div class="col-12 col-md-6 col-lg-4">
-                <div class="card shadow-sm h-100">
-                  <div class="card-header bg-light">
+                  <div class="card-header bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <h6 class="text-primary mb-0">Control de Escalafones</h6>
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-toggle-tabla"
+                      data-target="#wrapTablaEscalafones">
+                      Ocultar tabla
+                    </button>
                   </div>
-                  <div class="card-body">
+                  <div class="card-body d-flex flex-column">
 
                     <div class="mb-3">
                       <label class="form-label">Nuevo Escalafón</label>
@@ -316,18 +387,16 @@
                     </div>
 
                     <div class="d-grid mb-3">
-                      <button class="btn btn-primary btn-sm" id="btnCrearEscalafon">
-                        Crear
-                      </button>
+                      <button class="btn btn-primary btn-sm" id="btnCrearEscalafon">Crear</button>
                     </div>
 
-                    <div class="table-responsive">
-                      <table class="table table-hover table-bordered align-middle">
+                    <div class="table-responsive flex-grow-1 tabla-scroll-catalogo" id="wrapTablaEscalafones">
+                      <table class="table table-hover table-bordered align-middle mb-0">
                         <thead class="table-light">
                           <tr>
                             <th width="10%">#</th>
                             <th>Descripción</th>
-                            <th width="25%" class="text-center">Acciones</th>
+                            <th width="30%" class="text-center">Acciones</th>
                           </tr>
                         </thead>
                         <tbody id="tbodyEscalafones"></tbody>
@@ -338,13 +407,17 @@
                 </div>
               </div>
 
-              <!-- ================= RENGLONES ================= -->
-              <div class="col-12 col-md-6 col-lg-4">
+              <!-- RENGLONES -->
+              <div class="col-12 col-md-6 col-xl-4">
                 <div class="card shadow-sm h-100">
-                  <div class="card-header bg-light">
+                  <div class="card-header bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <h6 class="text-primary mb-0">Control de Renglones</h6>
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-toggle-tabla"
+                      data-target="#wrapTablaRenglones">
+                      Ocultar tabla
+                    </button>
                   </div>
-                  <div class="card-body">
+                  <div class="card-body d-flex flex-column">
 
                     <div class="mb-3">
                       <label class="form-label">Nuevo Renglón</label>
@@ -352,18 +425,16 @@
                     </div>
 
                     <div class="d-grid mb-3">
-                      <button class="btn btn-primary btn-sm" id="btnCrearRenglon">
-                        Crear
-                      </button>
+                      <button class="btn btn-primary btn-sm" id="btnCrearRenglon">Crear</button>
                     </div>
 
-                    <div class="table-responsive">
-                      <table class="table table-hover table-bordered align-middle">
+                    <div class="table-responsive flex-grow-1 tabla-scroll-catalogo" id="wrapTablaRenglones">
+                      <table class="table table-hover table-bordered align-middle mb-0">
                         <thead class="table-light">
                           <tr>
                             <th width="10%">#</th>
                             <th>Descripción</th>
-                            <th width="25%" class="text-center">Acciones</th>
+                            <th width="30%" class="text-center">Acciones</th>
                           </tr>
                         </thead>
                         <tbody id="tbodyRenglones"></tbody>
@@ -374,68 +445,57 @@
                 </div>
               </div>
 
-              <!-- ================= CICLOS ================= -->
-              <div class="col-12 col-md-6 col-lg-4">
-                <div class="card shadow-sm h-100">
-                  <div class="card-header bg-light">
-                    <h6 class="text-primary mb-0">Control de Ciclos</h6>
-                  </div>
-                  <div class="card-body">
-
-                    <div class="mb-3">
-                      <label class="form-label">Nuevo Ciclo</label>
-                      <input type="text" class="form-control" id="inputCiclo">
-                    </div>
-
-                    <div class="d-grid mb-3">
-                      <button class="btn btn-primary btn-sm" id="btnCrearCiclo">
-                        Crear
-                      </button>
-                    </div>
-
-                    <div class="table-responsive">
-                      <table class="table table-hover table-bordered align-middle">
-                        <thead class="table-light">
-                          <tr>
-                            <th width="10%">#</th>
-                            <th>Descripción</th>
-                            <th width="25%" class="text-center">Acciones</th>
-                          </tr>
-                        </thead>
-                        <tbody id="tbodyCiclos"></tbody>
-                      </table>
-                    </div>
-
+              <!-- IMAGEN PANEL DE CONTROL -->
+              <div class="col-12 col-xl-4 d-none d-xl-block">
+                <div class="card shadow-sm h-100 border-0 bg-transparent">
+                  <div class="card-body p-0 h-100 d-flex align-items-stretch justify-content-center">
+                    <img src="../../assets/img/Panel de control.png" alt="Panel de control"
+                      class="img-fluid rounded shadow-sm w-100 h-100" style="object-fit: cover; max-height: 100%;">
                   </div>
                 </div>
               </div>
 
-              <!-- ================= MATERIAS ================= -->
-              <div class="col-12 col-md-6 col-lg-4">
+              <!-- MATERIAS -->
+              <div class="col-12 col-md-6 col-xl-6">
                 <div class="card shadow-sm h-100">
-                  <div class="card-header bg-light">
+                  <div class="card-header bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <h6 class="text-primary mb-0">Control de Materias</h6>
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-toggle-tabla"
+                      data-target="#wrapTablaMaterias">
+                      Ocultar tabla
+                    </button>
                   </div>
-                  <div class="card-body">
+                  <div class="card-body d-flex flex-column">
 
                     <div class="mb-3">
-                      <label class="form-label">Nueva Materia</label>
-                      <input type="text" class="form-control" id="inputMateria">
+                      <label class="form-label">Nombre de Materia</label>
+                      <input type="text" class="form-control" id="inputNombreMateria">
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Descripción de Materia</label>
+                      <input type="text" class="form-control" id="inputDescripcionMateria">
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Grados donde se impartirá</label>
+                      <div id="contenedorGradosMateria" class="row g-2">
+                        <!-- JS -->
+                      </div>
                     </div>
 
                     <div class="d-grid mb-3">
-                      <button class="btn btn-primary btn-sm" id="btnCrearMateria">
-                        Crear
-                      </button>
+                      <button class="btn btn-primary btn-sm" id="btnCrearMateria">Crear</button>
                     </div>
 
-                    <div class="table-responsive">
-                      <table class="table table-hover table-bordered align-middle">
+                    <div class="table-responsive flex-grow-1 tabla-scroll-catalogo" id="wrapTablaMaterias">
+                      <table class="table table-hover table-bordered align-middle mb-0">
                         <thead class="table-light">
                           <tr>
                             <th width="10%">#</th>
+                            <th>Nombre</th>
                             <th>Descripción</th>
-                            <th width="25%" class="text-center">Acciones</th>
+                            <th width="30%" class="text-center">Acciones</th>
                           </tr>
                         </thead>
                         <tbody id="tbodyMaterias"></tbody>
@@ -446,58 +506,82 @@
                 </div>
               </div>
 
-              <!-- ================= MATERIAS 1RO-3RO ================= -->
-              <div class="col-12 col-lg-6">
-                <div class="card shadow-sm">
-                  <div class="card-header bg-light">
-                    <h6 class="text-primary mb-0">Materias 1ro a 3ro</h6>
+              <!-- AMBITOS -->
+              <div class="col-12 col-md-6 col-xl-6">
+                <div class="card shadow-sm h-100">
+                  <div class="card-header bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h6 class="text-primary mb-0">Control de Ámbitos de Actitudinal</h6>
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-toggle-tabla"
+                      data-target="#wrapTablaAmbitos">
+                      Ocultar tabla
+                    </button>
                   </div>
-                  <div class="card-body">
+                  <div class="card-body d-flex flex-column">
 
-                    <div class="table-responsive">
-                      <table class="table table-bordered table-hover align-middle mb-4">
+                    <div class="mb-3">
+                      <label class="form-label">Nuevo Ámbito</label>
+                      <input type="text" class="form-control" id="inputAmbito">
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Nueva Descripción</label>
+                      <input type="text" class="form-control" id="inputDescripcionAmbito">
+                    </div>
+
+                    <div class="d-grid mb-3">
+                      <button class="btn btn-primary btn-sm" id="btnCrearAmbito">Crear</button>
+                    </div>
+
+                    <div class="table-responsive flex-grow-1 tabla-scroll-catalogo" id="wrapTablaAmbitos">
+                      <table class="table table-hover table-bordered align-middle mb-0">
                         <thead class="table-light">
                           <tr>
-                            <th width="10%" class="text-center">✔</th>
-                            <th>Materia</th>
+                            <th width="10%">#</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th width="30%" class="text-center">Acciones</th>
                           </tr>
                         </thead>
-                        <tbody id="tbodyMateriasBasico"></tbody>
+                        <tbody id="tbodyAmbitos"></tbody>
                       </table>
                     </div>
 
-                    <div class="d-flex justify-content-end gap-2">
-                      <button class="btn btn-outline-secondary btn-sm" id="btnEditarBasico">Editar</button>
-                      <button class="btn btn-success btn-sm" id="btnGuardarBasico">Guardar</button>
-                    </div>
 
                   </div>
                 </div>
               </div>
 
-              <!-- ================= MATERIAS 4TO-6TO ================= -->
-              <div class="col-12 col-lg-6">
-                <div class="card shadow-sm">
-                  <div class="card-header bg-light">
-                    <h6 class="text-primary mb-0">Materias 4to a 6to</h6>
-                  </div>
-                  <div class="card-body">
+              <!-- ================= FILA FINAL ================= -->
+              <div class="col-12 col-lg-12">
+                <div class="card shadow-sm h-100">
+                  <div class="card-header bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h6 class="text-primary mb-0">Materias activas por grado</h6>
 
-                    <div class="table-responsive">
-                      <table class="table table-bordered table-hover align-middle mb-4">
-                        <thead class="table-light">
-                          <tr>
-                            <th width="10%" class="text-center">✔</th>
-                            <th>Materia</th>
-                          </tr>
-                        </thead>
-                        <tbody id="tbodyMateriasDiversificado"></tbody>
-                      </table>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                      <label for="selectGradoMaterias" class="mb-0 fw-semibold">Grado:</label>
+                      <select id="selectGradoMaterias" class="form-select form-select-sm" style="min-width: 220px;">
+                        <option value="">Seleccione un grado</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="card-body d-flex flex-column">
+
+                    <div class="mb-3">
+                      <small class="text-muted">
+                        Seleccione las materias que estarán activas para el grado elegido.
+                      </small>
                     </div>
 
-                    <div class="d-flex justify-content-end gap-2">
-                      <button class="btn btn-outline-secondary btn-sm" id="btnEditarDiversificado">Editar</button>
-                      <button class="btn btn-success btn-sm" id="btnGuardarDiversificado">Guardar</button>
+                    <div id="contenedorMateriasPorGrado" class="materias-grid-wrap">
+                      <div class="row g-3" id="gridMateriasPorGrado">
+                        <!-- JS -->
+                      </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4 flex-wrap">
+                      <button class="btn btn-outline-secondary btn-sm" id="btnEditarBasico">Editar</button>
+                      <button class="btn btn-success btn-sm" id="btnGuardarBasico" disabled>Guardar</button>
                     </div>
 
                   </div>
@@ -542,6 +626,7 @@
   <!-- JS Geovanny-->
   <script src="../../assets/js/Calendar/index.global.min.js"></script>
   <script src="../../assets/js/Menu/sidebar.js"></script>
+  <script src="../../assets/js/panelControl/panelControl.js"></script>
 
 </body>
 

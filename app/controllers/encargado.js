@@ -116,6 +116,9 @@ exports.buscarEncargadosConAlumnos = [
             nombre: r.nombre_encargado,
             apellido: r.apellido_encargado,
             dpi: r.dpi_encargado,
+            nit: r.nit,
+            fecha_nacimiento: r.fecha_nacimiento,
+            genero_id: r.genero_id,
             telefono: r.telefono,
             correo: r.correo,
             residencia: r.residencia,
@@ -529,6 +532,72 @@ exports.actualizarEncargado = [
         /otro registro/i.test(msg) ||
         /no existen o están inactivos/i.test(msg) ||
         /no existen o estan inactivos/i.test(msg)
+      ) {
+        return res.status(409).json({ error: msg });
+      }
+
+      return res.status(500).json({ error: msg });
+    }
+  }
+];
+
+exports.eliminarEncargado = [
+  // -------- obligatorio --------
+  body('dpi')
+    .exists().withMessage('dpi requerido')
+    .bail()
+    .isString().withMessage('dpi debe ser texto')
+    .trim()
+    .notEmpty().withMessage('dpi requerido')
+    .isLength({ max: 20 }).withMessage('dpi máximo 20 caracteres'),
+
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const dpi = req.body.dpi.toString().trim();
+
+      const raw = await sequelize.query(
+        `CALL sp_encargado_eliminacion(:p_dpi);`,
+        {
+          replacements: {
+            p_dpi: dpi
+          }
+        }
+      );
+
+      // Normalización robusta para MySQL CALL
+      let rows = [];
+      if (Array.isArray(raw)) rows = Array.isArray(raw[0]) ? raw[0] : raw;
+      else if (raw && typeof raw === 'object') rows = [raw];
+
+      return res.status(200).json({
+        message: 'Encargado desactivado correctamente',
+        data: rows || []
+      });
+    } catch (error) {
+      const msg = (error && error.message) ? String(error.message) : 'Error interno';
+
+      if (
+        /dpi requerido/i.test(msg) ||
+        /inválid/i.test(msg) ||
+        /invalido/i.test(msg)
+      ) {
+        return res.status(400).json({ error: msg });
+      }
+
+      if (
+        /no existe encargado con el dpi proporcionado/i.test(msg) ||
+        /no existe encargado placeholder/i.test(msg)
+      ) {
+        return res.status(404).json({ error: msg });
+      }
+
+      if (
+        /no se puede eliminar el encargado placeholder/i.test(msg)
       ) {
         return res.status(409).json({ error: msg });
       }

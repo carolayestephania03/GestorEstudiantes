@@ -1,61 +1,105 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const token = getCookie("token");
+  async function loadOptions(url, selectId, valueField, textBuilder) {
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include"
+      });
 
-  function loadOptions(url, selectId, valueField, textField, filterId = null) {
-    fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const selectElement = document.getElementById(selectId);
-        selectElement.innerHTML = ""; // Limpiar el contenido existente
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
 
-        // Añadir una opción predeterminada
-        const defaultOption = document.createElement("option");
-        defaultOption.value = "0"; // Puedes usar 'null' si prefieres
-        defaultOption.textContent = "Escoge una opción"; // Texto predeterminado
-        selectElement.appendChild(defaultOption);
+      const result = await response.json();
+      const selectElement = document.getElementById(selectId);
 
-        // Filtrar datos si se proporciona un filtro
-        let filteredData = data.data;
-        if (filterId) {
-          const filterValue = localStorage.getItem(filterId);
-          if (filterValue) {
-            filteredData = data.data.filter(
-              (item) => item[valueField] === parseInt(filterValue, 10)
-            );
-          }
-        }
+      if (!selectElement) {
+        console.warn(`No se encontró el select con id: ${selectId}`);
+        return;
+      }
 
-        // Añadir las opciones filtradas
-        filteredData.forEach((item) => {
+      selectElement.innerHTML = "";
+
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.textContent = "Escoge una opción";
+      defaultOption.disabled = true;
+      defaultOption.selected = true;      
+      selectElement.appendChild(defaultOption);
+      if(selectId === "combo_materia") {
+        const allOption = document.createElement("option");
+        allOption.value = "Todas";
+        allOption.textContent = "Todas las materias";
+        selectElement.appendChild(allOption);
+      }
+      const items = Array.isArray(result?.data) ? result.data : [];
+
+      items
+        .filter(item => item.estado === true)
+        .forEach(item => {
           const option = document.createElement("option");
           option.value = item[valueField];
-          option.textContent = item[textField];
+          option.textContent = textBuilder(item);
           selectElement.appendChild(option);
         });
-      })
-      .catch((error) =>
-        toastr.error(`Error de conexión ${selectId}`, error)
-      );
+
+    } catch (error) {
+      console.error(`Error cargando ${selectId}:`, error);
+      toastr.error(`Error al cargar opciones de ${selectId}`);
+    }
   }
 
-  // Cargar datos para cada select
-  loadOptions(`${ENV.API_URL}/eje`, "Eje", "eje_id", "description");
-  loadOptions(`${ENV.API_URL}/dependencia`, "Dependencia", "dependencia_id", "description");
-  loadOptions(`${ENV.API_URL}/pais`, "Pais", "pais_id", "description");
-  loadOptions(`${ENV.API_URL}/ubicationActivity`, "Ubication_leitz", "ubication_id", "description_ub");
-  
-  // Para el select de departamento, aplicar filtro basado en localStorage
-  loadOptions(`${ENV.API_URL}/departamento`, "Departamento", "departamento_id", "nombre_departamento", "departamento_id");
-});
+  function formatearBimestre(numero) {
+    const n = Number(numero);
 
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
-}
+    if (n === 1) return "1er Bimestre";
+    if (n === 2) return "2do Bimestre";
+    if (n === 3) return "3er Bimestre";
+    if (n === 4) return "4to Bimestre";
+
+    return `${n}to Bimestre`;
+  }
+
+  // Materia
+  loadOptions(
+    "http://localhost:8001/materia",
+    "materia",
+    "materia_id",
+    item => item.nombre_materia
+  );
+
+  // Materia
+  loadOptions(
+    "http://localhost:8001/materia",
+    "combo_materia",
+    "materia_id",
+    item => item.nombre_materia
+  );
+
+  // Tipo de tarea
+  loadOptions(
+    "http://localhost:8001/tipoActividad",
+    "tipo_tarea",
+    "tipo_actividad_id",
+    item => item.descripcion_tipo
+  );
+
+  // Unidad / Ciclo
+  loadOptions(
+    "http://localhost:8001/ciclo",
+    "Unidad",
+    "ciclo_id",
+    item => formatearBimestre(item.numero_ciclo)
+  );
+
+    // Unidad / Ciclo
+  loadOptions(
+    "http://localhost:8001/ciclo",
+    "combo_bimestre",
+    "ciclo_id",
+    item => formatearBimestre(item.numero_ciclo)
+  );
+});

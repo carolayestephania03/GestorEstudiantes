@@ -5,7 +5,6 @@ const Actividad = require('../models/actividad');
 
 /**Operación GET hacia la DB*/
 exports.getActividadesData = [
-  // ✅ Validación por BODY (no URL)
   body('grado_id').exists().withMessage('grado_id requerido').bail().isInt({ gt: 0 }),
   body('seccion_id').exists().withMessage('seccion_id requerido').bail().isInt({ gt: 0 }),
 
@@ -51,83 +50,118 @@ exports.getActividadesData = [
 ];
 
 exports.crearActividad = [
-  // ====== VALIDACIONES (TODOS los datos que pide el SP) ======
+  // -------- obligatorios --------
+  body('usuario_id')
+    .exists().withMessage('usuario_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ gt: 0 }).withMessage('usuario_id debe ser entero > 0'),
+
   body('grado_id')
-    .notEmpty().withMessage('grado_id es requerido')
-    .toInt().isInt({ gt: 0 }).withMessage('grado_id debe ser entero > 0'),
+    .exists().withMessage('grado_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ gt: 0 }).withMessage('grado_id debe ser entero > 0'),
 
   body('seccion_id')
-    .notEmpty().withMessage('seccion_id es requerido')
-    .toInt().isInt({ gt: 0 }).withMessage('seccion_id debe ser entero > 0'),
+    .exists().withMessage('seccion_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ gt: 0 }).withMessage('seccion_id debe ser entero > 0'),
 
   body('materia_id')
-    .notEmpty().withMessage('materia_id es requerido')
-    .toInt().isInt({ gt: 0 }).withMessage('materia_id debe ser entero > 0'),
+    .exists().withMessage('materia_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ gt: 0 }).withMessage('materia_id debe ser entero > 0'),
 
   body('tipo_actividad_id')
-    .notEmpty().withMessage('tipo_actividad_id es requerido')
-    .toInt().isInt({ gt: 0 }).withMessage('tipo_actividad_id debe ser entero > 0'),
+    .exists().withMessage('tipo_actividad_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ gt: 0 }).withMessage('tipo_actividad_id debe ser entero > 0'),
+
+  body('ciclo_id')
+    .exists().withMessage('ciclo_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ gt: 0 }).withMessage('ciclo_id debe ser entero > 0'),
 
   body('nombre_actividad')
+    .exists().withMessage('nombre_actividad requerido')
+    .bail()
+    .isString().withMessage('nombre_actividad debe ser texto')
     .trim()
-    .notEmpty().withMessage('nombre_actividad es requerido')
-    .isLength({ max: 255 }).withMessage('nombre_actividad: máximo 255 caracteres')
-    .custom(v => { if (v.includes(';') || v.includes('--')) throw new Error('Caracteres inválidos'); return true; }),
+    .notEmpty().withMessage('nombre_actividad requerido')
+    .isLength({ max: 255 }).withMessage('nombre_actividad máximo 255 caracteres'),
 
   body('descripcion')
     .optional({ nullable: true })
-    .trim()
-    .custom(v => { if (v && (v.includes(';') || v.includes('--'))) throw new Error('Caracteres inválidos'); return true; }),
+    .isString().withMessage('descripcion debe ser texto')
+    .trim(),
 
   body('fecha_entrega')
-    .notEmpty().withMessage('fecha_entrega es requerida')
-    .isISO8601().withMessage('fecha_entrega debe ser una fecha válida (ISO 8601)')
-    // MySQL DATETIME acepta "YYYY-MM-DD HH:mm:ss"; si te envían solo fecha, puedes normalizar a fin de día:
-    .customSanitizer(v => v.length === 10 ? `${v} 23:59:00` : v),
+    .exists().withMessage('fecha_entrega requerida')
+    .bail()
+    .isISO8601().withMessage('fecha_entrega debe ser una fecha válida'),
 
   body('puntaje_maximo')
-    .notEmpty().withMessage('puntaje_maximo es requerido')
-    .isFloat({ gt: 0, lt: 100000 }).withMessage('puntaje_maximo debe ser > 0')
-    .toFloat(),
+    .exists().withMessage('puntaje_maximo requerido')
+    .bail()
+    .isFloat({ gt: 0 }).withMessage('puntaje_maximo debe ser mayor a 0'),
 
   body('estado_actividad_id')
-    .notEmpty().withMessage('estado_actividad_id es requerido')
-    .toInt().isInt({ gt: 0 }).withMessage('estado_actividad_id debe ser entero > 0'),
+    .exists().withMessage('estado_actividad_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ gt: 0 }).withMessage('estado_actividad_id debe ser entero > 0'),
 
   body('estado')
-    .notEmpty().withMessage('estado es requerido')
-    .toInt().isInt({ min: 0, max: 1 }).withMessage('estado debe ser 0 o 1'),
+    .exists().withMessage('estado requerido')
+    .bail()
+    .toInt()
+    .isInt({ min: 0, max: 1 }).withMessage('estado debe ser 0 o 1'),
 
   body('crear_para_alumnos')
-    .notEmpty().withMessage('crear_para_alumnos es requerido')
-    .toInt().isInt({ min: 0, max: 1 }).withMessage('crear_para_alumnos debe ser 0 o 1'),
+    .exists().withMessage('crear_para_alumnos requerido')
+    .bail()
+    .toInt()
+    .isInt({ min: 0, max: 1 }).withMessage('crear_para_alumnos debe ser 0 o 1'),
 
-  // ====== HANDLER ======
   async (req, res) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
     try {
-      const {
-        grado_id,
-        seccion_id,
-        materia_id,
-        tipo_actividad_id,
-        nombre_actividad,
-        descripcion,
-        fecha_entrega,
-        puntaje_maximo,
-        estado_actividad_id,
-        estado,
-        crear_para_alumnos
-      } = req.body;
+      const usuario_id = Number(req.body.usuario_id);
+      const grado_id = Number(req.body.grado_id);
+      const seccion_id = Number(req.body.seccion_id);
+      const materia_id = Number(req.body.materia_id);
+      const tipo_actividad_id = Number(req.body.tipo_actividad_id);
+      const ciclo_id = Number(req.body.ciclo_id);
+      const nombre_actividad = req.body.nombre_actividad.toString().trim();
 
-      const sql = `
-        CALL sp_actividad_crear_por_clase(
+      const descripcion =
+        req.body.descripcion == null || req.body.descripcion === ''
+          ? null
+          : req.body.descripcion.toString().trim();
+
+      const fecha_entrega = req.body.fecha_entrega;
+      const puntaje_maximo = Number(req.body.puntaje_maximo);
+      const estado_actividad_id = Number(req.body.estado_actividad_id);
+      const estado = Number(req.body.estado);
+      const crear_para_alumnos = Number(req.body.crear_para_alumnos);
+
+      const raw = await sequelize.query(
+        `CALL sp_actividad_crear(
+          :p_usuario_id,
           :p_grado_id,
           :p_seccion_id,
           :p_materia_id,
           :p_tipo_actividad_id,
+          :p_ciclo_id,
           :p_nombre_actividad,
           :p_descripcion,
           :p_fecha_entrega,
@@ -135,39 +169,68 @@ exports.crearActividad = [
           :p_estado_actividad_id,
           :p_estado,
           :p_crear_para_alumnos
-        );
-      `;
-
-      const result = await sequelize.query(sql, {
-        replacements: {
-          p_grado_id: Number(grado_id),
-          p_seccion_id: Number(seccion_id),
-          p_materia_id: Number(materia_id),
-          p_tipo_actividad_id: Number(tipo_actividad_id),
-          p_nombre_actividad: nombre_actividad.trim(),
-          p_descripcion: descripcion ?? null,
-          p_fecha_entrega: fecha_entrega,     // ya sanitizada arriba
-          p_puntaje_maximo: Number(puntaje_maximo),
-          p_estado_actividad_id: Number(estado_actividad_id),
-          p_estado: Number(estado),
-          p_crear_para_alumnos: Number(crear_para_alumnos)
+        );`,
+        {
+          replacements: {
+            p_usuario_id: usuario_id,
+            p_grado_id: grado_id,
+            p_seccion_id: seccion_id,
+            p_materia_id: materia_id,
+            p_tipo_actividad_id: tipo_actividad_id,
+            p_ciclo_id: ciclo_id,
+            p_nombre_actividad: nombre_actividad,
+            p_descripcion: descripcion,
+            p_fecha_entrega: fecha_entrega,
+            p_puntaje_maximo: puntaje_maximo,
+            p_estado_actividad_id: estado_actividad_id,
+            p_estado: estado,
+            p_crear_para_alumnos: crear_para_alumnos
+          }
         }
-      });
+      );
 
-      // Normaliza la respuesta de CALL para quedarte con la fila {actividad_id, alumnos_asignados}
-      let data = null;
-      if (Array.isArray(result)) {
-        // En muchos drivers, CALL devuelve [rows] o [rows, ...]
-        const rows = Array.isArray(result[0]) ? result[0] : result;
-        data = Array.isArray(rows) && rows.length ? rows[0] : null;
-      }
+      // Normalización robusta para MySQL CALL
+      let rows = [];
+      if (Array.isArray(raw)) rows = Array.isArray(raw[0]) ? raw[0] : raw;
+      else if (raw && typeof raw === 'object') rows = [raw];
 
       return res.status(201).json({
         message: 'Actividad creada correctamente',
-        data // { actividad_id, alumnos_asignados }
+        data: rows || []
       });
     } catch (error) {
-      return res.status(500).json({ error: error.message || 'Error interno' });
+      const msg = (error && error.message) ? String(error.message) : 'Error interno';
+
+      if (
+        /inválido/i.test(msg) ||
+        /invalido/i.test(msg) ||
+        /requerid/i.test(msg) ||
+        /debe ser 0 o 1/i.test(msg)
+      ) {
+        return res.status(400).json({ error: msg });
+      }
+
+      if (
+        /no existe/i.test(msg) ||
+        /inexistente/i.test(msg) ||
+        /inactivo/i.test(msg) ||
+        /inactiva/i.test(msg) ||
+        /no hay ciclo escolar activo/i.test(msg) ||
+        /no se pudo resolver/i.test(msg)
+      ) {
+        return res.status(404).json({ error: msg });
+      }
+
+      if (
+        /no tiene rol válido/i.test(msg) ||
+        /no tiene rol valido/i.test(msg) ||
+        /no está asignado/i.test(msg) ||
+        /no esta asignado/i.test(msg)
+      ) {
+        return res.status(409).json({ error: msg });
+      }
+
+      return res.status(500).json({ error: msg });
     }
   }
 ];
@@ -217,7 +280,7 @@ exports.getActividadesData = [
   }
 ];
 
-exports.getActividadDetalle = [
+exports.obtenerActividadPorId = [
   body('actividad_id')
     .exists().withMessage('actividad_id requerido')
     .bail()
@@ -226,49 +289,45 @@ exports.getActividadDetalle = [
 
   async (req, res) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
     try {
       const actividad_id = Number(req.body.actividad_id);
 
-      // Ejecuta el SP (devuelve UN result set con 1 fila)
       const raw = await sequelize.query(
-        'CALL sp_rep_actividad_detalle_by_id(:id);',
-        { replacements: { id: actividad_id } }
+        `CALL sp_actividad_obtener_por_id(:p_actividad_id);`,
+        {
+          replacements: {
+            p_actividad_id: actividad_id
+          }
+        }
       );
 
-      // Normalización robusta de la respuesta del CALL:
-      // Puede venir como [ [row] ] o [row] o row.
-      let row = null;
-      if (Array.isArray(raw)) {
-        if (Array.isArray(raw[0])) {
-          row = raw[0][0] ?? null;    // forma [[row]]
-        } else if (raw.length === 1 && typeof raw[0] === 'object') {
-          row = raw[0];               // forma [row]
-        } else if (raw.length > 1 && typeof raw[0] === 'object') {
-          row = raw[0];               // primera fila por si acaso
-        }
-      } else if (raw && typeof raw === 'object') {
-        row = raw;                     // forma row
-      }
-
-      if (!row) {
-        // Si el SP hizo SIGNAL previo, podrías no llegar aquí;
-        // este 404 cubre el caso de respuesta vacía.
-        return res.status(404).json({ error: 'Actividad no encontrada' });
-      }
+      // Normalización robusta para MySQL CALL
+      let rows = [];
+      if (Array.isArray(raw)) rows = Array.isArray(raw[0]) ? raw[0] : raw;
+      else if (raw && typeof raw === 'object') rows = [raw];
 
       return res.status(200).json({
-        data: row
+        message: 'Actividad obtenida correctamente',
+        data: rows || []
       });
     } catch (error) {
       const msg = (error && error.message) ? String(error.message) : 'Error interno';
-      if (/actividad no existe/i.test(msg)) {
-        return res.status(404).json({ error: 'Actividad no encontrada' });
+
+      if (
+        /actividad_id inválido/i.test(msg) ||
+        /actividad_id invalido/i.test(msg)
+      ) {
+        return res.status(400).json({ error: msg });
       }
-      if (/actividad_id inválido/i.test(msg)) {
-        return res.status(400).json({ error: 'actividad_id inválido' });
+
+      if (/la actividad no existe/i.test(msg)) {
+        return res.status(404).json({ error: msg });
       }
+
       return res.status(500).json({ error: msg });
     }
   }
@@ -792,6 +851,7 @@ exports.getActividadesPorTipo = [
 
         // Actividad con SOLO los campos que pediste
         tipo.actividades.push({
+          actividad_id: r.actividad_id != null ? Number(r.actividad_id) : null,
           nombre_actividad: r.nombre_actividad ?? '',
           descripcion: r.descripcion ?? '',
           fecha_creacion: r.fecha_creacion ?? null,
@@ -883,7 +943,6 @@ exports.getActividadesCalificadasPorMateria = [
         }
       );
 
-      // Normalización robusta para MySQL CALL
       let rows = [];
       if (Array.isArray(raw)) rows = Array.isArray(raw[0]) ? raw[0] : raw;
       else if (raw && typeof raw === 'object') rows = [raw];
@@ -892,9 +951,6 @@ exports.getActividadesCalificadasPorMateria = [
         return res.status(404).json({ error: 'No hay actividades calificadas para esos parámetros' });
       }
 
-      // ======================================================
-      // Agrupar: Materia -> TipoActividad -> Actividades
-      // ======================================================
       const byMateria = new Map();
 
       for (const r of rows) {
@@ -939,7 +995,6 @@ exports.getActividadesCalificadasPorMateria = [
         });
       }
 
-      // Maps -> Arrays + orden
       const data = Array.from(byMateria.values())
         .map(m => ({
           materia_id: m.materia_id,
@@ -962,159 +1017,8 @@ exports.getActividadesCalificadasPorMateria = [
       return res.status(200).json({ data });
     } catch (error) {
       const msg = (error && error.message) ? String(error.message) : 'Error interno';
-
-      // Mapeo de SIGNAL del SP a HTTP
+      
       if (/inválido/i.test(msg) || /invalido/i.test(msg)) {
-        return res.status(400).json({ error: msg });
-      }
-      if (/no existe/i.test(msg)) {
-        return res.status(404).json({ error: msg });
-      }
-
-      return res.status(500).json({ error: msg });
-    }
-  }
-];
-
-
-exports.getNotasAlumnosTareasCalificadas = [
-  body('grado_id')
-    .exists().withMessage('grado_id requerido')
-    .bail()
-    .toInt()
-    .isInt({ gt: 0 }).withMessage('grado_id debe ser entero > 0'),
-
-  body('seccion_id')
-    .exists().withMessage('seccion_id requerido')
-    .bail()
-    .toInt()
-    .isInt({ gt: 0 }).withMessage('seccion_id debe ser entero > 0'),
-
-  body('ciclo_id')
-    .exists().withMessage('ciclo_id requerido')
-    .bail()
-    .toInt()
-    .isInt({ min: 1, max: 4 }).withMessage('ciclo_id debe estar entre 1 y 4'),
-
-  body('anio')
-    .exists().withMessage('anio requerido')
-    .bail()
-    .toInt()
-    .isInt({ min: 2000, max: 2100 }).withMessage('anio fuera de rango (2000–2100)'),
-
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
-    try {
-      const grado_id = Number(req.body.grado_id);
-      const seccion_id = Number(req.body.seccion_id);
-      const ciclo_id = Number(req.body.ciclo_id);
-      const anio = Number(req.body.anio);
-
-      const raw = await sequelize.query(
-        'CALL sp_notas_alumnos_tareas_cal(:grado,:seccion,:ciclo,:anio);',
-        { replacements: { grado: grado_id, seccion: seccion_id, ciclo: ciclo_id, anio } }
-      );
-
-      // Normalización robusta para MySQL CALL
-      let rows = [];
-      if (Array.isArray(raw)) rows = Array.isArray(raw[0]) ? raw[0] : raw;
-      else if (raw && typeof raw === 'object') rows = [raw];
-
-      if (!rows || rows.length === 0) {
-        return res.status(404).json({ error: 'No hay registros para esos parámetros.' });
-      }
-
-      // ======================================================
-      // Agrupar: Materia -> Actividad -> Alumnos
-      // ======================================================
-      const byMateria = new Map();
-
-      for (const r of rows) {
-        const materia_id = r.materia_id != null ? Number(r.materia_id) : null;
-        const actividad_id = r.actividad_id != null ? Number(r.actividad_id) : null;
-        if (!materia_id || !actividad_id) continue;
-
-        const nombre_materia = r.nombre_materia ?? '';
-
-        if (!byMateria.has(materia_id)) {
-          byMateria.set(materia_id, {
-            materia_id,
-            nombre_materia,
-            _actividadesMap: new Map()
-          });
-        }
-
-        const mat = byMateria.get(materia_id);
-
-        if (!mat._actividadesMap.has(actividad_id)) {
-          mat._actividadesMap.set(actividad_id, {
-            actividad_id,
-            nombre_actividad: r.nombre_actividad ?? '',
-            fecha_entrega: r.fecha_entrega ?? null,
-            puntaje_maximo: r.puntaje_maximo ?? 0,
-            ciclo_id: r.ciclo_id != null ? Number(r.ciclo_id) : null,
-            _alumnosMap: new Map()
-          });
-        }
-
-        const act = mat._actividadesMap.get(actividad_id);
-
-        const alumno_id = r.alumno_id != null ? Number(r.alumno_id) : null;
-        if (!alumno_id) continue;
-
-        // Como el SP devuelve 1 fila por alumno x actividad, aquí guardamos directo.
-        // Si por alguna razón vinieran duplicados, nos quedamos con el último (o el mayor).
-        act._alumnosMap.set(alumno_id, {
-          alumno_id,
-          codigo_alumno: r.codigo_alumno ?? null,
-          alumno_nombre: r.alumno_nombre ?? '',
-          alumno_apellido: r.alumno_apellido ?? '',
-          puntaje_obtenido: r.puntaje_obtenido != null ? Number(r.puntaje_obtenido) : 0
-        });
-      }
-
-      // Construcción final + ordenamientos
-      const data = Array.from(byMateria.values())
-        .map(m => {
-          const actividades = Array.from(m._actividadesMap.values())
-            .map(a => ({
-              actividad_id: a.actividad_id,
-              nombre_actividad: a.nombre_actividad,
-              fecha_entrega: a.fecha_entrega,
-              puntaje_maximo: a.puntaje_maximo,
-              ciclo_id: a.ciclo_id,
-              alumnos: Array.from(a._alumnosMap.values()).sort((x, y) => {
-                const ap = String(x.alumno_apellido || '').localeCompare(String(y.alumno_apellido || ''));
-                if (ap !== 0) return ap;
-                return String(x.alumno_nombre || '').localeCompare(String(y.alumno_nombre || ''));
-              })
-            }))
-            .sort((a, b) => {
-              const da = a.fecha_entrega ? new Date(a.fecha_entrega).getTime() : 0;
-              const db = b.fecha_entrega ? new Date(b.fecha_entrega).getTime() : 0;
-              if (da !== db) return da - db;
-              return (a.actividad_id || 0) - (b.actividad_id || 0);
-            });
-
-          return {
-            materia_id: m.materia_id,
-            nombre_materia: m.nombre_materia,
-            actividades
-          };
-        })
-        .sort((a, b) => {
-          // si quieres por materia_id numérico:
-          return (a.materia_id - b.materia_id);
-          // o por nombre: String(a.nombre_materia).localeCompare(String(b.nombre_materia))
-        });
-
-      return res.status(200).json({ data });
-    } catch (error) {
-      const msg = (error && error.message) ? String(error.message) : 'Error interno';
-
-      if (/inválido/i.test(msg) || /invalido/i.test(msg) || /parámetro/i.test(msg) || /parametro/i.test(msg)) {
         return res.status(400).json({ error: msg });
       }
       if (/no existe/i.test(msg)) {
@@ -1248,6 +1152,292 @@ exports.getTareasAgrupadasPorAviso = [
       }
 
       if (/no existe/i.test(msg) || /no hay tareas pendientes/i.test(msg)) {
+        return res.status(404).json({ error: msg });
+      }
+
+      return res.status(500).json({ error: msg });
+    }
+  }
+];
+
+exports.getNotasAlumnosTareasCalificadas = [
+  body('grado_id')
+    .exists().withMessage('grado_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ gt: 0 }).withMessage('grado_id debe ser entero > 0'),
+
+  body('seccion_id')
+    .exists().withMessage('seccion_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ gt: 0 }).withMessage('seccion_id debe ser entero > 0'),
+
+  body('ciclo_id')
+    .exists().withMessage('ciclo_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ min: 1, max: 4 }).withMessage('ciclo_id debe estar entre 1 y 4'),
+
+  body('anio')
+    .exists().withMessage('anio requerido')
+    .bail()
+    .toInt()
+    .isInt({ min: 2000, max: 2100 }).withMessage('anio fuera de rango (2000–2100)'),
+
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    try {
+      const grado_id = Number(req.body.grado_id);
+      const seccion_id = Number(req.body.seccion_id);
+      const ciclo_id = Number(req.body.ciclo_id);
+      const anio = Number(req.body.anio);
+
+      const raw = await sequelize.query(
+        'CALL sp_notas_alumnos_tareas_cal(:grado,:seccion,:ciclo,:anio);',
+        { replacements: { grado: grado_id, seccion: seccion_id, ciclo: ciclo_id, anio } }
+      );
+
+      // Normalización robusta para MySQL CALL
+      let rows = [];
+      if (Array.isArray(raw)) rows = Array.isArray(raw[0]) ? raw[0] : raw;
+      else if (raw && typeof raw === 'object') rows = [raw];
+
+      if (!rows || rows.length === 0) {
+        return res.status(404).json({ error: 'No hay registros para esos parámetros.' });
+      }
+
+      // ======================================================
+      // Agrupar: Materia -> Actividad -> Alumnos
+      // ======================================================
+      const byMateria = new Map();
+
+      for (const r of rows) {
+        const materia_id = r.materia_id != null ? Number(r.materia_id) : null;
+        const actividad_id = r.actividad_id != null ? Number(r.actividad_id) : null;
+        if (!materia_id || !actividad_id) continue;
+
+        const nombre_materia = r.nombre_materia ?? '';
+
+        if (!byMateria.has(materia_id)) {
+          byMateria.set(materia_id, {
+            materia_id,
+            nombre_materia,
+            _actividadesMap: new Map()
+          });
+        }
+
+        const mat = byMateria.get(materia_id);
+
+        if (!mat._actividadesMap.has(actividad_id)) {
+          mat._actividadesMap.set(actividad_id, {
+            actividad_id,
+            nombre_actividad: r.nombre_actividad ?? '',
+            fecha_entrega: r.fecha_entrega ?? null,
+            puntaje_maximo: r.puntaje_maximo ?? 0,
+            ciclo_id: r.ciclo_id != null ? Number(r.ciclo_id) : null,
+            _alumnosMap: new Map()
+          });
+        }
+
+        const act = mat._actividadesMap.get(actividad_id);
+
+        const alumno_id = r.alumno_id != null ? Number(r.alumno_id) : null;
+        if (!alumno_id) continue;
+
+        // Como el SP devuelve 1 fila por alumno x actividad, aquí guardamos directo.
+        // Si por alguna razón vinieran duplicados, nos quedamos con el último (o el mayor).
+        act._alumnosMap.set(alumno_id, {
+          alumno_id,
+          codigo_alumno: r.codigo_alumno ?? null,
+          alumno_nombre: r.alumno_nombre ?? '',
+          alumno_apellido: r.alumno_apellido ?? '',
+          puntaje_obtenido: r.puntaje_obtenido != null ? Number(r.puntaje_obtenido) : 0
+        });
+      }
+
+      const data = Array.from(byMateria.values())
+        .map(m => {
+          const actividades = Array.from(m._actividadesMap.values())
+            .map(a => ({
+              actividad_id: a.actividad_id,
+              nombre_actividad: a.nombre_actividad,
+              fecha_entrega: a.fecha_entrega,
+              puntaje_maximo: a.puntaje_maximo,
+              ciclo_id: a.ciclo_id,
+              alumnos: Array.from(a._alumnosMap.values()).sort((x, y) => {
+                const ap = String(x.alumno_apellido || '').localeCompare(String(y.alumno_apellido || ''));
+                if (ap !== 0) return ap;
+                return String(x.alumno_nombre || '').localeCompare(String(y.alumno_nombre || ''));
+              })
+            }))
+            .sort((a, b) => {
+              const da = a.fecha_entrega ? new Date(a.fecha_entrega).getTime() : 0;
+              const db = b.fecha_entrega ? new Date(b.fecha_entrega).getTime() : 0;
+              if (da !== db) return da - db;
+              return (a.actividad_id || 0) - (b.actividad_id || 0);
+            });
+
+          return {
+            materia_id: m.materia_id,
+            nombre_materia: m.nombre_materia,
+            actividades
+          };
+        })
+        .sort((a, b) => {
+          // si quieres por materia_id numérico:
+          return (a.materia_id - b.materia_id);
+          // o por nombre: String(a.nombre_materia).localeCompare(String(b.nombre_materia))
+        });
+
+      return res.status(200).json({ data });
+    } catch (error) {
+      const msg = (error && error.message) ? String(error.message) : 'Error interno';
+
+      if (/inválido/i.test(msg) || /invalido/i.test(msg) || /parámetro/i.test(msg) || /parametro/i.test(msg)) {
+        return res.status(400).json({ error: msg });
+      }
+      if (/no existe/i.test(msg)) {
+        return res.status(404).json({ error: msg });
+      }
+
+      return res.status(500).json({ error: msg });
+    }
+  }
+];
+
+exports.actualizarActividad = [
+  body('actividad_id')
+    .exists().withMessage('actividad_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ gt: 0 }).withMessage('actividad_id debe ser entero > 0'),
+
+  body('nombre_actividad')
+    .exists().withMessage('nombre_actividad requerido')
+    .bail()
+    .isString().withMessage('nombre_actividad debe ser texto')
+    .trim()
+    .notEmpty().withMessage('nombre_actividad requerido')
+    .isLength({ max: 150 }).withMessage('nombre_actividad máximo 150 caracteres'),
+
+  body('puntaje_maximo')
+    .exists().withMessage('puntaje_maximo requerido')
+    .bail()
+    .isFloat({ gt: 0 }).withMessage('puntaje_maximo inválido'),
+
+  body('fecha_entrega')
+    .exists().withMessage('fecha_entrega requerida')
+    .bail()
+    .isISO8601().withMessage('fecha_entrega debe ser una fecha válida'),
+
+  body('ciclo_id')
+    .exists().withMessage('ciclo_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ gt: 0 }).withMessage('ciclo_id inválido'),
+
+  body('tipo_actividad_id')
+    .exists().withMessage('tipo_actividad_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ gt: 0 }).withMessage('tipo_actividad_id inválido'),
+
+  body('estado_actividad_id')
+    .exists().withMessage('estado_actividad_id requerido')
+    .bail()
+    .toInt()
+    .isInt({ gt: 0 }).withMessage('estado_actividad_id inválido'),
+
+  body('descripcion')
+    .exists().withMessage('descripcion requerida')
+    .bail()
+    .isString().withMessage('descripcion debe ser texto')
+    .trim()
+    .notEmpty().withMessage('descripcion requerida'),
+
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const actividad_id = Number(req.body.actividad_id);
+      const nombre_actividad = req.body.nombre_actividad.toString().trim();
+      const puntaje_maximo = Number(req.body.puntaje_maximo);
+      const fecha_entrega = req.body.fecha_entrega;
+      const ciclo_id = Number(req.body.ciclo_id);
+      const tipo_actividad_id = Number(req.body.tipo_actividad_id);
+      const estado_actividad_id = Number(req.body.estado_actividad_id);
+      const descripcion = req.body.descripcion.toString().trim();
+
+      const raw = await sequelize.query(
+        `CALL sp_actividad_actualizar(
+          :p_actividad_id,
+          :p_nombre_actividad,
+          :p_puntaje_maximo,
+          :p_fecha_entrega,
+          :p_ciclo_id,
+          :p_tipo_actividad_id,
+          :p_estado_actividad_id,
+          :p_descripcion
+        );`,
+        {
+          replacements: {
+            p_actividad_id: actividad_id,
+            p_nombre_actividad: nombre_actividad,
+            p_puntaje_maximo: puntaje_maximo,
+            p_fecha_entrega: fecha_entrega,
+            p_ciclo_id: ciclo_id,
+            p_tipo_actividad_id: tipo_actividad_id,
+            p_estado_actividad_id: estado_actividad_id,
+            p_descripcion: descripcion
+          }
+        }
+      );
+
+      let rows = [];
+      if (Array.isArray(raw)) rows = Array.isArray(raw[0]) ? raw[0] : raw;
+      else if (raw && typeof raw === 'object') rows = [raw];
+
+      return res.status(200).json({
+        message: 'Actividad actualizada correctamente',
+        data: rows || []
+      });
+    } catch (error) {
+      const msg = (error && error.message) ? String(error.message) : 'Error interno';
+
+      if (
+        /actividad_id inválido/i.test(msg) ||
+        /actividad_id invalido/i.test(msg) ||
+        /nombre_actividad requerido/i.test(msg) ||
+        /puntaje_maximo inválido/i.test(msg) ||
+        /puntaje_maximo invalido/i.test(msg) ||
+        /fecha_entrega requerida/i.test(msg) ||
+        /ciclo_id inválido/i.test(msg) ||
+        /ciclo_id invalido/i.test(msg) ||
+        /tipo_actividad_id inválido/i.test(msg) ||
+        /tipo_actividad_id invalido/i.test(msg) ||
+        /estado_actividad_id inválido/i.test(msg) ||
+        /estado_actividad_id invalido/i.test(msg) ||
+        /descripcion requerida/i.test(msg)
+      ) {
+        return res.status(400).json({ error: msg });
+      }
+
+      if (
+        /la actividad no existe/i.test(msg) ||
+        /el ciclo no existe o está inactivo/i.test(msg) ||
+        /el ciclo no existe o esta inactivo/i.test(msg) ||
+        /el tipo de actividad no existe o está inactivo/i.test(msg) ||
+        /el tipo de actividad no existe o esta inactivo/i.test(msg) ||
+        /el estado de actividad no existe/i.test(msg) ||
+        /no fue posible resolver la materia de la actividad/i.test(msg) ||
+        /la materia de la actividad no tiene configurado el tipo de actividad indicado/i.test(msg)
+      ) {
         return res.status(404).json({ error: msg });
       }
 

@@ -13,4 +13,6 @@ router.post(`/${path}/CrearEncargado`, controller.crearEncargado);
 
 router.put(`/${path}/ActualizarEncargado`, controller.actualizarEncargado);
 
+router.delete(`/${path}/EliminarEncargado`, controller.eliminarEncargado);
+
 module.exports = router;

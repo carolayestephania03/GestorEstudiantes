@@ -257,13 +257,19 @@
             <div class="row g-4 align-items-stretch">
 
               <!-- PANEL CONFIGURACIÓN -->
-              <div class="col-12 col-xl-4">
+              <div class="col-12 col-xl-5">
                 <div class="card shadow-sm border-0 rounded-3 h-100">
                   <div class="card-body d-flex flex-column">
                     <div class="mb-4">
                       <h5 class="fw-bold text-primary mb-1">Configuración</h5>
                       <p class="text-muted mb-0 small">Complete la información necesaria para generar el cuadro PRIM.
                       </p>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="LenguajeIndigena" class="form-label fw-semibold">Lenguaje Indígena</label>
+                      <input type="text" class="form-control" id="LenguajeIndigena"
+                        placeholder="Ingrese el nombre del lenguaje indígena">
                     </div>
 
                     <div class="mb-3">
@@ -278,10 +284,79 @@
                         placeholder="Ingrese el subtítulo en el lenguaje indígena">
                     </div>
 
-                    <div class="mb-4">
+                    <div class="mb-3">
                       <label for="cicloCuadroPRIM" class="form-label fw-semibold">Ciclo / Bimestre</label>
                       <input type="text" class="form-control" id="cicloCuadroPRIM"
                         placeholder="Ingrese el ciclo o bimestre en el lenguaje indígena">
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold d-block">Código del centro educativo</label>
+
+                      <div class="d-flex flex-wrap align-items-start gap-2">
+                        <!-- Departamento -->
+                        <div class="text-center">
+                          <div class="d-flex">
+                            <input type="text" class="form-control text-center rounded-0" id="codDepto1" maxlength="1"
+                              style="width: 42px;">
+                            <input type="text" class="form-control text-center rounded-0 border-start-0" id="codDepto2"
+                              maxlength="1" style="width: 42px;">
+                          </div>
+                          <small class="text-muted d-block mt-1">Departamento</small>
+                        </div>
+
+                        <div class="pt-2 fw-bold">-</div>
+
+                        <!-- Municipio -->
+                        <div class="text-center">
+                          <div class="d-flex">
+                            <input type="text" class="form-control text-center rounded-0" id="codMunicipio1"
+                              maxlength="1" style="width: 42px;">
+                            <input type="text" class="form-control text-center rounded-0 border-start-0"
+                              id="codMunicipio2" maxlength="1" style="width: 42px;">
+                          </div>
+                          <small class="text-muted d-block mt-1">Municipio</small>
+                        </div>
+
+                        <div class="pt-2 fw-bold">-</div>
+
+                        <!-- Correlativo -->
+                        <div class="text-center">
+                          <div class="d-flex">
+                            <input type="text" class="form-control text-center rounded-0" id="codCorrelativo1"
+                              maxlength="1" style="width: 42px;">
+                            <input type="text" class="form-control text-center rounded-0 border-start-0"
+                              id="codCorrelativo2" maxlength="1" style="width: 42px;">
+                            <input type="text" class="form-control text-center rounded-0 border-start-0"
+                              id="codCorrelativo3" maxlength="1" style="width: 42px;">
+                            <input type="text" class="form-control text-center rounded-0 border-start-0"
+                              id="codCorrelativo4" maxlength="1" style="width: 42px;">
+                          </div>
+                          <small class="text-muted d-block mt-1">Correlativo</small>
+                        </div>
+
+                        <div class="pt-2 fw-bold">-</div>
+
+                        <!-- Nivel -->
+                        <div class="text-center">
+                          <div class="d-flex">
+                            <input type="text" class="form-control text-center rounded-0" id="codNivel1" maxlength="1"
+                              style="width: 42px;">
+                            <input type="text" class="form-control text-center rounded-0 border-start-0" id="codNivel2"
+                              maxlength="1" style="width: 42px;">
+                          </div>
+                          <small class="text-muted d-block mt-1">Nivel</small>
+                        </div>
+                      </div>
+
+                      <!-- Campo oculto opcional para enviar el valor completo -->
+                      <input type="hidden" id="CodigoCentroEducativo">
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="observacionesCuadroPRIM" class="form-label fw-semibold">Observaciones</label>
+                      <input type="text" class="form-control" id="observacionesCuadroPRIM"
+                        placeholder="Ingrese las observaciones que desea ingresar en el Cuadro PRIM">
                     </div>
 
                     <div class="mt-auto">
@@ -299,12 +374,40 @@
                 </div>
               </div>
 
-              <!-- IMAGEN -->
+              <!-- TABLA -->
+              <div class="col-12 col-lg-8 col-xl-7">
+
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                  <div class="card-header bg-white border-bottom">
+                    <h6 class="fw-bold text-primary mb-0">
+                      Seleccionar Alumnos
+                    </h6>
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="table-responsive">
+                      <table class="table table-hover align-middle table-bordered mb-0">
+                        <thead class="table-primary text-center">
+                          <tr>
+                            <th style="width:80px;">✔</th>
+                            <th>Cod. Alumno</th>
+                            <th>Nombre Alumno</th>
+                            <th>Situación Alumno</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tableBodyAlumnoNotas"></tbody>
+                      </table>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- IMAGEN 
               <div class="col-12 col-md-6 col-xl-4">
                 <div class="card shadow-sm border-0 rounded-3 h-100 overflow-hidden">
-                  <div class="card-header bg-light border-0">
-                    <h6 class="mb-0 text-primary">Referencia visual</h6>
-                  </div>
                   <div class="card-body p-0">
                     <img src="../../assets/img/CuadroPrim.jpg" alt="Imagen de referencia Cuadro PRIM"
                       class="img-fluid w-100">
@@ -312,68 +415,53 @@
                 </div>
               </div>
 
-              <!-- PANEL INFORMATIVO -->
-              <div class="col-12 col-md-6 col-xl-4">
-                <div class="card shadow-sm border-0 rounded-3 h-100">
-                  <div class="card-body d-flex flex-column justify-content-center">
-                    <div class="text-center text-md-start">
-                      <span class="badge bg-label-primary mb-3">Reporte académico</span>
-                      <h5 class="fw-bold text-primary mb-3">Generación de Cuadro PRIM</h5>
-                      <p class="text-muted mb-0">
-                        Utilice este módulo para personalizar el título, subtítulo y ciclo del reporte.
-                        Luego podrá generar el documento o revisar su vista previa antes de utilizarlo.
-                      </p>
-                    </div>
-                  </div>
+            </div>-->
+
+              <!-- VISTA PREVIA -->
+              <div class="card shadow-sm border-0 rounded-3 mt-4 d-none" id="vistaPreviaContainerCuadroPrim">
+                <div class="card-header bg-success text-white d-flex align-items-center justify-content-between">
+                  <span class="fw-semibold mb-0">Vista Previa - Cuadro PRIM</span>
+                </div>
+                <div class="card-body text-center py-4">
+                  <div id="CuadroPRIMContainer" class="w-100"></div>
                 </div>
               </div>
-
             </div>
+            <!-- / Content -->
 
-            <!-- VISTA PREVIA -->
-            <div class="card shadow-sm border-0 rounded-3 mt-4 d-none" id="vistaPreviaContainerCuadroPrim">
-              <div class="card-header bg-success text-white d-flex align-items-center justify-content-between">
-                <span class="fw-semibold mb-0">Vista Previa - Cuadro PRIM</span>
+            <!-- Footer -->
+            <footer class="content-footer footer bg-footer-theme">
+              <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                <div class="mb-2 mb-md-0">
+                  carolay Canté© 2026, "Construyendo herramientas que facilitan el aprendizaje."
+                </div>
+
               </div>
-              <div class="card-body text-center py-4">
-                <div id="CuadroPRIMContainer" class="w-100"></div>
-              </div>
-            </div>
+            </footer>
+            <!-- / Footer -->
+
+            <div class="content-backdrop fade"></div>
           </div>
-          <!-- / Content -->
-
-          <!-- Footer -->
-          <footer class="content-footer footer bg-footer-theme">
-            <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
-              <div class="mb-2 mb-md-0">
-                carolay Canté© 2026, "Construyendo herramientas que facilitan el aprendizaje."
-              </div>
-
-            </div>
-          </footer>
-          <!-- / Footer -->
-
-          <div class="content-backdrop fade"></div>
         </div>
+        <!-- / Layout page -->
       </div>
-      <!-- / Layout page -->
+      <!-- Overlay -->
+      <div class="layout-overlay layout-menu-toggle"></div>
     </div>
-    <!-- Overlay -->
-    <div class="layout-overlay layout-menu-toggle"></div>
-  </div>
-  <!-- / Layout wrapper -->
-  <!-- Core JS -->
-  <script src="../../assets/js/bootstrap.js"></script>
+    <!-- / Layout wrapper -->
+    <!-- Core JS -->
+    <script src="../../assets/js/bootstrap.js"></script>
 
-  <!-- Variables de configuración -->
-  <script src="../../config/enviroment.js"></script>
+    <!-- Variables de configuración -->
+    <script src="../../config/enviroment.js"></script>
 
-  <!-- endbuild -->
-  <!-- Main JS -->
-  <script src="../../assets/js/main.js"></script>
-  <!-- JS Geovanny-->
-  <script src="../../assets/js/Calendar/index.global.min.js"></script>
-  <script src="../../assets/js/Menu/sidebar.js"></script>
+    <!-- endbuild -->
+    <!-- Main JS -->
+    <script src="../../assets/js/main.js"></script>
+    <!-- JS Geovanny-->
+    <script src="../../assets/js/Calendar/index.global.min.js"></script>
+    <script src="../../assets/js/Menu/sidebar.js"></script>
+    <script src="../../assets/js/Reportes/cuadroPrim.js"></script>
 
 </body>
 

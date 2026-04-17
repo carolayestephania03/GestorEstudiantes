@@ -61,6 +61,7 @@ const RoutePromedioAmbito = require('./app/routes/Promedio_ambito');
 const RoutePromedioCiclo = require('./app/routes/Promedio_ciclo');
 const AuthDevRoute = require('./app/routes/authDev');
 const RouteActitudinal = require('./app/routes/actitudinal');
+const RouteSituacion = require('./app/routes/SituacionAlumno.js');
 
 app.use(RouteActitudinal);
 app.use(RouteEscalafon);
@@ -79,6 +80,7 @@ app.use(RouteAlumno);
 app.use(RouteCalificacion);
 app.use(RoutePromedioAmbito);
 app.use(RoutePromedioCiclo);
+app.use(RouteSituacion);
 app.use(AuthDevRoute);
 
 // Documentación Swagger

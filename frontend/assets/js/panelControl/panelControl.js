@@ -8,11 +8,14 @@
     const tbodyRenglones = document.getElementById('tbodyRenglones');
     const tbodyMaterias = document.getElementById('tbodyMaterias');
     const tbodyAmbitos = document.getElementById('tbodyAmbitos');
+    const tbodySituacion = document.getElementById('tbodySituacion');
 
     const inputEscalafon = document.getElementById('inputEscalafon');
     const inputRenglon = document.getElementById('inputRenglon');
     const inputAmbito = document.getElementById('inputAmbito');
     const inputDescripcionAmbito = document.getElementById('inputDescripcionAmbito');
+    const inputSituacion = document.getElementById('inputSituacion');
+    const inputDescripcionSituacion = document.getElementById('inputDescripcionSituacion');
 
     const inputNombreMateria = document.getElementById('inputNombreMateria');
     const inputDescripcionMateria = document.getElementById('inputDescripcionMateria');
@@ -22,6 +25,7 @@
     const btnCrearRenglon = document.getElementById('btnCrearRenglon');
     const btnCrearAmbito = document.getElementById('btnCrearAmbito');
     const btnCrearMateria = document.getElementById('btnCrearMateria');
+    const btnCrearSituacion = document.getElementById('btnCrearSituacion');
 
     const modalConfiguracionMateriasEl = document.getElementById('modalConfiguracionMaterias');
     const modalConfiguracionMaterias = modalConfiguracionMateriasEl
@@ -94,7 +98,7 @@
         `;
     }
 
-        function crearBotonesAccionSimple(tipo, id, descripcion = '', descripcion2 = '') {
+    function crearBotonesAccionSimple(tipo, id, descripcion = '', descripcion2 = '') {
         return `
             <div class="d-flex justify-content-center gap-2 flex-wrap">
                 <button
@@ -243,6 +247,29 @@
                 </td>
             </tr>
         `).join('');
+    }
+
+    function renderSituacion(data = []) {
+        if (!tbodySituacion) return;
+        if (!data.length) return renderEmptyRow(tbodySituacion, 3);
+
+        tbodySituacion.innerHTML = data.map((item, index) => `
+        <tr>
+            <td>${index + 1}</td>
+            <td>
+                <div><strong>${safeText(item.siglas || '')}</strong></div>
+                <div class="text-muted small">${safeText(item.Descripcion || item.descripcion || '')}</div>
+            </td>
+            <td class="text-center">
+                ${crearBotonesAccion(
+            'situacion',
+            item.Situacion_Alumno_id || item.situacion_alumno_id,
+            item.siglas || '',
+            item.Descripcion || item.descripcion || ''
+        )}
+            </td>
+        </tr>
+    `).join('');
     }
 
     function renderRenglones(data = []) {
@@ -496,12 +523,13 @@
     // =========================================================
     async function cargarCatalogosPanel() {
         try {
-            const [escalafonesRes, renglonesRes, materiasRes, ambitosRes, gradosRes] = await Promise.all([
+            const [escalafonesRes, renglonesRes, materiasRes, ambitosRes, gradosRes, situacionRes] = await Promise.all([
                 getJSON('escalafon'),
                 getJSON('renglon'),
                 getJSON('materia'),
                 getJSON('actitudinal/topicosActitudinal'),
-                getJSON('grado')
+                getJSON('grado'),
+                getJSON('situacion')
             ]);
 
             gradosCache = Array.isArray(gradosRes.data) ? gradosRes.data : [];
@@ -512,6 +540,7 @@
             renderRenglones(Array.isArray(renglonesRes.data) ? renglonesRes.data : []);
             renderMaterias(materiasCache);
             renderAmbitos(ambitosCache);
+            renderSituacion(Array.isArray(situacionRes.data) ? situacionRes.data : []);
             renderGradosMateria();
         } catch (error) {
             console.error('Error cargando catálogos:', error);
@@ -519,6 +548,7 @@
             renderEmptyRow(tbodyRenglones, 3, 'No se pudo cargar renglones');
             renderEmptyRow(tbodyMaterias, 4, 'No se pudo cargar materias');
             renderEmptyRow(tbodyAmbitos, 4, 'No se pudo cargar ámbitos');
+            renderEmptyRow(tbodySituacion, 4, 'No se pudo cargar situaciones');
         }
     }
 
@@ -771,6 +801,7 @@
     // =========================================================
     // CRUD Materias
     // =========================================================
+
     async function crearMateria() {
         const nombre_materia = normalizarTexto(inputNombreMateria?.value);
         const descripcion_materia = normalizarTexto(inputDescripcionMateria?.value);
@@ -855,6 +886,118 @@
     }
 
     // =========================================================
+    // CRUD Situación
+    // =========================================================
+    async function crearSituacion() {
+        const siglas = normalizarTexto(inputSituacion?.value);
+        const descripcion = normalizarTexto(inputDescripcionSituacion?.value);
+
+        if (!siglas) {
+            alert('Ingrese las siglas de la situación.');
+            return;
+        }
+
+        if (siglas.length > 10) {
+            alert('Las siglas no pueden exceder 10 caracteres.');
+            return;
+        }
+
+        if (!descripcion) {
+            alert('Ingrese la descripción de la situación.');
+            return;
+        }
+
+        if (descripcion.length > 100) {
+            alert('La descripción no puede exceder 100 caracteres.');
+            return;
+        }
+
+        try {
+            const confirmar = confirm(`¿Desea crear la situación "${siglas}"?`);
+            if (!confirmar) return;
+
+            await postJSON('situacion/CrearSituacion', {
+                siglas,
+                Descripcion: descripcion
+            });
+
+            if (inputSituacion) inputSituacion.value = '';
+            if (inputDescripcionSituacion) inputDescripcionSituacion.value = '';
+
+            await cargarCatalogosPanel();
+            alert('Situación creada correctamente.');
+        } catch (error) {
+            console.error('Error creando situación:', error);
+            alert('No fue posible crear la situación.');
+        }
+    }
+
+    async function actualizarSituacion(situacion_alumno_id, siglasActual, descripcionActual) {
+        const nuevasSiglas = prompt('Actualizar siglas de la situación:', siglasActual);
+        if (nuevasSiglas === null) return;
+
+        const nuevaDescripcion = prompt('Actualizar descripción de la situación:', descripcionActual);
+        if (nuevaDescripcion === null) return;
+
+        const siglas = normalizarTexto(nuevasSiglas);
+        const descripcion = normalizarTexto(nuevaDescripcion);
+
+        if (!siglas) {
+            alert('Las siglas de la situación son obligatorias.');
+            return;
+        }
+
+        if (siglas.length > 10) {
+            alert('Las siglas no pueden exceder 10 caracteres.');
+            return;
+        }
+
+        if (!descripcion) {
+            alert('La descripción de la situación es obligatoria.');
+            return;
+        }
+
+        if (descripcion.length > 100) {
+            alert('La descripción no puede exceder 100 caracteres.');
+            return;
+        }
+
+        try {
+            const confirmar = confirm(`¿Desea actualizar la situación "${siglas}"?`);
+            if (!confirmar) return;
+
+            await putJSON('situacion/ActualizarSituacion', {
+                Situacion_Alumno_id: Number(situacion_alumno_id),
+                siglas,
+                Descripcion: descripcion
+            });
+
+            await cargarCatalogosPanel();
+            alert('Situación actualizada correctamente.');
+        } catch (error) {
+            console.error('Error actualizando situación:', error);
+            alert('No fue posible actualizar la situación.');
+        }
+    }
+
+    async function eliminarSituacion(situacion_alumno_id, siglasActual) {
+        try {
+            const confirmar = confirm(`¿Desea eliminar la situación "${siglasActual}"?`);
+            if (!confirmar) return;
+
+            await deleteJSON('situacion/EliminarSituacion', {
+                Situacion_Alumno_id: Number(situacion_alumno_id)
+            });
+
+            await cargarCatalogosPanel();
+            alert('Situación eliminada correctamente.');
+        } catch (error) {
+            console.error('Error eliminando situación:', error);
+            alert('No fue posible eliminar la situación.');
+        }
+    }
+
+    // =========================================================
     // Acciones globales
     // =========================================================
     function initAccionesCatalogo() {
@@ -881,6 +1024,9 @@
                     case 'ambito':
                         await actualizarAmbito(id, descripcion, descripcion2);
                         break;
+                    case 'situacion':
+                        await actualizarSituacion(id, descripcion, descripcion2);
+                        break;
                     default:
                         break;
                 }
@@ -903,6 +1049,9 @@
                         break;
                     case 'ambito':
                         await eliminarAmbito(id, descripcion);
+                        break;
+                    case 'situacion':
+                        await eliminarSituacion(id, descripcion);
                         break;
                     default:
                         break;
@@ -929,6 +1078,10 @@
 
         btnCrearMateria?.addEventListener('click', async () => {
             await crearMateria();
+        });
+
+        btnCrearSituacion?.addEventListener('click', async () => {
+            await crearSituacion();
         });
     }
 

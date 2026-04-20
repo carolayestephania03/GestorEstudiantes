@@ -6,6 +6,7 @@
   // =========================================================
   const URL_BUSCAR_ALUMNOS = "http://localhost:8001/alumno/buscarAlumnos";
   const URL_SITUACIONES = "http://localhost:8001/situacion";
+  const URL_REPORTE_NOTAS = "http://localhost:8001/calificacion/reporteNotasMateriasBimestre";
 
   // =========================================================
   // DOM
@@ -52,7 +53,11 @@
     municipio: "",
     jornada: "",
     plan: "DIARIO(REGULAR)",
-    idiomas: "CASTELLANO (ESPAÑOL)"
+    idiomas: "CASTELLANO (ESPAÑOL)",
+    reporte_notas: [],
+    columnas_asignaturas: [],
+    mapa_notas_alumnos: new Map(),
+    ciclo_id: 1
   };
 
   // =========================================================
@@ -311,6 +316,73 @@
     actualizarCodigoCentroEducativo();
   }
 
+  function normalizarClaveMateria(texto) {
+    return String(texto ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toUpperCase();
+  }
+
+  function resolverCicloId() {
+    const texto = String(inputCiclo?.value ?? "").trim();
+    const numero = texto.match(/\d+/);
+
+    if (numero) {
+      const ciclo = toInt(numero[0], 1);
+      if (ciclo >= 1 && ciclo <= 4) return ciclo;
+    }
+
+    return 1;
+  }
+
+  function obtenerCamposMateriasDesdeReporte(rows = []) {
+    const meta = new Set([
+      "alumno_id",
+      "codigo_alumno",
+      "nombre_completo",
+      "bimestre_numero",
+      "tipo_fila",
+      "promedio_bimestre"
+    ]);
+
+    const columnas = [];
+
+    rows.forEach(row => {
+      Object.keys(row || {}).forEach(key => {
+        if (meta.has(key)) return;
+        if (!columnas.includes(key)) {
+          columnas.push(key);
+        }
+      });
+    });
+
+    return columnas.slice(0, 10);
+  }
+
+  function construirMapaNotasAlumnos(rows = [], columnas = []) {
+    const mapa = new Map();
+
+    rows.forEach(row => {
+      const alumnoId = toInt(row?.alumno_id, null);
+      if (!alumnoId) return;
+
+      const notas = {};
+
+      columnas.forEach((materia, index) => {
+        notas[index + 1] = String(row?.[materia] ?? "----").trim() || "----";
+      });
+
+      for (let i = columnas.length + 1; i <= 10; i++) {
+        notas[i] = "----";
+      }
+
+      mapa.set(alumnoId, notas);
+    });
+
+    return mapa;
+  }
+
   // =========================================================
   // ALUMNOS
   // =========================================================
@@ -320,7 +392,8 @@
       item.alumno_nombre_completo ??
       `${item.nombre ?? item.alumno_nombre ?? ""} ${item.apellido ?? item.alumno_apellido ?? ""}`.trim();
 
-    const sexoRaw = String(
+    const generoRaw = String(
+      item.genero_id ??
       item.sexo ??
       item.genero ??
       item.genero_desc ??
@@ -328,16 +401,16 @@
       ""
     ).trim().toUpperCase();
 
-    let sexo = sexoRaw;
-    if (sexoRaw.startsWith("M")) sexo = "M";
-    else if (sexoRaw.startsWith("F")) sexo = "F";
+    let genero_id = generoRaw;
+    if (generoRaw.startsWith("M")) genero_id = "M";
+    else if (generoRaw.startsWith("F")) genero_id = "F";
 
     return {
       alumno_id: item.alumno_id ?? item.id ?? null,
       codigo_alumno: item.codigo_alumno ?? item.codigo ?? item.codigo_personal ?? "",
       nombre_completo: nombreCompleto || "—",
       fecha_nacimiento: item.fecha_nacimiento ?? item.nacimiento ?? item.alumno_fecha_nacimiento ?? "",
-      sexo,
+      genero_id,
       situacion_alumno_id: 1
     };
   }
@@ -374,8 +447,8 @@
     return {
       situacion_alumno_id: toInt(item?.situacion_alumno_id, null),
       siglas: String(item?.siglas ?? "").trim().toUpperCase(),
-      descripcion: String(item?.descripcion ?? "").trim(),
-      estado: toInt(item?.estado, 0)
+      descripcion: String(item?.descripcion ?? item?.Descripcion ?? "").trim(),
+      estado: item?.estado === true || item?.estado === 1 ? 1 : 0
     };
   }
 
@@ -466,25 +539,60 @@
   // =========================================================
   // NOTAS / ASIGNATURAS
   // =========================================================
-  // PENDIENTE:
-  // Aquí quedará después el consumo del API que devolverá las notas por alumno.
-  // Por ahora se deja una estructura fija de columnas 1..10 para maquetar el formato.
-  function obtenerColumnasAsignaturasBase() {
-    return [
-      { numero: 1, nombre: "L1. IDIOMA MATERNO" },
-      { numero: 2, nombre: "L2. SEGUNDO IDIOMA" },
-      { numero: 3, nombre: "L3. TERCER IDIOMA" },
-      { numero: 4, nombre: "MATEMÁTICAS" },
-      { numero: 5, nombre: "MEDIO SOCIAL Y NATURAL" },
-      { numero: 6, nombre: "EXPRESIÓN ARTÍSTICA" },
-      { numero: 7, nombre: "EDUCACIÓN FÍSICA" },
-      { numero: 8, nombre: "FORMACIÓN CIUDADANA" },
-      { numero: 9, nombre: "" },
-      { numero: 10, nombre: "" }
-    ];
+  async function cargarReporteNotas() {
+    if (!estado.grado_id || !estado.seccion_id || !estado.anio) {
+      throw new Error("No se encontraron grado, sección o año para cargar notas");
+    }
+
+    try {
+      estado.ciclo_id = resolverCicloId();
+
+      const payload = {
+        grado_id: estado.grado_id,
+        seccion_id: estado.seccion_id,
+        anio: estado.anio,
+        ciclo_id: estado.ciclo_id
+      };
+
+      const result = await fetchJSON(URL_REPORTE_NOTAS, "POST", payload);
+      const rows = Array.isArray(result?.data) ? result.data : [];
+
+      estado.reporte_notas = rows;
+      estado.columnas_asignaturas = obtenerCamposMateriasDesdeReporte(rows);
+      estado.mapa_notas_alumnos = construirMapaNotasAlumnos(rows, estado.columnas_asignaturas);
+    } catch (error) {
+      console.error("Error al cargar reporte de notas:", error);
+
+      estado.reporte_notas = [];
+      estado.columnas_asignaturas = [];
+      estado.mapa_notas_alumnos = new Map();
+
+      throw new Error(error.message || "No se pudieron cargar las notas");
+    }
   }
 
-  function obtenerNotasTemporalesAlumno() {
+  function obtenerColumnasAsignaturasBase() {
+    const columnas = Array.isArray(estado.columnas_asignaturas)
+      ? estado.columnas_asignaturas
+      : [];
+
+    const resultado = [];
+
+    for (let i = 0; i < 10; i++) {
+      resultado.push({
+        numero: i + 1,
+        nombre: columnas[i] || ""
+      });
+    }
+
+    return resultado;
+  }
+
+  function obtenerNotasAlumno(alumnoId) {
+    const notas = estado.mapa_notas_alumnos.get(Number(alumnoId));
+
+    if (notas) return notas;
+
     return {
       1: "----",
       2: "----",
@@ -514,7 +622,9 @@
     alumnosSeleccionados.forEach(alumno => {
       const situacion = obtenerSituacionPorId(alumno.situacion_alumno_id);
       const sigla = safeUpper(situacion?.siglas);
-      const sexo = alumno.sexo === "F" ? "F" : "M";
+      const genero = safeUpper(alumno.genero_id);
+
+      const sexo = genero === "F" ? "F" : "M";
 
       if (resumen[sigla] && resumen[sigla][sexo] != null) {
         resumen[sigla][sexo] += 1;
@@ -522,6 +632,100 @@
     });
 
     return resumen;
+  }
+
+  const FILAS_PRIMERA_HOJA = 18;
+  const FILAS_HOJA_FINAL = 12;
+  const FILAS_HOJA_INTERMEDIA = 28;
+
+  function partirArrayEnBloques(lista = [], size = 1) {
+    if (!Array.isArray(lista) || size <= 0) return [];
+    const bloques = [];
+
+    for (let i = 0; i < lista.length; i += size) {
+      bloques.push(lista.slice(i, i + size));
+    }
+
+    return bloques;
+  }
+
+  function construirPaginacionAlumnos(alumnos = []) {
+    const primeraHoja = alumnos.slice(0, FILAS_PRIMERA_HOJA);
+    let restantes = alumnos.slice(FILAS_PRIMERA_HOJA);
+
+    const hojasIntermedias = [];
+    let hojaFinal = [];
+
+    if (restantes.length > 0) {
+      while (restantes.length > FILAS_HOJA_FINAL) {
+        hojasIntermedias.push(restantes.slice(0, FILAS_HOJA_INTERMEDIA));
+        restantes = restantes.slice(FILAS_HOJA_INTERMEDIA);
+      }
+
+      hojaFinal = restantes;
+    }
+
+    const totalHojas = 1 + hojasIntermedias.length + 1;
+    // 1 = primera hoja
+    // hojasIntermedias = solo continuidad de tabla
+    // 1 = hoja final (firmas / asignaturas / observaciones), con o sin tabla
+
+    return {
+      primeraHoja,
+      hojasIntermedias,
+      hojaFinal,
+      totalHojas
+    };
+  }
+
+  function generarBloqueHojaNumero(numeroHoja, totalHojas) {
+    return `
+    <div class="prim-label" style="margin-left:auto;">Hoja No.</div>
+    <div class="line-fill short">${numeroHoja}</div>
+    <div class="prim-label">de</div>
+    <div class="line-fill short">${totalHojas}</div>
+  `;
+  }
+
+  function generarEncabezadoTablaPrincipal() {
+    return `
+    <thead>
+      <tr>
+        <th class="w-no" rowspan="2">No.</th>
+        <th class="w-codigo" rowspan="2">Código personal</th>
+        <th class="w-nombre" rowspan="2">Nombre de(la) estudiante</th>
+        <th class="w-fecha" rowspan="2">Fecha de nacimiento</th>
+        <th class="w-sexo" rowspan="2"><div class="vertical-text">Sexo M/F</div></th>
+        <th colspan="10">Áreas, subáreas o asignaturas</th>
+        <th class="w-resultado" rowspan="2"><div class="vertical-text">Resultado (1)</div></th>
+      </tr>
+      <tr>
+        <th class="w-area">1</th>
+        <th class="w-area">2</th>
+        <th class="w-area">3</th>
+        <th class="w-area">4</th>
+        <th class="w-area">5</th>
+        <th class="w-area">6</th>
+        <th class="w-area">7</th>
+        <th class="w-area">8</th>
+        <th class="w-area">9</th>
+        <th class="w-area">10</th>
+      </tr>
+    </thead>
+  `;
+  }
+
+  function generarTablaPrincipalHTML(alumnosPagina = []) {
+    if (!Array.isArray(alumnosPagina) || !alumnosPagina.length) return "";
+
+    return `
+    <table class="prim-main-table" style="margin-top:10px;">
+      ${generarEncabezadoTablaPrincipal()}
+      <tbody>
+        ${generarFilasTablaPrincipal(alumnosPagina)}
+      </tbody>
+    </table>
+  `;
   }
 
   // =========================================================
@@ -556,58 +760,34 @@
     `;
   }
 
-  function generarFilasTablaPrincipal(alumnos) {
-    const filasVaciasNecesarias = Math.max(0, 34 - alumnos.length);
+  function generarFilasTablaPrincipal(alumnos, inicio = 0) {
     const rows = [];
 
     alumnos.forEach((alumno, index) => {
-      const notas = obtenerNotasTemporalesAlumno();
+      const notas = obtenerNotasAlumno(alumno.alumno_id);
       const situacion = obtenerSituacionPorId(alumno.situacion_alumno_id);
 
       rows.push(`
-        <tr>
-          <td class="text-center">${index + 1}</td>
-          <td>${escapeHtml(alumno.codigo_alumno || "—")}</td>
-          <td>${escapeHtml(alumno.nombre_completo || "—")}</td>
-          <td class="text-center">${escapeHtml(formatDate(alumno.fecha_nacimiento))}</td>
-          <td class="text-center">${escapeHtml(alumno.sexo || "—")}</td>
-          <td class="text-center">${escapeHtml(notas[1])}</td>
-          <td class="text-center">${escapeHtml(notas[2])}</td>
-          <td class="text-center">${escapeHtml(notas[3])}</td>
-          <td class="text-center">${escapeHtml(notas[4])}</td>
-          <td class="text-center">${escapeHtml(notas[5])}</td>
-          <td class="text-center">${escapeHtml(notas[6])}</td>
-          <td class="text-center">${escapeHtml(notas[7])}</td>
-          <td class="text-center">${escapeHtml(notas[8])}</td>
-          <td class="text-center">${escapeHtml(notas[9])}</td>
-          <td class="text-center">${escapeHtml(notas[10])}</td>
-          <td class="text-center">${escapeHtml(situacion?.siglas || "")}</td>
-        </tr>
-      `);
+      <tr>
+        <td class="text-center">${inicio + index + 1}</td>
+        <td>${escapeHtml(alumno.codigo_alumno || "—")}</td>
+        <td>${escapeHtml(alumno.nombre_completo || "—")}</td>
+        <td class="text-center">${escapeHtml(formatDate(alumno.fecha_nacimiento))}</td>
+        <td class="text-center">${escapeHtml(alumno.genero_id || "—")}</td>
+        <td class="text-center">${escapeHtml(notas[1])}</td>
+        <td class="text-center">${escapeHtml(notas[2])}</td>
+        <td class="text-center">${escapeHtml(notas[3])}</td>
+        <td class="text-center">${escapeHtml(notas[4])}</td>
+        <td class="text-center">${escapeHtml(notas[5])}</td>
+        <td class="text-center">${escapeHtml(notas[6])}</td>
+        <td class="text-center">${escapeHtml(notas[7])}</td>
+        <td class="text-center">${escapeHtml(notas[8])}</td>
+        <td class="text-center">${escapeHtml(notas[9])}</td>
+        <td class="text-center">${escapeHtml(notas[10])}</td>
+        <td class="text-center">${escapeHtml(situacion?.siglas || "")}</td>
+      </tr>
+    `);
     });
-
-    for (let i = 0; i < filasVaciasNecesarias; i++) {
-      rows.push(`
-        <tr>
-          <td>&nbsp;</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-      `);
-    }
 
     return rows.join("");
   }
@@ -628,8 +808,8 @@
         </thead>
         <tbody>
           ${asignaturas
-            .filter(item => item.nombre)
-            .map(item => `
+        .filter(item => item.nombre)
+        .map(item => `
               <tr>
                 <td class="text-center">${escapeHtml(item.numero)}</td>
                 <td>${escapeHtml(item.nombre)}</td>
@@ -698,7 +878,14 @@
     }
 
     const resumen = construirResumen(alumnosSeleccionados);
-    const filasTabla = generarFilasTablaPrincipal(alumnosSeleccionados);
+    const asignaturasHTML = generarTablaAsignaturasHTML();
+
+    const {
+      primeraHoja,
+      hojasIntermedias,
+      hojaFinal,
+      totalHojas
+    } = construirPaginacionAlumnos(alumnosSeleccionados);
 
     const lenguaje = inputLenguajeIndigena?.value?.trim() || "";
     const titulo = inputTitulo?.value?.trim() || "";
@@ -707,483 +894,508 @@
     const observaciones = inputObservaciones?.value?.trim() || "- - - - - - - - - - - - - - - - - - - - - - - - - - - -";
     const anio = estado.anio;
 
+    let contadorGlobal = primeraHoja.length;
+    let numeroHojaActual = 1;
+
+    const htmlHojasIntermedias = hojasIntermedias.map((grupo) => {
+      numeroHojaActual += 1;
+
+      const html = `
+      <div class="prim-page">
+        <div class="prim-inline-row" style="justify-content:end; margin-bottom:10px;">
+          ${generarBloqueHojaNumero(numeroHojaActual, totalHojas)}
+        </div>
+
+        <table class="prim-main-table" style="margin-top:10px;">
+          ${generarEncabezadoTablaPrincipal()}
+          <tbody>
+            ${generarFilasTablaPrincipal(grupo, contadorGlobal)}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+      contadorGlobal += grupo.length;
+      return html;
+    }).join("");
+
+    numeroHojaActual += 1;
+
     return `
-      <style>
+    <style>
+      .prim-preview-wrapper {
+        background: #f5f5f5;
+        padding: 16px;
+      }
+
+      .prim-page {
+        width: 8.5in;
+        min-height: 11in;
+        margin: 0 auto 18px auto;
+        background: #fff;
+        color: #000;
+        padding: 0.28in 0.30in 0.45in 0.30in;
+        box-shadow: 0 2px 10px rgba(0,0,0,.08);
+        font-family: Arial, sans-serif;
+        font-size: 10px;
+        box-sizing: border-box;
+      }
+
+      .prim-center { text-align: center; }
+      .prim-bold { font-weight: 700; }
+      .text-center { text-align: center; }
+      .text-right { text-align: right; }
+
+      .prim-header-grid {
+        display: grid;
+        grid-template-columns: 140px 1fr 110px;
+        gap: 10px;
+        align-items: start;
+        margin-bottom: 8px;
+      }
+
+      .prim-logo-area {
+        min-height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .prim-logo-area img {
+        max-width: 95px;
+        max-height: 65px;
+        object-fit: contain;
+      }
+
+      .idiomas-box {
+        display: flex;
+        border: 1px solid #000;
+        min-height: 18px;
+        flex: 1;
+      }
+
+      .idioma-item {
+        flex: 1;
+        border-right: 1px solid #000;
+        text-align: center;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2px 4px;
+      }
+
+      .idioma-item:last-child {
+        border-right: none;
+      }
+
+      .prim-title-block {
+        text-align: center;
+        line-height: 1.25;
+      }
+
+      .prim-title-main {
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .prim-title-sub {
+        font-size: 12px;
+        margin-top: 2px;
+      }
+
+      .prim-year-box {
+        text-align: center;
+        font-size: 10px;
+      }
+
+      .prim-year-number {
+        display: inline-block;
+        margin-top: 3px;
+        border: 1px solid #000;
+        padding: 2px 10px;
+        font-weight: 700;
+        min-width: 52px;
+      }
+
+      .prim-inline-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        margin-bottom: 6px;
+        flex-wrap: wrap;
+      }
+
+      .prim-label {
+        font-size: 10px;
+        white-space: nowrap;
+      }
+
+      .line-fill {
+        flex: 1;
+        min-width: 120px;
+        border-bottom: 1px solid #000;
+        min-height: 14px;
+        padding: 0 3px 1px 3px;
+        display: flex;
+        align-items: flex-end;
+      }
+
+      .line-fill.short { flex: 0 0 80px; }
+      .line-fill.medium { flex: 0 0 180px; }
+      .line-fill.long { flex: 1; }
+
+      .code-wrapper {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+      }
+
+      .code-group {
+        display: flex;
+      }
+
+      .code-box {
+        width: 18px;
+        height: 18px;
+        border: 1px solid #000;
+        text-align: center;
+        line-height: 18px;
+        font-size: 10px;
+      }
+
+      .code-separator {
+        font-weight: 700;
+        margin: 0 2px;
+        line-height: 18px;
+      }
+
+      .prim-summary-title {
+        text-align: center;
+        font-size: 15px;
+        font-weight: 700;
+        margin: 10px 0 6px 0;
+      }
+
+      .prim-summary-table,
+      .prim-main-table,
+      .prim-subjects-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .prim-summary-table th,
+      .prim-summary-table td,
+      .prim-main-table th,
+      .prim-main-table td,
+      .prim-subjects-table th,
+      .prim-subjects-table td {
+        border: 1px solid #000;
+        padding: 3px 4px;
+        vertical-align: middle;
+        font-size: 9px;
+      }
+
+      .prim-summary-table th,
+      .prim-main-table th,
+      .prim-subjects-table th {
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .prim-main-table th {
+        font-size: 8px;
+      }
+
+      .prim-main-table td {
+        height: 18px;
+      }
+
+      .prim-main-table .w-no { width: 28px; }
+      .prim-main-table .w-codigo { width: 70px; }
+      .prim-main-table .w-nombre { width: 260px; }
+      .prim-main-table .w-fecha { width: 95px; }
+      .prim-main-table .w-sexo { width: 28px; }
+      .prim-main-table .w-area { width: 28px; }
+      .prim-main-table .w-resultado { width: 42px; }
+
+      .vertical-text {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        white-space: nowrap;
+        text-align: center;
+        margin: 0 auto;
+      }
+
+      .prim-table-note {
+        margin-top: 6px;
+        font-size: 8px;
+        line-height: 1.3;
+      }
+
+      .prim-observaciones {
+        margin-top: 12px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .prim-observaciones .obs-line {
+        flex: 1;
+        border: 1px solid #000;
+        min-height: 22px;
+        padding: 3px 6px;
+        display: flex;
+        align-items: center;
+      }
+
+      .prim-declaration {
+        text-align: center;
+        margin-top: 10px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .prim-signature-row-top {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 18px;
+        align-items: end;
+      }
+
+      .prim-signature-row-bottom {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 38px;
+        align-items: end;
+      }
+
+      .signature-box {
+        text-align: center;
+        font-size: 9px;
+      }
+
+      .signature-line {
+        border-bottom: 1px solid #000;
+        height: 18px;
+        margin-bottom: 4px;
+      }
+
+      .prim-footer-note {
+        margin-top: 18px;
+        font-size: 7.5px;
+        line-height: 1.25;
+      }
+
+      @media print {
+        @page {
+          size: letter;
+          margin: 0.3in 0.3in 0.6in 0.3in;
+        }
+
         .prim-preview-wrapper {
-          background: #f5f5f5;
-          padding: 16px;
+          background: #fff;
+          padding: 0;
         }
 
         .prim-page {
-          width: 8.5in;
-          min-height: 11in;
-          margin: 0 auto 18px auto;
-          background: #fff;
-          color: #000;
-          padding: 0.28in 0.30in;
-          box-shadow: 0 2px 10px rgba(0,0,0,.08);
-          font-family: Arial, sans-serif;
-          font-size: 10px;
-          box-sizing: border-box;
-        }
-
-        .prim-center { text-align: center; }
-        .prim-bold { font-weight: 700; }
-        .text-center { text-align: center; }
-        .text-right { text-align: right; }
-
-        .prim-header-grid {
-          display: grid;
-          grid-template-columns: 140px 1fr 110px;
-          gap: 10px;
-          align-items: start;
-          margin-bottom: 8px;
-        }
-
-        .prim-logo-area {
-          min-height: 70px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-        }
-
-        .prim-logo-area img {
-          max-width: 95px;
-          max-height: 65px;
-          object-fit: contain;
-        }
-
-        .prim-title-block {
-          text-align: center;
-          line-height: 1.25;
-        }
-
-        .prim-title-main {
-          font-size: 16px;
-          font-weight: 700;
-        }
-
-        .prim-title-sub {
-          font-size: 12px;
-          margin-top: 2px;
-        }
-
-        .prim-year-box {
-          text-align: center;
-          font-size: 10px;
-        }
-
-        .prim-year-number {
-          display: inline-block;
-          margin-top: 3px;
-          border: 1px solid #000;
-          padding: 2px 10px;
-          font-weight: 700;
-          min-width: 52px;
-        }
-
-        .prim-inline-row {
-          display: flex;
-          align-items: flex-end;
-          gap: 8px;
-          margin-bottom: 6px;
-          flex-wrap: wrap;
-        }
-
-        .prim-label {
-          font-size: 10px;
-          white-space: nowrap;
-        }
-
-        .line-fill {
-          flex: 1;
-          min-width: 120px;
-          border-bottom: 1px solid #000;
-          min-height: 14px;
-          padding: 0 3px 1px 3px;
-          display: flex;
-          align-items: flex-end;
-        }
-
-        .line-fill.short { flex: 0 0 80px; }
-        .line-fill.medium { flex: 0 0 180px; }
-        .line-fill.long { flex: 1; }
-
-        .code-wrapper {
-          display: flex;
-          align-items: flex-start;
-          gap: 6px;
-          flex-wrap: wrap;
-          margin-bottom: 6px;
-        }
-
-        .code-group {
-          display: flex;
-        }
-
-        .code-box {
-          width: 18px;
-          height: 18px;
-          border: 1px solid #000;
-          text-align: center;
-          line-height: 18px;
-          font-size: 10px;
-        }
-
-        .code-separator {
-          font-weight: 700;
-          margin: 0 2px;
-          line-height: 18px;
-        }
-
-        .code-caption {
-          font-size: 9px;
-          text-align: center;
-          margin-top: 2px;
-        }
-
-        .prim-summary-title {
-          text-align: center;
-          font-size: 15px;
-          font-weight: 700;
-          margin: 10px 0 6px 0;
-        }
-
-        .prim-summary-table,
-        .prim-main-table,
-        .prim-subjects-table {
           width: 100%;
-          border-collapse: collapse;
+          min-height: auto;
+          margin: 0 0 0.2in 0;
+          padding: 0;
+          box-shadow: none;
+          page-break-after: always;
+          break-after: page;
         }
 
-        .prim-summary-table th,
-        .prim-summary-table td,
-        .prim-main-table th,
-        .prim-main-table td,
-        .prim-subjects-table th,
-        .prim-subjects-table td {
-          border: 1px solid #000;
-          padding: 3px 4px;
-          vertical-align: middle;
-          font-size: 9px;
+        .prim-page:last-child {
+          page-break-after: auto;
+          break-after: auto;
         }
+      }
+    </style>
 
-        .prim-summary-table th,
-        .prim-main-table th,
-        .prim-subjects-table th {
-          font-weight: 700;
-          text-align: center;
-        }
-
-        .prim-main-table th {
-          font-size: 8px;
-        }
-
-        .prim-main-table td {
-          height: 18px;
-        }
-
-        .prim-main-table .w-no { width: 28px; }
-        .prim-main-table .w-codigo { width: 70px; }
-        .prim-main-table .w-nombre { width: 260px; }
-        .prim-main-table .w-fecha { width: 95px; }
-        .prim-main-table .w-sexo { width: 28px; }
-        .prim-main-table .w-area { width: 28px; }
-        .prim-main-table .w-resultado { width: 42px; }
-
-        .vertical-text {
-          writing-mode: vertical-rl;
-          transform: rotate(180deg);
-          white-space: nowrap;
-          text-align: center;
-          margin: 0 auto;
-        }
-
-        .prim-table-note {
-          margin-top: 6px;
-          font-size: 8px;
-          line-height: 1.3;
-        }
-
-        .prim-observaciones {
-          margin-top: 12px;
-          display: flex;
-          gap: 8px;
-          align-items: center;
-        }
-
-        .prim-observaciones .obs-line {
-          flex: 1;
-          border: 1px solid #000;
-          min-height: 22px;
-          padding: 3px 6px;
-          display: flex;
-          align-items: center;
-        }
-
-        .prim-declaration {
-          text-align: center;
-          margin-top: 10px;
-          font-size: 12px;
-          font-weight: 700;
-        }
-
-        .prim-signature-row-top {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 20px;
-          margin-top: 18px;
-          align-items: end;
-        }
-
-        .prim-signature-row-bottom {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 20px;
-          margin-top: 38px;
-          align-items: end;
-        }
-
-        .signature-box {
-          text-align: center;
-          font-size: 9px;
-        }
-
-        .signature-line {
-          border-bottom: 1px solid #000;
-          height: 18px;
-          margin-bottom: 4px;
-        }
-
-        .prim-footer-note {
-          margin-top: 18px;
-          font-size: 7.5px;
-          line-height: 1.25;
-        }
-
-        @media print {
-          .prim-preview-wrapper {
-            background: #fff;
-            padding: 0;
-          }
-
-          .prim-page {
-            margin: 0 auto;
-            box-shadow: none;
-            page-break-after: always;
-          }
-
-          .prim-page:last-child {
-            page-break-after: auto;
-          }
-        }
-      </style>
-
-      <div class="prim-preview-wrapper">
-        <div class="prim-page">
-          <div class="prim-header-grid">
-            <div class="prim-logo-area">
-              <img src="../../assets/img/logoMineduc.png" alt="Logo Ministerio">
-            </div>
-
-            <div class="prim-title-block">
-              <div class="prim-title-main">NIVEL DE EDUCACIÓN PRIMARIA</div>
-              <div class="prim-title-sub">${escapeHtml(lenguaje || "B'axa Tanul Chusb'al.")}${lenguaje ? "" : ""}</div>
-              <div class="prim-title-main" style="font-size: 14px; margin-top: 2px;">REGISTRO GENERAL DE RESULTADOS FINALES</div>
-              <div class="prim-title-sub">${escapeHtml(titulo || "Ib'ooqolil Tachul tatin Chusb'alib'.")}</div>
-              <div class="prim-title-main" style="font-size: 13px; margin-top: 4px;">Primer Ciclo</div>
-              <div class="prim-title-sub">${escapeHtml(subtitulo || "B'axa ya'b'. - B'axa Tajnib'al.")}</div>
-              <div class="prim-title-sub" style="margin-top: 3px;">${escapeHtml(ciclo || "")}</div>
-            </div>
-
-            <div class="prim-year-box">
-              <div>Ciclo escolar</div>
-              <div class="prim-year-number">${escapeHtml(anio)}</div>
-            </div>
+    <div class="prim-preview-wrapper">
+      <div class="prim-page">
+        <div class="prim-header-grid">
+          <div class="prim-logo-area">
+            <img src="../../assets/img/logoMINEDUC.png" alt="Logo Ministerio" style="max-width: 8rem; max-height: 8rem;">
           </div>
 
-          <div class="prim-inline-row">
-            <div class="prim-label">Código del centro educativo</div>
-            <div class="code-wrapper">
-              ${generarCodigoCentroBoxesHTML()}
-            </div>
-
-            <div class="prim-label" style="margin-left:auto;">Hoja No.</div>
-            <div class="line-fill short">01</div>
-            <div class="prim-label">de</div>
-            <div class="line-fill short">01</div>
+          <div class="prim-title-block">
+            <div class="prim-title-main">NIVEL DE EDUCACIÓN PRIMARIA</div>
+            <div class="prim-title-sub">${escapeHtml(lenguaje || "B'axa Tanul Chusb'al.")}</div>
+            <div class="prim-title-main" style="font-size: 14px; margin-top: 2px;">REGISTRO GENERAL DE RESULTADOS FINALES</div>
+            <div class="prim-title-sub">${escapeHtml(titulo || "Ib'ooqolil Tachul tatin Chusb'alib'.")}</div>
+            <div class="prim-title-main" style="font-size: 13px; margin-top: 4px;">Primer Ciclo</div>
+            <div class="prim-title-sub">${escapeHtml(subtitulo || "B'axa ya'b'. - B'axa Tajnib'al.")}</div>
+            <div class="prim-title-sub" style="margin-top: 3px;">${escapeHtml(ciclo || "")}</div>
           </div>
 
-          <div class="prim-inline-row">
-            <div class="prim-label">Grado/Etapa</div>
-            <div class="line-fill medium">${escapeHtml(estado.grado_desc || "")}</div>
-            <div class="prim-label">Sección</div>
-            <div class="line-fill short">${escapeHtml(estado.seccion_desc || "")}</div>
-          </div>
-
-          <div class="prim-inline-row">
-            <div class="prim-label">Nombre del centro educativo</div>
-            <div class="line-fill long">ESCUELA OFICIAL RURAL MIXTA COLONIA LINDA VISTA</div>
-          </div>
-
-          <div class="prim-inline-row">
-            <div class="prim-label">Dirección del centro educativo</div>
-            <div class="line-fill long"></div>
-          </div>
-
-          <div class="prim-inline-row">
-            <div class="prim-label">Departamento</div>
-            <div class="line-fill medium">${escapeHtml(estado.departamento || "")}</div>
-            <div class="prim-label">Municipio</div>
-            <div class="line-fill medium">${escapeHtml(estado.municipio || "")}</div>
-          </div>
-
-          <div class="prim-inline-row">
-            <div class="prim-label">Sector</div>
-            <div class="line-fill medium">OFICIAL</div>
-            <div class="prim-label">Jornada</div>
-            <div class="line-fill medium">${escapeHtml(estado.jornada || "")}</div>
-            <div class="prim-label">Plan</div>
-            <div class="line-fill medium">${escapeHtml(estado.plan || "")}</div>
-          </div>
-
-          <div class="prim-inline-row">
-            <div class="prim-label">DPI del(la) Docente</div>
-            <div class="line-fill medium"></div>
-            <div class="prim-label">Idioma(s) en que se imparten clases</div>
-            <div class="line-fill long">${escapeHtml(`${estado.idiomas}${lenguaje ? " / " + lenguaje : ""}`)}</div>
-          </div>
-
-          <div class="prim-inline-row">
-            <div class="prim-label">Docente</div>
-            <div class="line-fill long">${escapeHtml(estado.docente || "")}</div>
-          </div>
-
-          <div class="prim-inline-row">
-            <div class="prim-label">Número y fecha de acuerdo gubernativo o ministerial de autorización del centro educativo:</div>
-            <div class="line-fill long"></div>
-          </div>
-
-          <div class="prim-inline-row">
-            <div class="prim-label">Número y fecha de resolución departamental de autorización del centro educativo:</div>
-            <div class="line-fill long"></div>
-          </div>
-
-          <div class="prim-summary-title">Resumen de estudiantes</div>
-
-          ${generarResumenHTML(resumen)}
-
-          <table class="prim-main-table" style="margin-top:10px;">
-            <thead>
-              <tr>
-                <th class="w-no" rowspan="2">No.</th>
-                <th class="w-codigo" rowspan="2">Código personal</th>
-                <th class="w-nombre" rowspan="2">Nombre de(la) estudiante</th>
-                <th class="w-fecha" rowspan="2">Fecha de nacimiento</th>
-                <th class="w-sexo" rowspan="2"><div class="vertical-text">Sexo M/F</div></th>
-                <th colspan="10">Áreas, subáreas o asignaturas</th>
-                <th class="w-resultado" rowspan="2"><div class="vertical-text">Resultado (1)</div></th>
-              </tr>
-              <tr>
-                <th class="w-area">1</th>
-                <th class="w-area">2</th>
-                <th class="w-area">3</th>
-                <th class="w-area">4</th>
-                <th class="w-area">5</th>
-                <th class="w-area">6</th>
-                <th class="w-area">7</th>
-                <th class="w-area">8</th>
-                <th class="w-area">9</th>
-                <th class="w-area">10</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${filasTabla}
-            </tbody>
-          </table>
-
-          <div class="prim-table-note">
-            <div><strong>(1)</strong> En la columna de resultado escriba las siglas según la situación seleccionada del alumno.</div>
-            <div><strong>(2)</strong> Promedio de las áreas y subáreas artículo 23, inciso a) del Acuerdo Ministerial 1171-2010.</div>
+          <div class="prim-year-box">
+            <div>Ciclo escolar</div>
+            <div class="prim-year-number">${escapeHtml(anio)}</div>
           </div>
         </div>
 
-        <div class="prim-page">
-          <table class="prim-main-table">
-            <thead>
-              <tr>
-                <th class="w-no" rowspan="2">No.</th>
-                <th class="w-codigo" rowspan="2">Código personal</th>
-                <th class="w-nombre" rowspan="2">Nombre de(la) estudiante</th>
-                <th class="w-fecha" rowspan="2">Fecha de nacimiento</th>
-                <th class="w-sexo" rowspan="2"><div class="vertical-text">Sexo M/F</div></th>
-                <th colspan="10">Áreas, subáreas o asignaturas</th>
-                <th class="w-resultado" rowspan="2"><div class="vertical-text">Resultado (1)</div></th>
-              </tr>
-              <tr>
-                <th class="w-area">1</th>
-                <th class="w-area">2</th>
-                <th class="w-area">3</th>
-                <th class="w-area">4</th>
-                <th class="w-area">5</th>
-                <th class="w-area">6</th>
-                <th class="w-area">7</th>
-                <th class="w-area">8</th>
-                <th class="w-area">9</th>
-                <th class="w-area">10</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${generarFilasTablaPrincipal([])}
-            </tbody>
-          </table>
-
-          <div class="prim-footer-note">
-            <div><strong>Nota:</strong></div>
-            <div>a) El Acuerdo Ministerial No. 437-2020 autoriza el Currículum Nacional Base para el Nivel de Educación Primaria.</div>
-            <div>b) El Artículo 23 Inciso a), del Acuerdo Ministerial 1171-2010, establece las condiciones de promoción en 1ro., 2do. y 3er. grados.</div>
-            <div>c) El Artículo 25 Inciso a), del Acuerdo Ministerial 1171-2010, establece que en 1ro, 2do y 3er grado no aplica recuperación.</div>
-            <div>d) Resolución Ministerial 1513 de fecha 28 de octubre del 2013.</div>
+        <div class="prim-inline-row">
+          <div class="prim-label">Código del centro educativo</div>
+          <div class="code-wrapper">
+            ${generarCodigoCentroBoxesHTML()}
           </div>
 
-          <div style="margin-top:14px;">
-            ${generarTablaAsignaturasHTML()}
-          </div>
+          ${generarBloqueHojaNumero(1, totalHojas)}
+        </div>
 
-          <div class="prim-observaciones">
-            <div class="prim-label"><strong>Observaciones:</strong></div>
-            <div class="obs-line">${escapeHtml(observaciones)}</div>
-          </div>
+        <div class="prim-inline-row">
+          <div class="prim-label">Grado/Etapa</div>
+          <div class="line-fill medium">${escapeHtml(estado.grado_desc || "")}</div>
+          <div class="prim-label">Sección</div>
+          <div class="line-fill short">${escapeHtml(estado.seccion_desc || "")}</div>
+        </div>
 
-          <div class="prim-declaration">
-            Los infrascritos declaramos y juramos que la información consignada es verídica
-          </div>
+        <div class="prim-inline-row">
+          <div class="prim-label">Nombre del centro educativo</div>
+          <div class="line-fill long">ESCUELA OFICIAL RURAL MIXTA COLONIA LINDA VISTA</div>
+        </div>
 
-          <div class="prim-signature-row-top">
-            <div class="signature-box">
-              <div class="signature-line">${escapeHtml(formatDateLong())}</div>
-              <div>Lugar y fecha</div>
+        <div class="prim-inline-row">
+          <div class="prim-label">Dirección del centro educativo</div>
+          <div class="line-fill long">COLONIA LINDA VISTA, GUASTATOYA, EL PROGRESO</div>
+        </div>
+
+        <div class="prim-inline-row">
+          <div class="prim-label">Departamento</div>
+          <div class="line-fill medium">EL PROGRESO</div>
+          <div class="prim-label">Municipio</div>
+          <div class="line-fill medium">GUASTATOYA</div>
+        </div>
+
+        <div class="prim-inline-row">
+          <div class="prim-label">Sector</div>
+          <div class="line-fill medium">OFICIAL</div>
+          <div class="prim-label">Jornada</div>
+          <div class="line-fill medium">${escapeHtml(estado.jornada || "")}</div>
+          <div class="prim-label">Plan</div>
+          <div class="line-fill medium">${escapeHtml(estado.plan || "")}</div>
+        </div>
+
+        <div class="prim-inline-row">
+          <div class="prim-label">DPI del(la) Docente</div>
+          <div class="line-fill medium"></div>
+          <div class="prim-label">Idioma(s) en que se imparten clases</div>
+          <div class="idiomas-box">
+            <div class="idioma-item">
+              ${escapeHtml(estado.idiomas || "")}
             </div>
-            <div class="signature-box">
-              <div class="signature-line"></div>
-              <div>Nombre y firma del o la docente del centro educativo</div>
+            <div class="idioma-item">
+              ${escapeHtml(lenguaje || "")}
             </div>
           </div>
+        </div>
 
-          <div class="prim-signature-row-bottom">
-            <div class="signature-box">
-              <div class="signature-line"></div>
-              <div>Nombre y firma del director(a) del centro educativo</div>
-            </div>
-            <div class="signature-box">
-              <div class="signature-line"></div>
-              <div>Nombre y firma de la autoridad educativa que certifica</div>
-            </div>
-          </div>
+        <div class="prim-inline-row">
+          <div class="prim-label">Docente</div>
+          <div class="line-fill long">${escapeHtml(estado.docente || "")}</div>
+        </div>
+
+        <div class="prim-inline-row">
+          <div class="prim-label">Número y fecha de acuerdo gubernativo o ministerial de autorización del centro educativo:</div>
+          <div class="line-fill long"></div>
+        </div>
+
+        <div class="prim-inline-row">
+          <div class="prim-label">Número y fecha de resolución departamental de autorización del centro educativo:</div>
+          <div class="line-fill long"></div>
+        </div>
+
+        <div class="prim-summary-title">Resumen de estudiantes</div>
+
+        ${generarResumenHTML(resumen)}
+
+        <table class="prim-main-table" style="margin-top:10px;">
+          ${generarEncabezadoTablaPrincipal()}
+          <tbody>
+            ${generarFilasTablaPrincipal(primeraHoja, 0)}
+          </tbody>
+        </table>
+
+        <div class="prim-table-note text-align-left">
+          <div><strong>(1)</strong> En la columna de resultado escriba las siglas según la situación seleccionada del alumno.</div>
+          <div><strong>(2)</strong> Promedio de las áreas y subáreas artículo 23, inciso a) del Acuerdo Ministerial 1171-2010.</div>
         </div>
       </div>
-    `;
+
+      ${htmlHojasIntermedias}
+
+      <div class="prim-page">
+        ${hojaFinal.length ? `
+          <div class="prim-inline-row" style="justify-content:end; margin-bottom:10px;">
+            ${generarBloqueHojaNumero(numeroHojaActual, totalHojas)}
+          </div>
+
+          <table class="prim-main-table" style="margin-top:10px;">
+            ${generarEncabezadoTablaPrincipal()}
+            <tbody>
+              ${generarFilasTablaPrincipal(hojaFinal, contadorGlobal)}
+            </tbody>
+          </table>
+        ` : `
+          <div class="prim-inline-row" style="justify-content:end; margin-bottom:10px;">
+            ${generarBloqueHojaNumero(numeroHojaActual, totalHojas)}
+          </div>
+        `}
+
+        <div style="margin-top:${hojaFinal.length ? "14px" : "0"};">
+          ${asignaturasHTML}
+        </div>
+
+        <div class="prim-observaciones">
+          <div class="prim-label"><strong>Observaciones:</strong></div>
+          <div class="obs-line">${escapeHtml(observaciones)}</div>
+        </div>
+
+        <div class="prim-declaration">
+          Los infrascritos declaramos y juramos que la información consignada es verídica
+        </div>
+
+        <div class="prim-signature-row-top">
+          <div class="signature-box">
+            <div class="signature-line">${escapeHtml(formatDateLong())}</div>
+            <div>Lugar y fecha</div>
+          </div>
+          <div class="signature-box">
+            <div class="signature-line"></div>
+            <div>Nombre y firma del o la docente del centro educativo</div>
+          </div>
+        </div>
+
+        <div class="prim-signature-row-bottom">
+          <div class="signature-box">
+            <div class="signature-line"></div>
+            <div>Nombre y firma del director(a) del centro educativo</div>
+          </div>
+          <div class="signature-box">
+            <div class="signature-line"></div>
+            <div>Nombre y firma de la autoridad educativa que certifica</div>
+          </div>
+        </div>
+
+        <div class="prim-footer-note text-align-left">
+          <div><strong>Nota:</strong></div>
+          <div>a) El Acuerdo Ministerial No. 437-2020 autoriza el Currículum Nacional Base para el Nivel de Educación Primaria.</div>
+          <div>b) El Artículo 23 Inciso a), del Acuerdo Ministerial 1171-2010, establece las condiciones de promoción en 1ro., 2do. y 3er. grados.</div>
+          <div>c) El Artículo 25 Inciso a), del Acuerdo Ministerial 1171-2010, establece que en 1ro, 2do y 3er grado no aplica recuperación.</div>
+          <div>d) Resolución Ministerial 1513 de fecha 28 de octubre del 2013.</div>
+        </div>
+      </div>
+    </div>
+  `;
   }
 
   function generarDocumentoImpresion(htmlInterno) {
@@ -1231,6 +1443,10 @@
     if (!estado.alumnos.length) {
       throw new Error("No hay alumnos cargados para este grado y sección");
     }
+
+    if (!estado.columnas_asignaturas.length) {
+      throw new Error("No se encontraron materias con notas para el bimestre seleccionado");
+    }
   }
 
   function construirVistaCuadroPRIM() {
@@ -1240,6 +1456,8 @@
 
   async function onVistaPrevia() {
     try {
+      await cargarReporteNotas();
+
       const html = construirVistaCuadroPRIM();
       cuadroPRIMContainer.innerHTML = html;
       vistaPreviaContainer.classList.remove("d-none");
@@ -1256,6 +1474,8 @@
 
   async function onGenerarCuadroPRIM() {
     try {
+      await cargarReporteNotas();
+
       const html = construirVistaCuadroPRIM();
       const doc = generarDocumentoImpresion(html);
       const win = window.open("", "_blank", "width=1200,height=900,scrollbars=yes");

@@ -598,6 +598,7 @@ exports.login = [
           u.usuario_id,
           v.rol_id,
           v.persona_nombre,
+          v.dpi,
           v.persona_apellido,
           /* fuerza NULL si no existe valor; para directora vendrá NULL naturalmente */
           v.maestro_anio_actual       AS maestro_anio_actual,

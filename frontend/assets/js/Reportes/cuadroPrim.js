@@ -57,7 +57,8 @@
     reporte_notas: [],
     columnas_asignaturas: [],
     mapa_notas_alumnos: new Map(),
-    ciclo_id: 1
+    ciclo_id: 1,
+    dpi: ""
   };
 
   // =========================================================
@@ -126,6 +127,13 @@
     } catch (error) {
       console.warn("No se pudo leer userData:", error);
     }
+
+    const dpi = String(
+  userData?.dpi ??
+  userData?.persona_dpi ??
+  userData?.docente_dpi ??
+  ""
+).trim();
 
     const gradoMap = {
       primero: { id: 1, desc: "PRIMERO" },
@@ -233,7 +241,8 @@
       grado_desc,
       seccion_id,
       seccion_desc,
-      docente
+      docente,
+      dpi
     };
   }
 
@@ -813,7 +822,7 @@
               <tr>
                 <td class="text-center">${escapeHtml(item.numero)}</td>
                 <td>${escapeHtml(item.nombre)}</td>
-                <td></td>
+                <td>${escapeHtml(estado.dpi || "")}</td>
                 <td>${escapeHtml(estado.docente || "")}</td>
                 <td></td>
               </tr>
@@ -869,6 +878,21 @@
       </table>
     `;
   }
+
+function generarLeyendaSituacionesHTML() {
+  if (!Array.isArray(estado.situaciones) || !estado.situaciones.length) {
+    return "";
+  }
+
+  return estado.situaciones
+    .filter(item => item.estado === 1)
+    .map(item => {
+      const sigla = escapeHtml(item.siglas || "");
+      const descripcion = escapeHtml(item.descripcion || "");
+      return `<strong>${sigla}</strong> = ${descripcion}`;
+    })
+    .join("&nbsp;&nbsp;&nbsp;&nbsp;");
+}
 
   function generarCuadroPrimHTML() {
     const alumnosSeleccionados = obtenerAlumnosSeleccionados();
@@ -1132,6 +1156,9 @@
 
       .prim-table-note {
         margin-top: 6px;
+        margin-left: 0;    
+        padding-left: 0;   
+        text-align: left;  
         font-size: 8px;
         line-height: 1.3;
       }
@@ -1190,6 +1217,22 @@
         margin-top: 18px;
         font-size: 7.5px;
         line-height: 1.25;
+        margin-left: 0;    
+        padding-left: 0;   
+        text-align: left;  
+      }
+
+      .situacion-leyenda-row {
+        margin-top: 2px;
+        margin-bottom: 2px;
+        font-size: 8px;
+        line-height: 1.35;
+        font-weight: 700;
+      }
+
+      .situacion-leyenda-item {
+        display: inline;
+        white-space: nowrap;
       }
 
       @media print {
@@ -1287,7 +1330,7 @@
 
         <div class="prim-inline-row">
           <div class="prim-label">DPI del(la) Docente</div>
-          <div class="line-fill medium"></div>
+          <div class="line-fill medium"> ${escapeHtml(estado.dpi || "")} </div>
           <div class="prim-label">Idioma(s) en que se imparten clases</div>
           <div class="idiomas-box">
             <div class="idioma-item">
@@ -1325,9 +1368,13 @@
           </tbody>
         </table>
 
-        <div class="prim-table-note text-align-left">
-          <div><strong>(1)</strong> En la columna de resultado escriba las siglas según la situación seleccionada del alumno.</div>
+        <div class="prim-table-note">
+          <div><strong>(1)</strong> En la columna de resultado escriba las iniciales</div>
+          <div class="situacion-leyenda-row">
+            ${generarLeyendaSituacionesHTML()}
+          </div>
           <div><strong>(2)</strong> Promedio de las áreas y subáreas artículo 23, inciso a) del Acuerdo Ministerial 1171-2010.</div>
+          <div><strong>Nota:</strong> Impresión original del cuadro para la supervisión educativa, copias para la dirección del centro educativo.</div>
         </div>
       </div>
 
@@ -1386,7 +1433,7 @@
           </div>
         </div>
 
-        <div class="prim-footer-note text-align-left">
+        <div class="prim-footer-note">
           <div><strong>Nota:</strong></div>
           <div>a) El Acuerdo Ministerial No. 437-2020 autoriza el Currículum Nacional Base para el Nivel de Educación Primaria.</div>
           <div>b) El Artículo 23 Inciso a), del Acuerdo Ministerial 1171-2010, establece las condiciones de promoción en 1ro., 2do. y 3er. grados.</div>
@@ -1513,6 +1560,7 @@
     estado.seccion_id = datos.seccion_id;
     estado.seccion_desc = datos.seccion_desc || "";
     estado.docente = datos.docente || "";
+    estado.dpi = datos.dpi || "";
 
     estado.jornada = "MATUTINA";
 

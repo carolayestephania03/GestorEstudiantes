@@ -49,6 +49,7 @@ async function cargarUsuario() {
     const u = result.data;
 
     setValue("nombre", u.nombre_completo || "");
+    setText("nombre_titulo", u.nombre_completo || "Usuario");
     setValue("correo", u.correo || "");
     setValue("telefono", u.telefono || "");
     setValue("residencia", u.residencia || "");
@@ -221,6 +222,11 @@ async function actualizarPassword() {
 function setValue(id, value) {
   const el = document.getElementById(id);
   if (el) el.value = value ?? "";
+}
+
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value ?? "";
 }
 
 function getValue(id) {

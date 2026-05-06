@@ -101,6 +101,69 @@ document.addEventListener("DOMContentLoaded", function () {
     limpiarEstadoMenu(menuReportes);
   }
 
+  function ocultarBotonCrearSiExiste() {
+    const btnCrear = document.getElementById("create-btn");
+    if (btnCrear) {
+      btnCrear.style.display = "none";
+    }
+  }
+
+  function filtrarComboMateriaPorRol() {
+    if (rol_id !== "F" && rol_id !== "C") return;
+
+    const comboMateria = document.getElementById("combo_materia");
+    if (!comboMateria) return;
+
+    const textoPermitido = rol_id === "F" ? "educación fisica" : "computación";
+
+    Array.from(comboMateria.options).forEach(option => {
+      const texto = String(option.textContent || "").trim().toLowerCase();
+      const value = String(option.value || "").trim().toLowerCase();
+
+      const esPlaceholder =
+        !option.value ||
+        option.disabled ||
+        texto.includes("elija") ||
+        texto.includes("todas");
+
+      const esPermitida = texto.includes(textoPermitido) || value.includes(textoPermitido);
+
+      option.hidden = !(esPlaceholder || esPermitida);
+      option.disabled = !(esPlaceholder || esPermitida);
+
+      if (esPermitida) {
+        option.hidden = false;
+        option.disabled = false;
+      }
+    });
+
+    const opcionPermitida = Array.from(comboMateria.options).find(option => {
+      const texto = String(option.textContent || "").trim().toLowerCase();
+      return texto.includes(textoPermitido);
+    });
+
+    if (opcionPermitida) {
+      comboMateria.value = opcionPermitida.value;
+      comboMateria.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  }
+
+  function observarComboMateria() {
+    const comboMateria = document.getElementById("combo_materia");
+    if (!comboMateria || (rol_id !== "F" && rol_id !== "C")) return;
+
+    filtrarComboMateriaPorRol();
+
+    const observer = new MutationObserver(() => {
+      filtrarComboMateriaPorRol();
+    });
+
+    observer.observe(comboMateria, {
+      childList: true,
+      subtree: true
+    });
+  }
+
   function aplicarRolDirector() {
     setVisibleMenu(enlaces.inicio, true);
     setVisibleMenu(enlaces.tarea, true);
@@ -114,6 +177,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
     mostrarSubItemsPorTexto(menuTareas, ["Calendario", "Actividades"]);
     abrirMenuSiTieneSubItemsVisibles(menuTareas);
+  }
+
+  function aplicarRolEspecialFC() {
+    setVisibleMenu(enlaces.inicio, true);
+    setVisibleMenu(enlaces.tarea, true);
+    setVisibleMenu(enlaces.alumno, true);
+    setVisibleMenu(enlaces.reportes, true);
+    setVisibleMenu(enlaces.alertas, true);
+    setVisibleMenu(enlaces.encargado, true);
+
+    setVisibleMenu(enlaces.panelControl, false);
+    setVisibleMenu(enlaces.maestro, false);
+
+    mostrarTodosSubItems(menuTareas);
+
+    mostrarSubItemsPorTexto(menuReportes, ["Lista de Cotejo"]);
+
+    abrirMenuSiTieneSubItemsVisibles(menuTareas);
+    abrirMenuSiTieneSubItemsVisibles(menuReportes);
+
+    ocultarBotonCrearSiExiste();
+    observarComboMateria();
   }
 
   function aplicarRolGeneral() {
@@ -138,6 +223,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (rol_id === "D") {
     aplicarRolDirector();
+  } else if (rol_id === "F" || rol_id === "C") {
+    aplicarRolEspecialFC();
   } else {
     aplicarRolGeneral();
   }

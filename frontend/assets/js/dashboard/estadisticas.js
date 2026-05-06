@@ -88,34 +88,51 @@
     `;
   }
 
-  function buildHonor(califDataFiltrada) {
-    const map = new Map(); // alumno_id -> {nombre,total}
+function buildHonor(califDataFiltrada) {
+  const map = new Map(); 
+  // alumno_id -> { nombre, total, cantidadMaterias }
 
-    for (const materia of califDataFiltrada) {
-      const alumnos = Array.isArray(materia.alumnos) ? materia.alumnos : [];
-      for (const a of alumnos) {
-        const id = toInt(a.alumno_id, 0);
-        if (!id) continue;
+  for (const materia of califDataFiltrada) {
+    const alumnos = Array.isArray(materia.alumnos) ? materia.alumnos : [];
 
-        const nombre = (a.alumno_nombre_completo || '—').trim() || '—';
-        const punt = toFloat(a.puntaje_obtenido_total, 0);
+    for (const a of alumnos) {
+      const id = toInt(a.alumno_id, 0);
+      if (!id) continue;
 
-        if (!map.has(id)) map.set(id, { nombre, total: 0 });
-        map.get(id).total += punt;
+      const nombre = (a.alumno_nombre_completo || '—').trim() || '—';
+      const puntaje = toFloat(a.puntaje_obtenido_total, 0);
+
+      if (!map.has(id)) {
+        map.set(id, {
+          nombre,
+          total: 0,
+          cantidadMaterias: 0
+        });
       }
+
+      const registro = map.get(id);
+      registro.total += puntaje;
+      registro.cantidadMaterias += 1;
     }
-
-    const lista = Array.from(map.values());
-    if (!lista.length) return null;
-
-    lista.sort((a, b) => b.total - a.total);
-
-    return lista.slice(0, 5).map((x, i) => ({
-      pos: i + 1,
-      nombre: x.nombre,
-      promedio: x.total.toFixed(2) // total (no hay promedio real en API)
-    }));
   }
+
+  const lista = Array.from(map.values())
+    .filter(x => x.cantidadMaterias > 0)
+    .map(x => ({
+      nombre: x.nombre,
+      promedio: x.total / x.cantidadMaterias
+    }));
+
+  if (!lista.length) return null;
+
+  lista.sort((a, b) => b.promedio - a.promedio);
+
+  return lista.slice(0, 5).map((x, i) => ({
+    pos: i + 1,
+    nombre: x.nombre,
+    promedio: x.promedio.toFixed(2)
+  }));
+}
 
   function renderHonor(top) {
     if (!honorTbody) return;

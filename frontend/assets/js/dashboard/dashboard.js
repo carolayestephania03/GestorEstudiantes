@@ -258,17 +258,13 @@
   document.addEventListener('DOMContentLoaded', () => {
     if (contCards) contCards.innerHTML = `<p class="text-center text-muted">Cargando materias...</p>`;
 
-    // ✅ primera carga: set ciclo 1
     if (selCiclo) selCiclo.value = String(CICLO_INICIAL);
 
-    // Auto-carga inicial
     esperarCombosListosYcargar();
 
-    // Si cambian grado/sección, volvemos a modo inicial (ciclo 1)
     selGrado?.addEventListener('change', () => cargarDashboard(true));
     selSeccion?.addEventListener('change', () => cargarDashboard(true));
 
-    // ✅ Botón Ver: respeta ciclo elegido
     btnVer?.addEventListener('click', () => cargarDashboard(false));
   });
 

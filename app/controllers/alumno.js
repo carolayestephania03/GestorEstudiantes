@@ -1,7 +1,7 @@
 /**Depedencias utilizadas */
 const { body, validationResult } = require('express-validator');
 const sequelize = require('../../config/dbconfig');
-const Alumno = require('../models/Alumno');
+const Alumno = require('../models/alumno');
 
 /**Operación GET hacia la DB*/
 exports.getData = async (req, res) => {

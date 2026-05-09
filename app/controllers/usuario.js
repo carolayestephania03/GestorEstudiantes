@@ -2,7 +2,7 @@
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const Usuario = require('../models/Usuario'); // (no se usa directo aquí, pero lo dejo si en otro módulo lo requieren)
+const Usuario = require('../models/usuario'); // (no se usa directo aquí, pero lo dejo si en otro módulo lo requieren)
 const Forgot_password = require('../models/autentication-code');
 const config = require('../../config/jwt');
 const sequelize = require('../../config/dbconfig');

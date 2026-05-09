@@ -1,6 +1,6 @@
 /**Depedencias utilizadas */
 const { body, validationResult } = require('express-validator');
-const Ciclo = require('../models/Ciclo');
+const Ciclo = require('../models/ciclo');
 const sequelize = require('../../config/dbconfig');
 
 /**Operación GET hacia la DB*/

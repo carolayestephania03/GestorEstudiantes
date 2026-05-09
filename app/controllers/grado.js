@@ -1,6 +1,6 @@
 /**Depedencias utilizadas */
 const { body, validationResult } = require('express-validator');
-const Grado = require('../models/Grado');
+const Grado = require('../models/grado');
 const sequelize = require('../../config/dbconfig');
 
 /**Operación GET hacia la DB*/

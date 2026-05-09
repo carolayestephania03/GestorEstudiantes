@@ -553,8 +553,8 @@ exports.login = [
       const [byUser] = await sequelize.query(
         `
         SELECT u.usuario_id, u.hash_contrasena, u.estado AS estado_u, p.estado AS estado_p, u.nombre_usuario, u.rol_id
-        FROM Usuario u
-        JOIN Persona p ON p.persona_id = u.persona_id
+        FROM usuario u
+        JOIN persona p ON p.persona_id = u.persona_id
         WHERE u.nombre_usuario = :id
         LIMIT 1
         `,
@@ -567,8 +567,8 @@ exports.login = [
         const [byMail] = await sequelize.query(
           `
           SELECT u.usuario_id, u.hash_contrasena, u.estado AS estado_u, p.estado AS estado_p, u.nombre_usuario, u.rol_id
-          FROM Usuario u
-          JOIN Persona p ON p.persona_id = u.persona_id
+          FROM usuario u
+          JOIN persona p ON p.persona_id = u.persona_id
           WHERE p.correo = :id
           LIMIT 1
           `,

@@ -41,7 +41,7 @@ const Promedio_Ambito = sequelize.define('Promedio_Ambito', {
         defaultValue: true
     }
 }, {
-    tableName: 'Promedio_Ambito',
+    tableName: 'promedio_ambito',
     timestamps: false
 });
 

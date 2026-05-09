@@ -20,7 +20,7 @@ const Grado = sequelize.define('Grado', {
         defaultValue: true
     }
 }, {
-    tableName: 'Grado',
+    tableName: 'grado',
     timestamps: false
 });
 

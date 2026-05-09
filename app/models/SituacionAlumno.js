@@ -23,7 +23,7 @@ const SituacionAlumno = sequelize.define('Situacion_Alumno', {
         allowNull: false
     }
 }, {
-    tableName: 'Situacion_Alumno',
+    tableName: 'situacion_alumno',
     timestamps: false // No Crear timestamps automáticos como createdAt y updatedAt
 });
 

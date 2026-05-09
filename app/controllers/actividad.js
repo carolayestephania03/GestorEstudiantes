@@ -352,12 +352,12 @@ exports.getActividadesPorMateria = [
           gs.grado_seccion_id AS gs_id,
           (
             SELECT ce.ciclo_escolar_id
-            FROM Ciclo_Escolar ce
+            FROM ciclo_escolar ce
             WHERE ce.estado = 1
             ORDER BY ce.anio DESC
             LIMIT 1
           ) AS ce_id
-        FROM Grado_Seccion gs
+        FROM grado_seccion gs
         WHERE gs.grado_id = :g AND gs.seccion_id = :s AND gs.estado = 1
         LIMIT 1
         `,
@@ -376,7 +376,7 @@ exports.getActividadesPorMateria = [
       const [[mcheck]] = await sequelize.query(
         `
         SELECT COUNT(*) AS cnt
-        FROM Maestro_Grado_Seccion
+        FROM maestro_grado_seccion
         WHERE grado_seccion_id = :gs AND ciclo_escolar_id = :ce
         `,
         { replacements: { gs: pre.gs_id, ce: pre.ce_id } }
@@ -389,8 +389,8 @@ exports.getActividadesPorMateria = [
       const [materias] = await sequelize.query(
         `
         SELECT m.materia_id, m.nombre_materia
-        FROM Materia m
-        JOIN Materia_Grado mg ON mg.materia_id = m.materia_id
+        FROM materia m
+        JOIN materia_grado mg ON mg.materia_id = m.materia_id
         WHERE mg.grado_id = :g
           AND m.estado = 1
         ORDER BY m.nombre_materia

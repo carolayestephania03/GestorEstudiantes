@@ -20,7 +20,7 @@ const Tipo_Actividad = sequelize.define('Tipo_Actividad', {
         defaultValue: true
     }
 }, {
-    tableName: 'Tipo_Actividad',
+    tableName: 'tipo_actividad',
     timestamps: false
 });
 

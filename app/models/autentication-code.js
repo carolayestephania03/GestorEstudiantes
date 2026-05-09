@@ -19,7 +19,7 @@ const Forgot_password = sequelize.define('forgot_password', {
         allowNull: false
     }
 }, {
-    tableName: 'Recuperacion_Contrasena', // Nombre de la tabla en la base de datos
+    tableName: 'recuperacion_contrasena', // Nombre de la tabla en la base de datos
     timestamps: false // No Crear timestamps automáticos como createdAt y updatedAt
 });
 

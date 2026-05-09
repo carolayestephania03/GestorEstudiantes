@@ -19,7 +19,7 @@ const Escalafon = sequelize.define('Escalafon', {
         allowNull: false
     }
 }, {
-    tableName: 'Escalafon',
+    tableName: 'escalafon',
     timestamps: false // No Crear timestamps automáticos como createdAt y updatedAt
 });
 

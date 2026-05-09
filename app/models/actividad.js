@@ -56,7 +56,7 @@ const Actividad = sequelize.define('Actividad', {
         defaultValue: true
     }
 }, {
-    tableName: 'Actividad',
+    tableName: 'actividad',
     timestamps: false
 });
 

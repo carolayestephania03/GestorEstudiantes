@@ -20,7 +20,7 @@ const Encargado = sequelize.define('Encargado', {
         defaultValue: true
     }
 }, {
-    tableName: 'Encargado',
+    tableName: 'encargado',
     timestamps: false
 });
 

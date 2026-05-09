@@ -33,7 +33,7 @@ const Calificacion = sequelize.define('Calificacion', {
         defaultValue: true
     }
 }, {
-    tableName: 'Calificacion',
+    tableName: 'calificacion',
     timestamps: false
 });
 

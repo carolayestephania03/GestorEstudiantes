@@ -19,7 +19,7 @@ const Renglon = sequelize.define('Renglon', {
         allowNull: false
     }
 }, {
-    tableName: 'Renglon',
+    tableName: 'renglon',
     timestamps: false
 });
 

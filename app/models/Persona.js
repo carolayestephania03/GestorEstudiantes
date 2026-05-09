@@ -51,7 +51,7 @@ const Persona = sequelize.define('Persona', {
         unique: true
     }
 }, {
-    tableName: 'Persona',
+    tableName: 'persona',
     timestamps: false
 });
 

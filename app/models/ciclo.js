@@ -20,7 +20,7 @@ const Ciclo = sequelize.define('Ciclo', {
         defaultValue: true
     }
 }, {
-    tableName: 'Ciclo',
+    tableName: 'ciclo',
     timestamps: false
 });
 

@@ -20,7 +20,7 @@ const Estado_Actividad = sequelize.define('Estado_Actividad', {
         defaultValue: true
     }
 }, {
-    tableName: 'Estado_Actividad',
+    tableName: 'estado_actividad',
     timestamps: false
 });
 

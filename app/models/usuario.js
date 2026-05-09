@@ -70,7 +70,7 @@ const Usuario = sequelize.define('Usuario', {
         defaultValue: DataTypes.NOW
     }
 }, {
-        tableName: 'Usuario',
+        tableName: 'usuario',
         timestamps: false,
         hooks: {
             /*Encriptación de las contraseñas */

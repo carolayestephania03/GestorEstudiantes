@@ -20,7 +20,7 @@ const Seccion = sequelize.define('Seccion', {
         defaultValue: true
     }
 }, {
-    tableName: 'Seccion',
+    tableName: 'seccion',
     timestamps: false
 });
 

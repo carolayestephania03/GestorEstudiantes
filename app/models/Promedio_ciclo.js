@@ -36,7 +36,7 @@ const Promedio_Ciclo = sequelize.define('Promedio_Ciclo', {
         defaultValue: true
     }
 }, {
-    tableName: 'Promedio_Ciclo',
+    tableName: 'promedio_ciclo',
     timestamps: false
 });
 

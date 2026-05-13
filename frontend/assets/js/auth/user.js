@@ -24,7 +24,7 @@ async function cargarUsuario() {
   const idUsuario = userData.usuario_id;
 
   try {
-    const response = await fetch("http://localhost:8001/usuario/BuscarIndividual", {
+    const response = await fetch("http://127.0.0.1:8001/usuario/BuscarIndividual", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -128,7 +128,7 @@ async function actualizarPerfil() {
   limpiarPayload(payload);
 
   try {
-    const response = await fetch("http://localhost:8001/usuario/Actualizar", {
+    const response = await fetch("http://127.0.0.1:8001/usuario/Actualizar", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -189,7 +189,7 @@ async function actualizarPassword() {
   };
 
   try {
-    const response = await fetch("http://localhost:8001/usuario/Actualizar", {
+    const response = await fetch("http://127.0.0.1:8001/usuario/Actualizar", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"

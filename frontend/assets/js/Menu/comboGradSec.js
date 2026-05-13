@@ -63,7 +63,7 @@ function ActivarComBoBox(rol) {
 // =========================
 async function fetchGrado() {
     try {
-        const r = await fetch('http://localhost:8001/grado', {
+        const r = await fetch('http://127.0.0.1:8001/grado', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include'
@@ -100,7 +100,7 @@ async function fetchGrado() {
 
 async function fetchSeccion() {
     try {
-        const r = await fetch('http://localhost:8001/seccion', {
+        const r = await fetch('http://127.0.0.1:8001/seccion', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include'

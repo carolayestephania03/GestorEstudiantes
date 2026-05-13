@@ -97,14 +97,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function cargarCombosModalAlumno() {
     await cargarOpcionesSelect(
-      "http://localhost:8001/grado",
+      "http://127.0.0.1:8001/grado",
       modalGradoAlumnoBusqueda,
       "grado_id",
       "grado_des"
     );
 
     await cargarOpcionesSelect(
-      "http://localhost:8001/seccion",
+      "http://127.0.0.1:8001/seccion",
       modalSeccionAlumnoBusqueda,
       "seccion_id",
       "seccion_des"
@@ -263,7 +263,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const payload = construirPayloadBuscarAlumnoModal();
 
     try {
-      const response = await fetch("http://localhost:8001/alumno/BuscarAlumnos", {
+      const response = await fetch("http://127.0.0.1:8001/alumno/BuscarAlumnos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -395,7 +395,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const payload = construirPayloadBusquedaEncargado();
 
     try {
-      const response = await fetch("http://localhost:8001/encargado/BuscarEncargado", {
+      const response = await fetch("http://127.0.0.1:8001/encargado/BuscarEncargado", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -466,7 +466,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     try {
-      const response = await fetch("http://localhost:8001/encargado/buscarEncargado", {
+      const response = await fetch("http://127.0.0.1:8001/encargado/buscarEncargado", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -554,7 +554,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!confirmado) return;
 
     try {
-      const response = await fetch("http://localhost:8001/encargado/EliminarEncargado", {
+      const response = await fetch("http://127.0.0.1:8001/encargado/EliminarEncargado", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -659,7 +659,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           alumnos: alumnosSeleccionados
         };
 
-        response = await fetch("http://localhost:8001/encargado/CrearEncargado", {
+        response = await fetch("http://127.0.0.1:8001/encargado/CrearEncargado", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -690,7 +690,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           alumnos: alumnosSeleccionados
         };
 
-        response = await fetch("http://localhost:8001/encargado/ActualizarEncargado", {
+        response = await fetch("http://127.0.0.1:8001/encargado/ActualizarEncargado", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json"

@@ -61,7 +61,7 @@
   }
 
   async function actualizarActividad(payload) {
-    const r = await fetch('http://localhost:8001/actividad/ActualizarActividad', {
+    const r = await fetch('http://127.0.0.1:8001/actividad/ActualizarActividad', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -74,7 +74,7 @@
   }
 
   async function fetchCiclos() {
-    const r = await fetch('http://localhost:8001/ciclo', {
+    const r = await fetch('http://127.0.0.1:8001/ciclo', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
@@ -87,7 +87,7 @@
   }
 
   async function fetchEstadosActividad() {
-    const r = await fetch('http://localhost:8001/EstadoActividad', {
+    const r = await fetch('http://127.0.0.1:8001/EstadoActividad', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
@@ -100,7 +100,7 @@
   }
 
   async function fetchTiposActividad() {
-    const r = await fetch('http://localhost:8001/tipoActividad', {
+    const r = await fetch('http://127.0.0.1:8001/tipoActividad', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
@@ -132,7 +132,7 @@
   }
 
   async function fetchActividadesPorTipo(payload) {
-    const r = await fetch('http://localhost:8001/actividad/ActividadesPorTipo', {
+    const r = await fetch('http://127.0.0.1:8001/actividad/ActividadesPorTipo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -144,7 +144,7 @@
   }
 
   async function fetchActividadDetalle(actividad_id) {
-    const r = await fetch('http://localhost:8001/actividad/ActividadDetalle', {
+    const r = await fetch('http://127.0.0.1:8001/actividad/ActividadDetalle', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',

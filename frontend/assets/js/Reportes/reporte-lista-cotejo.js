@@ -24,11 +24,11 @@ document.addEventListener("DOMContentLoaded", function () {
   /* =========================================================
      CONFIG
   ========================================================= */
-  const URL_MATERIA = "http://localhost:8001/materia";
-  const URL_LISTA_COTEJO = "http://localhost:8001/calificacion/reporteNotasListaCotejo";
+  const URL_MATERIA = "http://127.0.0.1:8001/materia";
+  const URL_LISTA_COTEJO = "http://127.0.0.1:8001/calificacion/reporteNotasListaCotejo";
 
   // AJUSTA ESTA RUTA SI TU ENDPOINT REAL ES OTRO
-  const URL_ACTITUDINAL = "http://localhost:8001/Actitudinal/obtenerActitudinal";
+  const URL_ACTITUDINAL = "http://127.0.0.1:8001/Actitudinal/obtenerActitudinal";
 
   /* =========================================================
      ESTADO

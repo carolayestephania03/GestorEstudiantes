@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     try {
-      const r = await fetch('http://localhost:8001/usuario/Login', {
+      const r = await fetch('http://127.0.0.1:8001/usuario/Login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         // Importante para que el navegador ACEPTE la cookie HttpOnly del backend

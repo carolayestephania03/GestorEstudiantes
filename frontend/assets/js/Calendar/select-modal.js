@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Materia
   loadOptions(
-    "http://localhost:8001/materia",
+    "http://127.0.0.1:8001/materia",
     "materia",
     "materia_id",
     item => item.nombre_materia
@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Materia
   loadOptions(
-    "http://localhost:8001/materia",
+    "http://127.0.0.1:8001/materia",
     "combo_materia",
     "materia_id",
     item => item.nombre_materia
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Tipo de tarea
   loadOptions(
-    "http://localhost:8001/tipoActividad",
+    "http://127.0.0.1:8001/tipoActividad",
     "tipo_tarea",
     "tipo_actividad_id",
     item => item.descripcion_tipo
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Unidad / Ciclo
   loadOptions(
-    "http://localhost:8001/ciclo",
+    "http://127.0.0.1:8001/ciclo",
     "Unidad",
     "ciclo_id",
     item => formatearBimestre(item.numero_ciclo)
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Unidad / Ciclo
   loadOptions(
-    "http://localhost:8001/ciclo",
+    "http://127.0.0.1:8001/ciclo",
     "combo_bimestre",
     "ciclo_id",
     item => formatearBimestre(item.numero_ciclo)

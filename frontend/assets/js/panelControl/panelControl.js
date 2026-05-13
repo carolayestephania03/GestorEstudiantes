@@ -115,7 +115,7 @@
     }
 
     function obtenerUrlAbsoluta(path) {
-        return `http://localhost:8001/${path}`;
+        return `http://127.0.0.1:8001/${path}`;
     }
 
     async function getJSON(path) {

@@ -55,7 +55,7 @@
 
   // ====== API ======
   async function fetchCalificaciones(payload) {
-    const r = await fetch('http://localhost:8001/actividad/CalificacionesGradoSec', {
+    const r = await fetch('http://127.0.0.1:8001/actividad/CalificacionesGradoSec', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',

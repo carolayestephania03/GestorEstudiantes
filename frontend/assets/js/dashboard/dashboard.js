@@ -133,7 +133,7 @@
   // API: /actividad/NotasGradoSec
   // =========================================================
   async function fetchNotasGradoSec(payload) {
-    const r = await fetch('http://localhost:8001/actividad/NotasGradoSec', {
+    const r = await fetch('http://127.0.0.1:8001/actividad/NotasGradoSec', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',

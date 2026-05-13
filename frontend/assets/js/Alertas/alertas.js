@@ -95,7 +95,7 @@
   /* ================== FETCH ================== */
   async function fetchActividades(payload) {
     const r = await fetch(
-      'http://localhost:8001/actividad/ActividadesAgrupadasPorAviso',
+      'http://127.0.0.1:8001/actividad/ActividadesAgrupadasPorAviso',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

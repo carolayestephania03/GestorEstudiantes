@@ -4,9 +4,9 @@
   // =========================================================
   // CONFIG
   // =========================================================
-  const URL_BUSCAR_ALUMNOS = "http://localhost:8001/alumno/buscarAlumnos";
-  const URL_SITUACIONES = "http://localhost:8001/situacion";
-  const URL_REPORTE_NOTAS = "http://localhost:8001/calificacion/reporteNotasMateriasBimestre";
+  const URL_BUSCAR_ALUMNOS = "http://127.0.0.1:8001/alumno/buscarAlumnos";
+  const URL_SITUACIONES = "http://127.0.0.1:8001/situacion";
+  const URL_REPORTE_NOTAS = "http://127.0.0.1:8001/calificacion/reporteNotasMateriasBimestre";
 
   // =========================================================
   // DOM

@@ -244,12 +244,12 @@
   }
 
   async function buscarAlumnos(payload) {
-    const json = await postJSON("http://localhost:8001/alumno/Buscar", payload);
+    const json = await postJSON("http://127.0.0.1:8001/alumno/Buscar", payload);
     return Array.isArray(json.data) ? json.data : [];
   }
 
   async function buscarEncargadosModal(payload) {
-    const json = await postJSON("http://localhost:8001/encargado/BuscarEncargado", payload);
+    const json = await postJSON("http://127.0.0.1:8001/encargado/BuscarEncargado", payload);
     return Array.isArray(json.data) ? json.data : [];
   }
 
@@ -547,10 +547,10 @@
 
       if (modoAlumno === "crear") {
         const payload = construirPayloadCrearAlumno();
-        result = await postJSON("http://localhost:8001/alumno/CrearAlumno", payload);
+        result = await postJSON("http://127.0.0.1:8001/alumno/CrearAlumno", payload);
       } else {
         const payload = construirPayloadActualizarAlumno();
-        result = await putJSON("http://localhost:8001/alumno/ActualizarAlumno", payload);
+        result = await putJSON("http://127.0.0.1:8001/alumno/ActualizarAlumno", payload);
       }
 
       alert(result?.message || "Operación realizada correctamente");

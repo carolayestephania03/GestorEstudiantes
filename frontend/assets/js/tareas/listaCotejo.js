@@ -437,37 +437,37 @@
     }
 
     async function guardarCalificacionMateria(payload) {
-        const json = await postJSON('http://localhost:8001/calificacion/guardarCalificacion', payload);
+        const json = await postJSON('http://127.0.0.1:8001/calificacion/guardarCalificacion', payload);
         return json || {};
     }
 
     async function guardarActitudinal(payload) {
-        const json = await postJSON('http://localhost:8001/Actitudinal/GuardarActitudinal', payload);
+        const json = await postJSON('http://127.0.0.1:8001/Actitudinal/GuardarActitudinal', payload);
         return json || {};
     }
 
     async function fetchActividadesPorTipo(payload) {
-        const json = await postJSON('http://localhost:8001/actividad/ActividadesPorTipo', payload);
+        const json = await postJSON('http://127.0.0.1:8001/actividad/ActividadesPorTipo', payload);
         return Array.isArray(json.data) ? json.data : [];
     }
 
     async function fetchActividadesCalificadasPorAlumno(payload) {
-        const json = await postJSON('http://localhost:8001/actividad/ActividadesCalificadasPorAlumno', payload);
+        const json = await postJSON('http://127.0.0.1:8001/actividad/ActividadesCalificadasPorAlumno', payload);
         return Array.isArray(json.data) ? json.data : [];
     }
 
     async function fetchActitudinal(payload) {
-        const json = await postJSON('http://localhost:8001/Actitudinal/obtenerActitudinal', payload);
+        const json = await postJSON('http://127.0.0.1:8001/Actitudinal/obtenerActitudinal', payload);
         return json || {};
     }
 
     async function fetchTopicosActitudinal() {
-        const json = await getJSON('http://localhost:8001/Actitudinal/topicosActitudinal');
+        const json = await getJSON('http://127.0.0.1:8001/Actitudinal/topicosActitudinal');
         return Array.isArray(json.data) ? json.data : [];
     }
 
     async function guardarConfiguracionNotas(payload) {
-        const json = await postJSON('http://localhost:8001/Actitudinal/ConfigurarNotas', payload);
+        const json = await postJSON('http://127.0.0.1:8001/Actitudinal/ConfigurarNotas', payload);
         return json || {};
     }
 

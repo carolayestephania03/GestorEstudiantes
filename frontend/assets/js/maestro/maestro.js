@@ -145,7 +145,7 @@
 
     if (!selectsRenglon.length) return;
 
-    const json = await getJSON('http://localhost:8001/renglon');
+    const json = await getJSON('http://127.0.0.1:8001/renglon');
     const data = Array.isArray(json.data) ? json.data : [];
 
     selectsRenglon.forEach(select => {
@@ -168,7 +168,7 @@
 
     if (!selectsEscalafon.length) return;
 
-    const json = await getJSON('http://localhost:8001/escalafon');
+    const json = await getJSON('http://127.0.0.1:8001/escalafon');
     const data = Array.isArray(json.data) ? json.data : [];
 
     selectsEscalafon.forEach(select => {
@@ -443,7 +443,7 @@
   // =========================================================
 
   async function eliminarMaestro(payload) {
-    const r = await fetch('http://localhost:8001/persona/eliminarMaestro', {
+    const r = await fetch('http://127.0.0.1:8001/persona/eliminarMaestro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -624,7 +624,7 @@
     setLoading('Buscando maestros...');
 
     try {
-      const json = await postJSON('http://localhost:8001/persona/BuscarMaestro', built.payload);
+      const json = await postJSON('http://127.0.0.1:8001/persona/BuscarMaestro', built.payload);
       const data = Array.isArray(json.data) ? json.data : [];
       renderTabla(data);
     } catch (e) {
@@ -735,9 +735,9 @@
 
       try {
         if (modoActual === 'crear') {
-          await postJSON('http://localhost:8001/persona/CrearMaestro', built.payload);
+          await postJSON('http://127.0.0.1:8001/persona/CrearMaestro', built.payload);
         } else {
-          await postJSON('http://localhost:8001/persona/ActualizarMaestro', built.payload);
+          await postJSON('http://127.0.0.1:8001/persona/ActualizarMaestro', built.payload);
         }
 
         modalMaestro.hide();

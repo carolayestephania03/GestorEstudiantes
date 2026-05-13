@@ -27,7 +27,26 @@ app.use(helmet({ contentSecurityPolicy: false }));
 app.use(compression());
 
 // CORS (mismo origen; puedes omitirlo si no llamas desde otro host)
-app.use(cors({ origin: 'http://localhost:8001', credentials: true }));
+
+const allowedOrigins = [
+  'http://localhost:8001',
+  'http://127.0.0.1:8001'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+
+    // Permitir requests sin origin (Postman, Burp, curl, etc.)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido por CORS'));
+    }
+  },
+  credentials: true
+}));
 
 /* ======== Rutas estáticas públicas ======== */
 // Assets públicos (CSS/JS/imagenes)

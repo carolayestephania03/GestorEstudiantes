@@ -1132,7 +1132,6 @@ exports.getTareasAgrupadasPorAviso = [
           materia_id: r.materia_id,
           nombre_materia: r.nombre_materia
         });
-
         bucket.total_actividades += 1;
       }
 

@@ -4,75 +4,125 @@ const cors = require('cors');
 const initDB = require('./config/dbconfig');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const http = require('http');
+const path = require('path');
+const compression = require('compression');
+const helmet = require('helmet');
+const swagger = require('./config/swagger.js');
+
 const app = express();
-const swagger = require('./config/swagger');
+app.set('trust proxy', 1);
+const server = http.createServer(app);
+const port = 8001;
+const FRONTEND_DIR = path.join(__dirname, 'frontend');
 
 
-/* Uso de cookies */
+/* ======== Middlewares globales ======== */
 app.use(cookieParser());
-app.use(bodyParser.json({ limit: '20mb' }));
-app.use(bodyParser.urlencoded({ limit: '20mb', extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-/* Puerto a utilizar */ 
-const port = 8000;
+// Seguridad básica y compresión
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use(compression());
 
-/* Configuracion del cors */
-const corsOptions = {
-    origin: 'http://localhost:8000', // Cambia esto a la URL de tu frontend mas adelante
-    Credentials: true,
-}
+// CORS (mismo origen; puedes omitirlo si no llamas desde otro host)
 
-/* Routes ------------------------------------------*/ 
+const allowedOrigins = [
+  'http://localhost:8001',
+  'http://localhost:8001'
+];
 
-const actividadRoutes = require('./app/routes/actividad');
-const alumnoRoutes = require('./app/routes/alumno');
-const bimestreRoutes = require('./app/routes/bimestre');
-const bitacoraRoutes = require('./app/routes/bitacora');
-const cicloRoutes = require('./app/routes/ciclo');
-const encargadoRoutes = require('./app/routes/encargado');
-const gradoRoutes = require('./app/routes/grado');
-const materiaRoutes = require('./app/routes/materia');
-const rolRoutes = require('./app/routes/rol');
-const seccionRoutes = require('./app/routes/seccion');
-const usuarioRoutes = require('./app/routes/usuario');
+app.use(cors({
+  origin: function (origin, callback) {
 
-/* Activación del cors*/
-app.use(cors(corsOptions));
+    // Permitir requests sin origin (Postman, Burp, curl, etc.)
+    if (!origin) return callback(null, true);
 
-/* Utilizacion de Rutas ----------------------------*/ 
-app.use(actividadRoutes);
-app.use(alumnoRoutes);
-app.use(bimestreRoutes);
-app.use(bitacoraRoutes);
-app.use(cicloRoutes);
-app.use(encargadoRoutes);
-app.use(gradoRoutes);
-app.use(materiaRoutes);
-app.use(rolRoutes);
-app.use(seccionRoutes);
-app.use(usuarioRoutes);
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido por CORS'));
+    }
+  },
+  credentials: true
+}));
 
+/* ======== Rutas estáticas públicas ======== */
+// Assets públicos (CSS/JS/imagenes)
+app.use('/assets', express.static(path.join(FRONTEND_DIR, 'assets'), { maxAge: '7d' }));
+app.get('/', (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'index.html')));
+
+// Protegido con cookie
+const requireAuth = require('./app/middleware/auth.js');
+app.use('/pages', requireAuth, express.static(path.join(FRONTEND_DIR, 'pages'), {
+  setHeaders(res, filePath) {
+    if (filePath.endsWith('.html')) res.setHeader('Cache-Control', 'no-cache');
+  }
+}));
+
+/* ======== Rutas API ======== */
+const RouteEscalafon = require('./app/routes/Escalafon');
+const RouteRenglon = require('./app/routes/Renglon');
+const RoutePersona = require('./app/routes/Persona');
+const RouteUsuario = require('./app/routes/usuario');
+const RouteGrado = require('./app/routes/grado');
+const RouteSeccion = require('./app/routes/seccion');
+const RouteCiclo = require('./app/routes/ciclo');
+const RouteMateria = require('./app/routes/materia');
+const RouteTipoActividad = require('./app/routes/Tipo_actividad');
+const RouteEstadoActividad = require('./app/routes/Estado_actividad');
+const RouteActividad = require('./app/routes/actividad');
+const RouteEncargado = require('./app/routes/encargado');
+const RouteAlumno = require('./app/routes/alumno');
+const RouteCalificacion = require('./app/routes/Calificacion');
+const RoutePromedioAmbito = require('./app/routes/Promedio_ambito');
+const RoutePromedioCiclo = require('./app/routes/Promedio_ciclo');
+const AuthDevRoute = require('./app/routes/authDev');
+const RouteActitudinal = require('./app/routes/actitudinal');
+const RouteSituacion = require('./app/routes/SituacionAlumno.js');
+
+app.use(RouteActitudinal);
+app.use(RouteEscalafon);
+app.use(RouteRenglon);
+app.use(RoutePersona);
+app.use(RouteUsuario);
+app.use(RouteGrado);
+app.use(RouteSeccion);
+app.use(RouteCiclo);
+app.use(RouteMateria);
+app.use(RouteTipoActividad);
+app.use(RouteEstadoActividad);
+app.use(RouteActividad);
+app.use(RouteEncargado);
+app.use(RouteAlumno);
+app.use(RouteCalificacion);
+app.use(RoutePromedioAmbito);
+app.use(RoutePromedioCiclo);
+app.use(RouteSituacion);
+app.use(AuthDevRoute);
+
+// Documentación Swagger
 app.use('/api-docs', swagger.swaggerUi.serve, swagger.swaggerUi.setup(swagger.specs));
 
-app.get('/', (req, res) => {
-    res.send('¡Servidor funcionando correctamente!');
-  });
+/* ======== 404 estático básico ======== */
+app.use((req, res, next) => {
+  if (req.method !== 'GET') return next();
+  return res.status(404).send('Not Found');
+});
 
-/* Inicio del servidor y conexión a la base de datos*/
+/* ======== Inicio del servidor y DB ======== */
 const startServer = async () => {
-    try {
-        await initDB.authenticate();
-        console.log('Conexión a la base de datos establecida correctamente.');
+  try {
+    await initDB.authenticate();
+    console.log('Conexión a la base de datos establecida correctamente.');
+    await initDB.sync();
 
-        await initDB.sync();
-
-        const server = app.listen(port, () => {
-            console.log(`La aplicación está en línea en el puerto ${port}!`);
-        });
-        
-    } catch (error) {
-        console.error('Error al conectar a la base de datos:', error);
-    }
-}
-
+    server.listen(port, '0.0.0.0', () => {
+      console.log(`App en http://localhost:${port}`);
+    });
+  } catch (error) {
+    console.error('Error al conectar a la base de datos:', error);
+  }
+};
 startServer();

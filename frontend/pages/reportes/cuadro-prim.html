@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="../assets/"
+  data-template="vertical-menu-template-free">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+  <title>Cuadro PRIM</title>
+
+  <meta name="description" content="" />
+  <!-- Logo en la pestaña -->
+  <link rel="icon" type="image/x-icon" href="../../assets/img/LogoEscuela.png" />
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+    rel="stylesheet" />
+
+  <!-- Material Symbols -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/locales/es.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="../../assets/css/core.css" class="template-customizer-core-css" />
+  <link rel="stylesheet" href="../../assets/css/theme-default.css" class="template-customizer-theme-css" />
+  <link rel="stylesheet" href="../../assets/css/sidebar.css" />
+  <!-- Scroll CSS -->
+
+  <!-- Helpers -->
+</head>
+
+<body>
+
+  <!-- Layout -->
+  <div class="layout-wrapper layout-content-navbar" id="mainContainer">
+
+    <!-- Botón hamburguesa para móvil (oculto en desktop) -->
+    <button id="menuToggleMobile" class="hamburger-btn d-xl-none">
+      <img src="../../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" class="hamburger-img">
+    </button>
+
+    <div class="layout-container">
+
+      <!-- Menu -->
+      <aside class="layout-menu menu-vertical bg-menu-theme" id="layoutMenu">
+        <div class="app-brand demo">
+          <a href="../dashboard.html" class="app-brand-link">
+            <span class="app-brand-logo demo">
+              <img src="../../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" width="70" height="70">
+            </span>
+            <span class="app-brand-text demo menu-text fw-bolder ms-2 text-uppercase">EORM</span>
+          </a>
+
+          <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none"
+            id="closeMenu">
+            <span class="material-symbols-outlined">close</span>
+          </a>
+        </div>
+
+        <!-- Señala la pestaña activa -->
+        <div class="menu-inner-shadow"></div>
+        <ul class="menu-inner py-1" id="accordionSidebar">
+
+          <!-- Dashboard/Inicio -->
+          <li class="menu-item">
+            <a href="../dashboard.html" class="menu-link" id="EnlaceInicio">
+              <span class="menu-icon material-symbols-outlined">home</span>
+              <div class="menu-text" data-i18n="Analytics">Inicio</div>
+            </a>
+          </li>
+
+          <!-- Modulo de Tareas -->
+          <li class="menu-item" id="menuTareas">
+            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceTarea">
+              <span class="menu-icon material-symbols-outlined">assignment</span>
+              <div class="menu-text" data-i18n="Layouts">Tareas</div>
+            </a>
+
+            <ul class="menu-sub">
+              <li class="menu-item">
+                <a href="../tareas/calendario.html" class="menu-link">
+                  <div data-i18n="Without menu">Calendario</div>
+                </a>
+              </li>
+              <li class="menu-item ">
+                <a href="../tareas/actividades.html" class="menu-link">
+                  <div data-i18n="Without navbar">Actividades</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="../tareas/asigna-lista-cotejo.html" class="menu-link">
+                  <div data-i18n="Container">Visualizar Lista de Cotejo</div>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <!-- Información del alumno -->
+          <li class="menu-item">
+            <a href="../alumnos/alumnos.html" class="menu-link" id="EnlaceAlumno">
+              <span class="menu-icon material-symbols-outlined">group</span>
+              <div class="menu-text" data-i18n="Documentation">Alumnos</div>
+            </a>
+          </li>
+
+          <!-- Modulo de Reportes -->
+          <li class="menu-item" id="menuReportes">
+            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceReportes">
+              <span class="menu-icon material-symbols-outlined">summarize</span>
+              <div class="menu-text" data-i18n="Layouts">Reportes</div>
+            </a>
+
+            <ul class="menu-sub">
+              <li class="menu-item ">
+                <a href="../reportes/boleta-calificacion.html" class="menu-link">
+                  <div data-i18n="Without menu">Boleta de Calificaciones</div>
+                </a>
+              </li>
+              <li class="menu-item ">
+                <a href="../reportes/lista-cotejo.html" class="menu-link">
+                  <div data-i18n="Without navbar">Lista de Cotejo</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="../reportes/cuadro-prim.html" class="menu-link">
+                  <div data-i18n="Container">Cuadro PRIM</div>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="menu-item">
+            <a href="../alertas/alertas.html" class="menu-link" id="EnlaceAlertas">
+              <span class="menu-icon material-symbols-outlined">notification_important</span>
+              <div class="menu-text" data-i18n="Documentation">Alertas</div>
+            </a>
+          </li>
+
+          <li class="menu-item">
+            <a href="../panelControl/panel-control.html" class="menu-link" id="EnlacePanelControl">
+              <span class="menu-icon material-symbols-outlined">settings</span>
+              <div class="menu-text" data-i18n="Documentation">Panel de control</div>
+            </a>
+          </li>
+
+          <li class="menu-item">
+            <a href="../maestros/maestros.html" class="menu-link" id="EnlaceMaestro">
+              <span class="menu-icon material-symbols-outlined">person</span>
+              <div class="menu-text" data-i18n="Documentation">Maestros</div>
+            </a>
+          </li>
+
+          <li class="menu-item">
+            <a href="../encargado.html/encargado.html" class="menu-link" id="EnlaceEncargado">
+              <span class="menu-icon material-symbols-outlined">contacts_product</span>
+              <div class="menu-text" data-i18n="Documentation">Encargado</div>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Layout container -->
+      <div class="layout-page">
+        <!-- Navbar -->
+
+        <nav
+          class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+          id="layout-navbar">
+
+          <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+
+            <ul class="navbar-nav flex-row align-items-center ms-auto">
+              <!-- Place this tag where you want the button to render. -->
+
+              <span class="fw-semibold d-block">Perfil de Usuario</span>
+              <!-- User -->
+              <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                  <div class="avatar avatar-online">
+                    <img src="../../assets/img/icons/user.png" alt class="w-px-40 h-auto rounded-circle" />
+                  </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li>
+                    <a class="dropdown-item" href="../../pages/perfil.html">
+                      <div class="d-flex">
+                        <div class="flex-shrink-0 me-3">
+                          <div class="avatar avatar-online">
+                            <img src="../../assets/img/icons/user.png" alt class="w-px-40 h-auto rounded-circle" />
+                          </div>
+                        </div>
+                        <div class="flex-grow-1">
+                          <span class="fw-semibold d-block">Usuario</span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <div class="dropdown-divider"></div>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="../../pages/perfil.html">
+                      <i class="bx bx-user me-2"></i>
+                      <span class="align-middle">Mi Perfil</span>
+                    </a>
+                  </li>
+
+                  <li>
+
+                  </li>
+                  <li>
+                    <div class="dropdown-divider"></div>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="/">
+                      <i class="bx bx-power-off me-2"></i>
+                      <span class="align-middle">Cerrar Sesión</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <!--/ User -->
+            </ul>
+          </div>
+        </nav>
+
+        <!-- Content wrapper -->
+        <div class="content-wrapper">
+
+          <!-- Mensaje Bienvenida -->
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <!-- HEADER -->
+            <div class="card shadow-sm border-0 rounded-3 mb-4">
+              <div class="card-body py-4">
+                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                  <div>
+                    <h2 class="text-primary mb-2">Reporte Cuadro PRIM</h2>
+                    <p class="text-muted mb-0">Enseñar es un trabajo que se hace desde el corazón</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CONTENIDO PRINCIPAL -->
+            <div class="row g-4 align-items-stretch">
+
+              <!-- PANEL CONFIGURACIÓN -->
+              <div class="col-12 col-xl-5">
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                  <div class="card-body d-flex flex-column">
+                    <div class="mb-4">
+                      <h5 class="fw-bold text-primary mb-1">Configuración</h5>
+                      <p class="text-muted mb-0 small">Complete la información necesaria para generar el cuadro PRIM.
+                      </p>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="LenguajeIndigena" class="form-label fw-semibold">Lenguaje Indígena</label>
+                      <input type="text" class="form-control" id="LenguajeIndigena"
+                        placeholder="Ingrese el nombre del lenguaje indígena">
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="tituloCuadroPRIM" class="form-label fw-semibold">Título</label>
+                      <input type="text" class="form-control" id="tituloCuadroPRIM"
+                        placeholder="Ingrese el título en el lenguaje indígena">
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="subtituloCuadroPRIM" class="form-label fw-semibold">Subtítulo</label>
+                      <input type="text" class="form-control" id="subtituloCuadroPRIM"
+                        placeholder="Ingrese el subtítulo en el lenguaje indígena">
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="cicloCuadroPRIM" class="form-label fw-semibold">Ciclo / Bimestre</label>
+                      <input type="text" class="form-control" id="cicloCuadroPRIM"
+                        placeholder="Ingrese el ciclo o bimestre en el lenguaje indígena">
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold d-block">Código del centro educativo</label>
+
+                      <div class="d-flex flex-wrap align-items-start gap-2">
+                        <!-- Departamento -->
+                        <div class="text-center">
+                          <div class="d-flex">
+                            <input type="text" class="form-control text-center rounded-0" id="codDepto1" maxlength="1"
+                              style="width: 42px;">
+                            <input type="text" class="form-control text-center rounded-0 border-start-0" id="codDepto2"
+                              maxlength="1" style="width: 42px;">
+                          </div>
+                          <small class="text-muted d-block mt-1">Departamento</small>
+                        </div>
+
+                        <div class="pt-2 fw-bold">-</div>
+
+                        <!-- Municipio -->
+                        <div class="text-center">
+                          <div class="d-flex">
+                            <input type="text" class="form-control text-center rounded-0" id="codMunicipio1"
+                              maxlength="1" style="width: 42px;">
+                            <input type="text" class="form-control text-center rounded-0 border-start-0"
+                              id="codMunicipio2" maxlength="1" style="width: 42px;">
+                          </div>
+                          <small class="text-muted d-block mt-1">Municipio</small>
+                        </div>
+
+                        <div class="pt-2 fw-bold">-</div>
+
+                        <!-- Correlativo -->
+                        <div class="text-center">
+                          <div class="d-flex">
+                            <input type="text" class="form-control text-center rounded-0" id="codCorrelativo1"
+                              maxlength="1" style="width: 42px;">
+                            <input type="text" class="form-control text-center rounded-0 border-start-0"
+                              id="codCorrelativo2" maxlength="1" style="width: 42px;">
+                            <input type="text" class="form-control text-center rounded-0 border-start-0"
+                              id="codCorrelativo3" maxlength="1" style="width: 42px;">
+                            <input type="text" class="form-control text-center rounded-0 border-start-0"
+                              id="codCorrelativo4" maxlength="1" style="width: 42px;">
+                          </div>
+                          <small class="text-muted d-block mt-1">Correlativo</small>
+                        </div>
+
+                        <div class="pt-2 fw-bold">-</div>
+
+                        <!-- Nivel -->
+                        <div class="text-center">
+                          <div class="d-flex">
+                            <input type="text" class="form-control text-center rounded-0" id="codNivel1" maxlength="1"
+                              style="width: 42px;">
+                            <input type="text" class="form-control text-center rounded-0 border-start-0" id="codNivel2"
+                              maxlength="1" style="width: 42px;">
+                          </div>
+                          <small class="text-muted d-block mt-1">Nivel</small>
+                        </div>
+                      </div>
+
+                      <!-- Campo oculto opcional para enviar el valor completo -->
+                      <input type="hidden" id="CodigoCentroEducativo">
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="observacionesCuadroPRIM" class="form-label fw-semibold">Observaciones</label>
+                      <input type="text" class="form-control" id="observacionesCuadroPRIM"
+                        placeholder="Ingrese las observaciones que desea ingresar en el Cuadro PRIM">
+                    </div>
+
+                    <div class="mt-auto">
+                      <div class="d-grid gap-2 d-sm-flex flex-sm-row">
+                        <button type="button" class="btn btn-primary w-100" id="btnGenerarCuadroPRIM">
+                          Generar Cuadro PRIM
+                        </button>
+
+                        <button type="button" class="btn btn-outline-success w-100" id="btnVistaPrevia">
+                          Vista previa
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TABLA -->
+              <div class="col-12 col-lg-8 col-xl-7">
+
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                  <div class="card-header bg-white border-bottom">
+                    <h6 class="fw-bold text-primary mb-0">
+                      Seleccionar Alumnos
+                    </h6>
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="table-responsive">
+                      <table class="table table-hover align-middle table-bordered mb-0">
+                        <thead class="table-primary text-center">
+                          <tr>
+                            <th style="width:80px;">✔</th>
+                            <th>Cod. Alumno</th>
+                            <th>Nombre Alumno</th>
+                            <th>Situación Alumno</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tableBodyAlumnoNotas"></tbody>
+                      </table>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- IMAGEN 
+              <div class="col-12 col-md-6 col-xl-4">
+                <div class="card shadow-sm border-0 rounded-3 h-100 overflow-hidden">
+                  <div class="card-body p-0">
+                    <img src="../../assets/img/CuadroPrim.jpg" alt="Imagen de referencia Cuadro PRIM"
+                      class="img-fluid w-100">
+                  </div>
+                </div>
+              </div>
+
+            </div>-->
+
+              <!-- VISTA PREVIA -->
+              <div class="card shadow-sm border-0 rounded-3 mt-4 d-none" id="vistaPreviaContainerCuadroPrim">
+                <div class="card-header bg-success text-white d-flex align-items-center justify-content-between">
+                  <span class="fw-semibold mb-0">Vista Previa - Cuadro PRIM</span>
+                </div>
+                <div class="card-body text-center py-4">
+                  <div id="CuadroPRIMContainer" class="w-100"></div>
+                </div>
+              </div>
+            </div>
+            <!-- / Content -->
+
+            <!-- Footer -->
+            <footer class="content-footer footer bg-footer-theme">
+              <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                <div class="mb-2 mb-md-0">
+                  carolay Canté© 2026, "Construyendo herramientas que facilitan el aprendizaje."
+                </div>
+
+              </div>
+            </footer>
+            <!-- / Footer -->
+
+            <div class="content-backdrop fade"></div>
+          </div>
+        </div>
+        <!-- / Layout page -->
+      </div>
+      <!-- Overlay -->
+      <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    <!-- / Layout wrapper -->
+    <!-- Core JS -->
+    <script src="../../assets/js/bootstrap.js"></script>
+
+    <!-- Variables de configuración 
+    <script src="../../config/enviroment.js"></script>
+-->
+    <!-- endbuild -->
+    <!-- Main JS -->
+    <script src="../../assets/js/main.js"></script>
+    <!-- JS Geovanny-->
+    <script src="../../assets/js/Menu/sidebar.js"></script>
+    <script src="../../assets/js/Reportes/cuadroPrim.js"></script>
+    <script src="../../assets/js/auth/roleHandler.js"></script>
+
+</body>
+
+</html>

@@ -1,35 +1,18 @@
 const express = require('express');
 const controller = require('../controllers/encargado');
 const router = express.Router();
+const auth = require('../middleware/auth');
 
 const path = 'encargado';
-/**
- * @swagger
- * /encargado:
- *   get:
- *     summary: Obtener datos del encargado
- *     tags: [Encargado]
- *     security:
- *      - bearerAuth: []
- *     description: Obtiene los datos del Encargado.
- *     responses:
- *      200:
- *        description: Datos del Encargado obtenidos correctamente.
- *        content:
- *         application/json:
- *          schema:
- *           type: object
- *          properties:
- *           data:
- *            type: array
- *           items:
- *            type: object
- *      500:
- *       description: Error interno del servidor.
- */
-
 
 router.get(`/${path}`, controller.getData);
 
+router.post(`/${path}/BuscarEncargado`, controller.buscarEncargadosConAlumnos);
+
+router.post(`/${path}/CrearEncargado`, controller.crearEncargado);
+
+router.put(`/${path}/ActualizarEncargado`, controller.actualizarEncargado);
+
+router.delete(`/${path}/EliminarEncargado`, controller.eliminarEncargado);
 
 module.exports = router;

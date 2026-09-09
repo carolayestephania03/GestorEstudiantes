@@ -4,11 +4,11 @@ require('dotenv').config({});
 
 // Configuración de la conexión a la base de datos
 const dbConfig = {
-    host: 'localhost', // Cambiado de 'server' a 'host'
-    user: 'root',
-    password: 'Carolay123',
-    database: 'db_linda_vista',
-    port: 3306,
+    host: process.env.HOST_DB, // Cambiado de 'server' a 'host'
+    user: process.env.USER_DB,
+    password: process.env.PASSWORD_DB,
+    database: process.env.DB_NAME,
+    port: process.env.PORT_DB,
 };
 
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
@@ -16,6 +16,7 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.passw
     dialect: 'mysql',
     port: dbConfig.port,
     logging: false, // Desactiva los logs de SQL
+    timezone: '-06:00'
 });
 
 module.exports = sequelize;

@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="../assets/"
+  data-template="vertical-menu-template-free">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+  <title>Panel de Control</title>
+
+  <meta name="description" content="" />
+  <!-- Logo en la pestaña -->
+  <link rel="icon" type="image/x-icon" href="../../assets/img/LogoEscuela.png" />
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+    rel="stylesheet" />
+
+  <!-- Material Symbols -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/locales/es.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="../../assets/css/core.css" class="template-customizer-core-css" />
+  <link rel="stylesheet" href="../../assets/css/theme-default.css" class="template-customizer-theme-css" />
+  <link rel="stylesheet" href="../../assets/css/sidebar.css" />
+  <!-- Scroll CSS -->
+
+  <!-- Helpers -->
+</head>
+
+<style>
+  @media (max-width: 991.98px) {
+    #Tarjeta-Reportes-actividades {
+      margin-bottom: 0.75rem;
+    }
+
+    .card img {
+      max-height: 260px;
+    }
+  }
+
+  .tabla-scroll-catalogo {
+    max-height: 210px;
+    overflow-y: auto;
+    overflow-x: auto;
+  }
+
+  .tabla-scroll-catalogo table {
+    margin-bottom: 0;
+  }
+
+  .tabla-scroll-catalogo thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #f8f9fa;
+  }
+
+  @media (max-width: 576px) {
+    .tabla-scroll-catalogo {
+      max-height: 180px;
+    }
+  }
+
+  .tabla-scroll-catalogo {
+    max-height: 190px;
+    overflow-y: auto;
+  }
+
+  .materias-grid-wrap {
+    min-height: 180px;
+  }
+
+  .materia-check-card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.75rem;
+    background: #fff;
+    transition: all 0.2s ease;
+    height: 100%;
+  }
+
+  .materia-check-card.activa {
+    border-color: #696cff;
+    box-shadow: 0 0 0 0.15rem rgba(105, 108, 255, 0.12);
+    background: #f8f9ff;
+  }
+
+  .materia-check-card .form-check {
+    margin: 0;
+  }
+
+  .materia-check-card .form-check-input {
+    cursor: pointer;
+  }
+
+  .materia-check-card .form-check-label {
+    cursor: pointer;
+    width: 100%;
+    display: block;
+  }
+
+  .materia-check-nombre {
+    font-weight: 600;
+    color: #566a7f;
+    word-break: break-word;
+  }
+
+  .materia-check-id {
+    font-size: 0.8rem;
+    color: #a1acb8;
+  }
+
+  .materia-check-card.disabled-card {
+    background: #f5f5f9;
+    opacity: 0.8;
+  }
+
+  @media (max-width: 767.98px) {
+    .materias-grid-wrap {
+      min-height: auto;
+    }
+  }
+
+  .grado-check-item {
+  border: 1px solid #dee2e6;
+  border-radius: 0.6rem;
+  padding: 0.65rem 0.75rem;
+  background: #fff;
+  height: 100%;
+}
+
+.grado-check-item .form-check {
+  margin: 0;
+}
+
+.grado-check-item .form-check-label {
+  cursor: pointer;
+  width: 100%;
+}
+
+.grado-check-item .form-check-input {
+  cursor: pointer;
+}
+</style>
+
+<body>
+
+  <!-- Layout -->
+  <div class="layout-wrapper layout-content-navbar" id="mainContainer">
+
+    <!-- Botón hamburguesa para móvil (oculto en desktop) -->
+    <button id="menuToggleMobile" class="hamburger-btn d-xl-none">
+      <img src="../../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" class="hamburger-img">
+    </button>
+
+    <div class="layout-container">
+
+      <!-- Menu -->
+      <aside class="layout-menu menu-vertical bg-menu-theme" id="layoutMenu">
+        <div class="app-brand demo">
+          <a href="../dashboard.html" class="app-brand-link">
+            <span class="app-brand-logo demo">
+              <img src="../../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" width="70" height="70">
+            </span>
+            <span class="app-brand-text demo menu-text fw-bolder ms-2 text-uppercase">EORM</span>
+          </a>
+
+          <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none"
+            id="closeMenu">
+            <span class="material-symbols-outlined">close</span>
+          </a>
+        </div>
+
+        <!-- Señala la pestaña activa -->
+        <div class="menu-inner-shadow"></div>
+        <ul class="menu-inner py-1" id="accordionSidebar">
+
+          <!-- Dashboard/Inicio -->
+          <li class="menu-item">
+            <a href="../dashboard.html" class="menu-link" id="EnlaceInicio">
+              <span class="menu-icon material-symbols-outlined">home</span>
+              <div class="menu-text" data-i18n="Analytics">Inicio</div>
+            </a>
+          </li>
+
+          <!-- Modulo de Tareas -->
+          <li class="menu-item" id="menuTareas">
+            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceTarea">
+              <span class="menu-icon material-symbols-outlined">assignment</span>
+              <div class="menu-text" data-i18n="Layouts">Tareas</div>
+            </a>
+
+            <ul class="menu-sub">
+              <li class="menu-item">
+                <a href="../tareas/calendario.html" class="menu-link">
+                  <div data-i18n="Without menu">Calendario</div>
+                </a>
+              </li>
+              <li class="menu-item ">
+                <a href="../tareas/actividades.html" class="menu-link">
+                  <div data-i18n="Without navbar">Actividades</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="../tareas/asigna-lista-cotejo.html" class="menu-link">
+                  <div data-i18n="Container">Visualizar Lista de Cotejo</div>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <!-- Información del alumno -->
+          <li class="menu-item">
+            <a href="../alumnos/alumnos.html" class="menu-link" id="EnlaceAlumno">
+              <span class="menu-icon material-symbols-outlined">group</span>
+              <div class="menu-text" data-i18n="Documentation">Alumnos</div>
+            </a>
+          </li>
+
+          <!-- Modulo de Reportes -->
+          <li class="menu-item" id="menuReportes">
+            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceReportes">
+              <span class="menu-icon material-symbols-outlined">summarize</span>
+              <div class="menu-text" data-i18n="Layouts">Reportes</div>
+            </a>
+
+            <ul class="menu-sub">
+              <li class="menu-item ">
+                <a href="../reportes/boleta-calificacion.html" class="menu-link">
+                  <div data-i18n="Without menu">Boleta de Calificaciones</div>
+                </a>
+              </li>
+              <li class="menu-item ">
+                <a href="../reportes/lista-cotejo.html" class="menu-link">
+                  <div data-i18n="Without navbar">Lista de Cotejo</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="../reportes/cuadro-prim.html" class="menu-link">
+                  <div data-i18n="Container">Cuadro PRIM</div>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="menu-item">
+            <a href="../alertas/alertas.html" class="menu-link" id="EnlaceAlertas">
+              <span class="menu-icon material-symbols-outlined">notification_important</span>
+              <div class="menu-text" data-i18n="Documentation">Alertas</div>
+            </a>
+          </li>
+
+          <li class="menu-item">
+            <a href="../panelControl/panel-control.html" class="menu-link" id="EnlacePanelControl">
+              <span class="menu-icon material-symbols-outlined">settings</span>
+              <div class="menu-text" data-i18n="Documentation">Panel de control</div>
+            </a>
+          </li>
+
+          <li class="menu-item">
+            <a href="../maestros/maestros.html" class="menu-link" id="EnlaceMaestro">
+              <span class="menu-icon material-symbols-outlined">person</span>
+              <div class="menu-text" data-i18n="Documentation">Maestros</div>
+            </a>
+          </li>
+
+          <li class="menu-item">
+            <a href="../encargado.html/encargado.html" class="menu-link" id="EnlaceEncargado">
+              <span class="menu-icon material-symbols-outlined">contacts_product</span>
+              <div class="menu-text" data-i18n="Documentation">Encargado</div>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Layout container -->
+      <div class="layout-page">
+        <!-- Navbar -->
+
+        <nav
+          class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+          id="layout-navbar">
+
+          <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+
+            <ul class="navbar-nav flex-row align-items-center ms-auto">
+              <!-- Place this tag where you want the button to render. -->
+
+              <span class="fw-semibold d-block">Perfil de Usuario</span>
+              <!-- User -->
+              <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                  <div class="avatar avatar-online">
+                    <img src="../../assets/img/icons/user.png" alt class="w-px-40 h-auto rounded-circle" />
+                  </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li>
+                    <a class="dropdown-item" href="../../pages/perfil.html">
+                      <div class="d-flex">
+                        <div class="flex-shrink-0 me-3">
+                          <div class="avatar avatar-online">
+                            <img src="../../assets/img/icons/user.png" alt class="w-px-40 h-auto rounded-circle" />
+                          </div>
+                        </div>
+                        <div class="flex-grow-1">
+                          <span class="fw-semibold d-block">Usuario</span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <div class="dropdown-divider"></div>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="../../pages/perfil.html">
+                      <i class="bx bx-user me-2"></i>
+                      <span class="align-middle">Mi Perfil</span>
+                    </a>
+                  </li>
+
+                  <li>
+
+                  </li>
+                  <li>
+                    <div class="dropdown-divider"></div>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="/">
+                      <i class="bx bx-power-off me-2"></i>
+                      <span class="align-middle">Cerrar Sesión</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <!--/ User -->
+            </ul>
+          </div>
+        </nav>
+
+        <!-- Content wrapper -->
+        <div class="content-wrapper">
+          <div class="container-xxl flex-grow-1 container-p-y">
+
+            <!-- HEADER -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <div class="card shadow-sm">
+                  <div class="card-body py-3">
+                    <h2 class="text-primary mb-1">Panel de Control</h2>
+                    <p class="mb-0 text-muted">Administración general de catálogos del sistema</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-4 align-items-stretch">
+
+              <!-- ESCALAFONES -->
+              <div class="col-12 col-md-6 col-xl-4">
+                <div class="card shadow-sm h-100">
+                  <div class="card-header bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h6 class="text-primary mb-0">Control de Escalafones</h6>
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-toggle-tabla"
+                      data-target="#wrapTablaEscalafones">
+                      Ocultar tabla
+                    </button>
+                  </div>
+                  <div class="card-body d-flex flex-column">
+
+                    <div class="mb-3">
+                      <label class="form-label">Nuevo Escalafón</label>
+                      <input type="text" class="form-control" id="inputEscalafon">
+                    </div>
+
+                    <div class="d-grid mb-3">
+                      <button class="btn btn-primary btn-sm" id="btnCrearEscalafon">Crear</button>
+                    </div>
+
+                    <div class="table-responsive flex-grow-1 tabla-scroll-catalogo" id="wrapTablaEscalafones">
+                      <table class="table table-hover table-bordered align-middle mb-0">
+                        <thead class="table-light">
+                          <tr>
+                            <th width="10%">#</th>
+                            <th>Descripción</th>
+                            <th width="30%" class="text-center">Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbodyEscalafones"></tbody>
+                      </table>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- RENGLONES -->
+              <div class="col-12 col-md-6 col-xl-4">
+                <div class="card shadow-sm h-100">
+                  <div class="card-header bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h6 class="text-primary mb-0">Control de Renglones</h6>
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-toggle-tabla"
+                      data-target="#wrapTablaRenglones">
+                      Ocultar tabla
+                    </button>
+                  </div>
+                  <div class="card-body d-flex flex-column">
+
+                    <div class="mb-3">
+                      <label class="form-label">Nuevo Renglón</label>
+                      <input type="text" class="form-control" id="inputRenglon">
+                    </div>
+
+                    <div class="d-grid mb-3">
+                      <button class="btn btn-primary btn-sm" id="btnCrearRenglon">Crear</button>
+                    </div>
+
+                    <div class="table-responsive flex-grow-1 tabla-scroll-catalogo" id="wrapTablaRenglones">
+                      <table class="table table-hover table-bordered align-middle mb-0">
+                        <thead class="table-light">
+                          <tr>
+                            <th width="10%">#</th>
+                            <th>Descripción</th>
+                            <th width="30%" class="text-center">Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbodyRenglones"></tbody>
+                      </table>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- IMAGEN PANEL DE CONTROL 
+              <div class="col-12 col-xl-4 d-none d-xl-block">
+                <div class="card shadow-sm h-100 border-0 bg-transparent">
+                  <div class="card-body p-0 h-100 d-flex align-items-stretch justify-content-center">
+                    <img src="../../assets/img/Panel de control.png" alt="Panel de control"
+                      class="img-fluid rounded shadow-sm w-100 h-100" style="object-fit: cover; max-height: 100%;">
+                  </div>
+                </div>
+              </div>
+-->
+              <!-- SITUACION -->
+              <div class="col-12 col-md-6 col-xl-4">
+                <div class="card shadow-sm h-100">
+                  <div class="card-header bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h6 class="text-primary mb-0">Control de Situaciones</h6>
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-toggle-tabla"
+                      data-target="#wrapTablaSituacion">
+                      Ocultar tabla
+                    </button>
+                  </div>
+                  <div class="card-body d-flex flex-column">
+
+                    <div class="mb-3">
+                      <label class="form-label">Nuevas Siglas de Situación</label>
+                      <input type="text" class="form-control" id="inputSituacion">
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label class="form-label">Nueva Descripción</label>
+                      <input type="text" class="form-control" id="inputDescripcionSituacion">
+                    </div>
+
+                    <div class="d-grid mb-3">
+                      <button class="btn btn-primary btn-sm" id="btnCrearSituacion">Crear</button>
+                    </div>
+
+                    <div class="table-responsive flex-grow-1 tabla-scroll-catalogo" id="wrapTablaSituacion">
+                      <table class="table table-hover table-bordered align-middle mb-0">
+                        <thead class="table-light">
+                          <tr>
+                            <th width="10%">#</th>
+                            <th>Descripción</th>
+                            <th width="30%" class="text-center">Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbodySituacion"></tbody>
+                      </table>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- MATERIAS -->
+              <div class="col-12 col-md-6 col-xl-6">
+                <div class="card shadow-sm h-100">
+                  <div class="card-header bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h6 class="text-primary mb-0">Control de Materias</h6>
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-toggle-tabla"
+                      data-target="#wrapTablaMaterias">
+                      Ocultar tabla
+                    </button>
+                  </div>
+                  <div class="card-body d-flex flex-column">
+
+                    <div class="mb-3">
+                      <label class="form-label">Nombre de Materia</label>
+                      <input type="text" class="form-control" id="inputNombreMateria">
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Descripción de Materia</label>
+                      <input type="text" class="form-control" id="inputDescripcionMateria">
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Grados donde se impartirá</label>
+                      <div id="contenedorGradosMateria" class="row g-2">
+                        <!-- JS -->
+                      </div>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                      <button class="btn btn-primary btn-sm" id="btnCrearMateria">Crear</button>
+                    </div>
+
+                    <div class="table-responsive flex-grow-1 tabla-scroll-catalogo" id="wrapTablaMaterias">
+                      <table class="table table-hover table-bordered align-middle mb-0">
+                        <thead class="table-light">
+                          <tr>
+                            <th width="10%">#</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th width="30%" class="text-center">Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbodyMaterias"></tbody>
+                      </table>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- AMBITOS -->
+              <div class="col-12 col-md-6 col-xl-6">
+                <div class="card shadow-sm h-100">
+                  <div class="card-header bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h6 class="text-primary mb-0">Control de Ámbitos de Actitudinal</h6>
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-toggle-tabla"
+                      data-target="#wrapTablaAmbitos">
+                      Ocultar tabla
+                    </button>
+                  </div>
+                  <div class="card-body d-flex flex-column">
+
+                    <div class="mb-3">
+                      <label class="form-label">Nuevo Ámbito</label>
+                      <input type="text" class="form-control" id="inputAmbito">
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Nueva Descripción</label>
+                      <input type="text" class="form-control" id="inputDescripcionAmbito">
+                    </div>
+
+                    <div class="d-grid mb-3">
+                      <button class="btn btn-primary btn-sm" id="btnCrearAmbito">Crear</button>
+                    </div>
+
+                    <div class="table-responsive flex-grow-1 tabla-scroll-catalogo" id="wrapTablaAmbitos">
+                      <table class="table table-hover table-bordered align-middle mb-0">
+                        <thead class="table-light">
+                          <tr>
+                            <th width="10%">#</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th width="30%" class="text-center">Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbodyAmbitos"></tbody>
+                      </table>
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- ================= FILA FINAL ================= -->
+              <div class="col-12 col-lg-12">
+                <div class="card shadow-sm h-100">
+                  <div class="card-header bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h6 class="text-primary mb-0">Materias activas por grado</h6>
+
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                      <label for="selectGradoMaterias" class="mb-0 fw-semibold">Grado:</label>
+                      <select id="selectGradoMaterias" class="form-select form-select-sm" style="min-width: 220px;">
+                        <option value="">Seleccione un grado</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="card-body d-flex flex-column">
+
+                    <div class="mb-3">
+                      <small class="text-muted">
+                        Seleccione las materias que estarán activas para el grado elegido.
+                      </small>
+                    </div>
+
+                    <div id="contenedorMateriasPorGrado" class="materias-grid-wrap">
+                      <div class="row g-3" id="gridMateriasPorGrado">
+                        <!-- JS -->
+                      </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4 flex-wrap">
+                      <button class="btn btn-outline-secondary btn-sm" id="btnEditarBasico">Editar</button>
+                      <button class="btn btn-success btn-sm" id="btnGuardarBasico" disabled>Guardar</button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- / Content -->
+
+        <!-- Footer -->
+        <footer class="content-footer footer bg-footer-theme">
+          <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+            <div class="mb-2 mb-md-0">
+              carolay Canté© 2026, "Construyendo herramientas que facilitan el aprendizaje."
+            </div>
+
+          </div>
+        </footer>
+        <!-- / Footer -->
+
+        <div class="content-backdrop fade"></div>
+      </div>
+    </div>
+    <!-- / Layout page -->
+  </div>
+  <!-- Overlay -->
+  <div class="layout-overlay layout-menu-toggle"></div>
+  </div>
+  <!-- / Layout wrapper -->
+  <!-- Core JS -->
+  <script src="../../assets/js/bootstrap.js"></script>
+
+  <!-- Variables de configuración -->
+  <script src="../../config/enviroment.js"></script>
+
+  <!-- endbuild -->
+  <!-- Main JS -->
+  <script src="../../assets/js/main.js"></script>
+  <!-- JS Geovanny-->
+  <script src="../../assets/js/Calendar/index.global.min.js"></script>
+  <script src="../../assets/js/Menu/sidebar.js"></script>
+  <script src="../../assets/js/panelControl/panelControl.js"></script>
+  <script src="../../assets/js/auth/roleHandler.js"></script>
+
+</body>
+
+</html>

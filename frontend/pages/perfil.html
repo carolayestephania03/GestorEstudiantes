@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="../assets/"
+  data-template="vertical-menu-template-free">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+  <title>Alumnos</title>
+
+  <meta name="description" content="" />
+  <!-- Logo en la pestaña -->
+  <link rel="icon" type="image/x-icon" href="../assets/img/LogoEscuela.png" />
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+    rel="stylesheet" />
+
+  <!-- Material Symbols -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/locales/es.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="../assets/css/core.css" class="template-customizer-core-css" />
+  <link rel="stylesheet" href="../assets/css/theme-default.css" class="template-customizer-theme-css" />
+  <link rel="stylesheet" href="../assets/css/sidebar.css" />
+  <!-- Scroll CSS -->
+
+  <!-- Helpers -->
+</head>
+
+<body>
+
+  <!-- Layout -->
+  <div class="layout-wrapper layout-content-navbar" id="mainContainer">
+
+    <!-- Botón hamburguesa para móvil (oculto en desktop) -->
+    <button id="menuToggleMobile" class="hamburger-btn d-xl-none">
+      <img src="../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" class="hamburger-img">
+    </button>
+
+    <div class="layout-container">
+
+      <!-- Menu -->
+      <aside class="layout-menu menu-vertical bg-menu-theme" id="layoutMenu">
+        <div class="app-brand demo">
+          <a href="../pages/dashboard.html" class="app-brand-link">
+            <span class="app-brand-logo demo">
+              <img src="../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" width="70" height="70">
+            </span>
+            <span class="app-brand-text demo menu-text fw-bolder ms-2 text-uppercase">EORM</span>
+          </a>
+
+          <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none"
+            id="closeMenu">
+            <span class="material-symbols-outlined">close</span>
+          </a>
+        </div>
+
+        <!-- Señala la pestaña activa -->
+        <div class="menu-inner-shadow"></div>
+        <ul class="menu-inner py-1" id="accordionSidebar">
+
+          <!-- Dashboard/Inicio -->
+          <li class="menu-item" >
+            <a href="../pages/dashboard.html" class="menu-link" id="EnlaceInicio">
+              <span class="menu-icon material-symbols-outlined">home</span>
+              <div class="menu-text" data-i18n="Analytics">Inicio</div>
+            </a>
+          </li>
+
+          <!-- Modulo de Tareas -->
+          <li class="menu-item" id="menuTareas">
+            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceTarea"> 
+              <span class="menu-icon material-symbols-outlined">assignment</span>
+              <div class="menu-text" data-i18n="Layouts">Tareas</div>
+            </a>
+
+            <ul class="menu-sub">
+              <li class="menu-item">
+                <a href="../pages/tareas/calendario.html" class="menu-link">
+                  <div data-i18n="Without menu">Calendario</div>
+                </a>
+              </li>
+              <li class="menu-item ">
+                <a href="../pages/tareas/actividades.html" class="menu-link">
+                  <div data-i18n="Without navbar">Actividades</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="../pages/tareas/asigna-lista-cotejo.html" class="menu-link">
+                  <div data-i18n="Container">Visualizar Lista de Cotejo</div>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <!-- Información del alumno -->
+          <li class="menu-item">
+            <a href="../pages/alumnos/alumnos.html" class="menu-link" id="EnlaceAlumno">
+              <span class="menu-icon material-symbols-outlined">group</span>
+              <div class="menu-text" data-i18n="Documentation">Alumnos</div>
+            </a>
+          </li>
+
+          <!-- Modulo de Reportes -->
+          <li class="menu-item" id="menuReportes">
+            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceReportes">
+              <span class="menu-icon material-symbols-outlined">summarize</span>
+              <div class="menu-text" data-i18n="Layouts">Reportes</div>
+            </a>
+
+            <ul class="menu-sub">
+              <li class="menu-item ">
+                <a href="../pages/reportes/boleta-calificacion.html" class="menu-link">
+                  <div data-i18n="Without menu">Boleta de Calificaciones</div>
+                </a>
+              </li>
+              <li class="menu-item ">
+                <a href="../pages/reportes/lista-cotejo.html" class="menu-link">
+                  <div data-i18n="Without navbar">Lista de Cotejo</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="../pages/reportes/cuadro-prim.html" class="menu-link">
+                  <div data-i18n="Container">Cuadro PRIM</div>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="menu-item">
+            <a href="../pages/alertas/alertas.html" class="menu-link" id="EnlaceAlertas">
+              <span class="menu-icon material-symbols-outlined">notification_important</span>
+              <div class="menu-text" data-i18n="Documentation">Alertas</div>
+            </a>
+          </li>
+
+          <li class="menu-item">
+            <a href="../pages/panelControl/panel-control.html" class="menu-link" id="EnlacePanelControl">
+              <span class="menu-icon material-symbols-outlined">settings</span>
+              <div class="menu-text" data-i18n="Documentation">Panel de control</div>
+            </a>
+          </li>
+
+          <li class="menu-item">
+            <a href="../pages/maestros/maestros.html" class="menu-link" id="EnlaceMaestro">
+              <span class="menu-icon material-symbols-outlined">person</span>
+              <div class="menu-text" data-i18n="Documentation">Maestros</div>
+            </a>
+          </li>
+
+          <li class="menu-item">
+            <a href="../pages/encargado.html/encargado.html" class="menu-link" id="EnlaceEncargado">
+              <span class="menu-icon material-symbols-outlined">contacts_product</span>
+              <div class="menu-text" data-i18n="Documentation">Encargado</div>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Layout container -->
+      <div class="layout-page">
+        <!-- Navbar -->
+
+        <nav
+          class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+          id="layout-navbar">
+          <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+            <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+              <i class="bx bx-menu bx-sm"></i>
+            </a>
+          </div>
+
+          <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+
+            <ul class="navbar-nav flex-row align-items-center ms-auto">
+              <!-- Place this tag where you want the button to render. -->
+
+              <span class="fw-semibold d-block">Perfil de Usuario</span>
+              <!-- User -->
+              <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                  <div class="avatar avatar-online">
+                    <img src="../assets/img/icons/user.png" alt class="w-px-40 h-auto rounded-circle" />
+                  </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li>
+                    <a class="dropdown-item" href="perfil.html">
+                      <div class="d-flex">
+                        <div class="flex-shrink-0 me-3">
+                          <div class="avatar avatar-online">
+                            <img src="../assets/img/icons/user.png" alt class="w-px-40 h-auto rounded-circle" />
+                          </div>
+                        </div>
+                        <div class="flex-grow-1">
+                          <span class="fw-semibold d-block">Usuario</span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <div class="dropdown-divider"></div>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="perfil.html">
+                      <i class="bx bx-user me-2"></i>
+                      <span class="align-middle">Mi Perfil</span>
+                    </a>
+                  </li>
+
+                  <li>
+
+                  </li>
+                  <li>
+                    <div class="dropdown-divider"></div>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="../index.html">
+                      <i class="bx bx-power-off me-2"></i>
+                      <span class="align-middle">Cerrar Sesión</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <!--/ User -->
+            </ul>
+          </div>
+        </nav>
+
+        <!-- Content wrapper -->
+        <div class="content-wrapper">
+
+          <!-- Mensaje Bienvenida -->
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="row">
+              <div class="col-lg-12 mb-4 order-0">
+                <div class="card profile-card">
+
+                  <!-- Banner -->
+                  <div class="profile-banner"></div>
+
+                  <!-- Avatar + Info -->
+                  <div class="card-body d-flex align-items-center">
+                    <!-- Avatar -->
+                    <div class="profile-avatar">
+                      <img src="../assets/img/icons/user.png" alt="Avatar">
+                    </div>
+
+                    <!-- Info -->
+                    <div class="ms-3">
+                      <h4 class="mb-1" id="nombre_titulo">Juan Hernández</h4>
+                      <p class="mb-2 text-muted">Enseñar es un trabajo que se hace desde el corazón!</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <!--Menu en el perfil-->
+              <div class="row">
+                <div class="col-xl-12">
+                  <div class="nav-align-top mb-4">
+                    <ul class="nav nav-pills mb-3" role="tablist">
+                      <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                          data-bs-target="#navs-pills-top-home" aria-controls="navs-pills-top-home"
+                          aria-selected="true">
+                          Información
+                        </button>
+                      </li>
+                      <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                          data-bs-target="#navs-pills-top-profile" aria-controls="navs-pills-top-profile"
+                          aria-selected="false">
+                          Seguridad
+                        </button>
+                      </li>
+                    </ul>
+                    <div class="tab-content">
+                      <div class="tab-pane fade show active" id="navs-pills-top-home" role="tabpanel">
+                        <form>
+                          <!-- Información Personal -->
+                          <h5 class="mb-3">Información Personal</h5>
+                          <div class="row">
+                            <div class="col-md-6 mb-3">
+                              <label for="nombre" class="form-label">Nombre</label>
+                              <input type="text" class="form-control" id="nombre" placeholder="Ingresa tu nombre">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="correo" class="form-label">Correo electrónico</label>
+                              <input type="email" class="form-control" id="correo" placeholder="ejemplo@correo.com">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="genero" class="form-label">Género</label>
+                              <select class="form-select" id="genero">
+                                <option selected disabled>Selecciona tu género</option>
+                                <option value="masculino">Masculino</option>
+                                <option value="femenino">Femenino</option>
+                              </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="telefono" class="form-label">Teléfono</label>
+                              <input type="tel" class="form-control" id="telefono" placeholder="0000-0000">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="residencia" class="form-label">Residencia</label>
+                              <input type="text" class="form-control" id="residencia" placeholder="Residencia">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="fechaNacimiento" class="form-label">Fecha de nacimiento</label>
+                              <input type="date" class="form-control" id="fechaNacimiento">
+                            </div>
+                          </div>
+
+                          <hr class="my-4">
+
+                          <!-- Documentos de Identificación -->
+                          <h5 class="mb-3">Documentos de Identificación</h5>
+                          <div class="row">
+                            <div class="col-md-6 mb-3">
+                              <label for="dpi" class="form-label">DPI</label>
+                              <input type="text" class="form-control" id="dpi" placeholder="Número de DPI">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="nit" class="form-label">NIT</label>
+                              <input type="text" class="form-control" id="nit" placeholder="Número de NIT">
+                            </div>
+                          </div>
+
+                          <hr class="my-4">
+
+                          <!-- Información Laboral -->
+                          <h5 class="mb-3">Información Laboral</h5>
+                          <div class="row">
+                            <div class="col-md-6 mb-3">
+                              <label for="codigoEmpleado" class="form-label">Código de empleado</label>
+                              <input type="text" class="form-control" id="codigoEmpleado"
+                                placeholder="Código de empleado">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="cedulaDocente" class="form-label">Cédula docente</label>
+                              <input type="text" class="form-control" id="cedulaDocente" placeholder="Cédula docente">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="fechaInicio" class="form-label">Fecha de inicio de labores</label>
+                              <input type="date" class="form-control" id="fechaInicio">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="escalafon" class="form-label">Escalafón</label>
+                              <input type="text" class="form-control" id="escalafon" placeholder="Escalafón">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="renglon" class="form-label">Renglón</label>
+                              <input type="text" class="form-control" id="renglon" placeholder="Renglón">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="codigoInstitucional" class="form-label">Código institucional</label>
+                              <input type="text" class="form-control" id="codigoInstitucional"
+                                placeholder="Código institucional">
+                            </div>
+                          </div>
+
+                          <div class="mt-3">
+                            <button type="button" class="btn btn-warning" id="btn_editar_perfil">Editar</button>
+                            <button type="button" class="btn btn-success" id="btn_guardar_perfil">Actualizar</button>
+                          </div>
+                        </form>
+                      </div>
+                      <div class="tab-pane fade" id="navs-pills-top-profile" role="tabpanel">
+                        <h5>Cambiar contraseña</h5>
+                        <form>
+                          <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Contraseña actual</label>
+                            <input type="password" class="form-control" id="currentPassword"
+                              placeholder="Ingresa tu contraseña actual">
+                          </div>
+                          <div class="mb-3">
+                            <label for="newPassword" class="form-label">Nueva contraseña</label>
+                            <input type="password" class="form-control" id="newPassword"
+                              placeholder="Ingresa tu nueva contraseña">
+                          </div>
+                          <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirmar nueva contraseña</label>
+                            <input type="password" class="form-control" id="confirmPassword"
+                              placeholder="Confirma tu nueva contraseña">
+                          </div>
+                          <button type="button" class="btn btn-primary" id="btn_guardar_password">Guardar</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <!-- / Content -->
+          <!-- Footer -->
+          <footer class="content-footer footer bg-footer-theme">
+            <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+              <div class="mb-2 mb-md-0">
+                carolay Canté© 2026, "Construyendo herramientas que facilitan el aprendizaje."
+              </div>
+              <div>
+                <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
+                  target="_blank" class="footer-link me-4">Documentación</a>
+              </div>
+            </div>
+          </footer>
+          <!-- / Footer -->
+
+          <div class="content-backdrop fade"></div>
+        </div>
+      </div>
+      <!-- / Layout page -->
+    </div>
+    <!-- Overlay -->
+    <div class="layout-overlay layout-menu-toggle"></div>
+  </div>
+  <!-- / Layout wrapper -->
+  <!-- Core JS -->
+  <script src="../assets/js/bootstrap.js"></script>
+
+  <!-- endbuild -->
+  <!-- Main JS -->
+  <script src="../assets/js/main.js"></script>
+  <!-- JS Geovanny-->
+  <script src="../assets/js/auth/roleHandler.js"></script>
+  <script src="../../assets/js/Menu/sidebar.js"></script>
+  <script src="../assets/js/auth/user.js"></script>
+
+</body>
+
+</html>

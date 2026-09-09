@@ -1,64 +1,22 @@
 const express = require('express');
-const router = express.Router();
 const controller = require('../controllers/usuario');
+const router = express.Router();
+const auth = require('../middleware/auth');
+
 const path = 'usuario';
 
-/**
- * @swagger
- * tags:
- *   name: Usuario
- *   description: Endpoints para operaciones con usuarios
- */
-
-/**
- * @swagger
- * /usuario:
- *   get:
- *     summary: Obtener todos los usuarios
- *     tags: [Usuario]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Lista de usuarios
- *       500:
- *         description: Error en el servidor
- */
 router.get(`/${path}`, controller.getData);
 
-/**
- * @swagger
- * /usuario/{id}:
- *   get:
- *     summary: Obtener un usuario por ID
- *     tags: [Usuario]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID del usuario
- *     responses:
- *       200:
- *         description: Datos del usuario
- *       404:
- *         description: Usuario no encontrado
- *       500:
- *         description: Error en el servidor
- */
-router.get(`/${path}/:id`, controller.getById);
+router.post(`/${path}/BuscarIndividual`, controller.getDataUsuarioInd);
 
+router.post(`/${path}/Crear`, controller.postData);
 /**
  * @swagger
- * /usuario:
+ * /usuario/Login:
  *   post:
- *     summary: Crear un nuevo usuario
- *     tags: [Usuario]
- *     security:
- *       - bearerAuth: []
+ *     summary: User login
+ *     tags: [User]
+ *     description: Verifica el usuario y contraseña en la base de datos y genera JWT
  *     requestBody:
  *       required: true
  *       content:
@@ -66,38 +24,29 @@ router.get(`/${path}/:id`, controller.getById);
  *           schema:
  *             type: object
  *             required:
- *               - nombre_usuario
- *               - nombre
- *               - correo
- *               - telefono
+ *               - identificador
+ *               - contrasena
  *             properties:
- *               nombre_usuario:
+ *               identificador:
  *                 type: string
- *               nombre:
- *                 type: string
- *               correo:
- *                 type: string
- *               telefono:
+ *               contrasena:
  *                 type: string
  *     responses:
- *       201:
- *         description: Usuario creado exitosamente
+ *       200:
+ *         description: Login successful
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
+ *                 auth:
+ *                   type: boolean
  *                 message:
  *                   type: string
- *                 contrasena_temporal:
- *                   type: string
- *       400:
- *         description: Datos inválidos
- *       401:
- *         description: Correo ya en uso
- *       500:
- *         description: Error del servidor
  */
-router.post(`/${path}`, controller.postData);
+
+router.post(`/${path}/Login`, controller.login);
+
+router.put(`/${path}/Actualizar`, controller.putData);
 
 module.exports = router;

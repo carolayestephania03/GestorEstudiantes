@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="../assets/"
+  data-template="vertical-menu-template-free">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+  <title>Alumnos</title>
+
+  <meta name="description" content="" />
+  <!-- Logo en la pestaña -->
+  <link rel="icon" type="image/x-icon" href="../../assets/img/LogoEscuela.png" />
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+    rel="stylesheet" />
+
+  <!-- Material Symbols -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/locales/es.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="../../assets/css/core.css" class="template-customizer-core-css" />
+  <link rel="stylesheet" href="../../assets/css/theme-default.css" class="template-customizer-theme-css" />
+  <link rel="stylesheet" href="../../assets/css/sidebar.css" />
+  <!-- Scroll CSS -->
+  <style>
+    .custom-select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #3b71ca;
+      border-radius: 8px;
+      font-size: 16px;
+      color: #333;
+      background-color: #f8f9fa;
+      background-image: linear-gradient(45deg, transparent 50%, #3b71ca 50%),
+        linear-gradient(135deg, #3b71ca 50%, transparent 50%);
+      background-position: calc(100% - 20px) center, calc(100% - 15px) center;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      appearance: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .custom-select:focus {
+      border-color: #2a5cad;
+      box-shadow: 0 0 0 0.25rem rgba(59, 113, 202, 0.25);
+      outline: none;
+    }
+
+        .custom-select:disabled {
+      background-color: #e9ecef;
+      color: #adb5bd;
+      border-color: #ced4da;
+      cursor: not-allowed;
+      background-image: linear-gradient(45deg, transparent 50%, #adb5bd 50%),
+        linear-gradient(135deg, #adb5bd 50%, transparent 50%);
+    }
+
+    .custom-select:disabled:focus {
+      border-color: #ced4da;
+      box-shadow: none;
+    }
+
+    .select-label {
+      font-weight: 600;
+      color: #3b71ca;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .option-group {
+      padding: 8px 12px;
+      font-weight: 500;
+      color: #2c3e50;
+      background-color: #e9f1fd;
+    }
+
+    /* Permite scroll horizontal y evita que las columnas se aplasten */
+    .table-responsive .tabla-notas {
+      min-width: 1100px;
+      /* ajusta: 1000-1400 según columnas */
+      table-layout: auto;
+      /* controla ancho consistente */
+    }
+
+    /* Encabezados y celdas con buen espacio */
+    .tabla-notas th,
+    .tabla-notas td {
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    /* Celdas de notas (inputs) más legibles */
+    .tabla-notas .nota-input {
+      min-width: 64px;
+      /* clave: que el número respire */
+      height: 32px;
+      font-size: 0.95rem;
+      padding: 0.25rem 0.35rem;
+    }
+
+    .tabla-notas thead th {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Columna Nombre más amplia */
+    .tabla-notas td:nth-child(2),
+    .tabla-notas th:nth-child(2) {
+      width: 220px;
+      /* ajusta a tu gusto */
+    }
+
+    /* Columna No. */
+    .tabla-notas td:nth-child(1),
+    .tabla-notas th:nth-child(1) {
+      width: 50px;
+    }
+
+    /* Columna Total */
+    .tabla-notas .total-cell,
+    .tabla-notas th:last-child {
+      width: 90px;
+    }
+
+    /* Acciones */
+    .tabla-notas td:last-child,
+    .tabla-notas th:last-child {
+      width: 120px;
+    }
+
+    @media (max-width: 991.98px) {
+      #Tarjeta-Reportes-actividades {
+        margin-bottom: 0.75rem;
+      }
+
+      .card img {
+        max-height: 260px;
+      }
+    }
+  </style>
+  <!-- Helpers -->
+</head>
+
+<body>
+
+  <!-- Layout -->
+  <div class="layout-wrapper layout-content-navbar" id="mainContainer">
+
+    <!-- Botón hamburguesa para móvil (oculto en desktop) -->
+    <button id="menuToggleMobile" class="hamburger-btn d-xl-none">
+      <img src="../../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" class="hamburger-img">
+    </button>
+
+    <div class="layout-container">
+
+      <!-- Menu -->
+      <aside class="layout-menu menu-vertical bg-menu-theme" id="layoutMenu">
+        <div class="app-brand demo">
+          <a href="../dashboard.html" class="app-brand-link">
+            <span class="app-brand-logo demo">
+              <img src="../../assets/img/LogoEscuela.png" alt="Logo EORM Linda Vista" width="70" height="70">
+            </span>
+            <span class="app-brand-text demo menu-text fw-bolder ms-2 text-uppercase">EORM</span>
+          </a>
+
+          <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none"
+            id="closeMenu">
+            <span class="material-symbols-outlined">close</span>
+          </a>
+        </div>
+
+        <!-- Señala la pestaña activa -->
+        <div class="menu-inner-shadow"></div>
+        <ul class="menu-inner py-1" id="accordionSidebar">
+
+          <!-- Dashboard/Inicio -->
+          <li class="menu-item">
+            <a href="../dashboard.html" class="menu-link" id="EnlaceInicio">
+              <span class="menu-icon material-symbols-outlined">home</span>
+              <div class="menu-text" data-i18n="Analytics">Inicio</div>
+            </a>
+          </li>
+
+          <!-- Modulo de Tareas -->
+          <li class="menu-item" id="menuTareas">
+            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceTarea">
+              <span class="menu-icon material-symbols-outlined">assignment</span>
+              <div class="menu-text" data-i18n="Layouts">Tareas</div>
+            </a>
+
+            <ul class="menu-sub">
+              <li class="menu-item">
+                <a href="../tareas/calendario.html" class="menu-link">
+                  <div data-i18n="Without menu">Calendario</div>
+                </a>
+              </li>
+              <li class="menu-item ">
+                <a href="../tareas/actividades.html" class="menu-link">
+                  <div data-i18n="Without navbar">Actividades</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="../tareas/asigna-lista-cotejo.html" class="menu-link">
+                  <div data-i18n="Container">Visualizar Lista de Cotejo</div>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <!-- Información del alumno -->
+          <li class="menu-item">
+            <a href="../alumnos/alumnos.html" class="menu-link" id="EnlaceAlumno">
+              <span class="menu-icon material-symbols-outlined">group</span>
+              <div class="menu-text" data-i18n="Documentation">Alumnos</div>
+            </a>
+          </li>
+
+          <!-- Modulo de Reportes -->
+          <li class="menu-item" id="menuReportes">
+            <a href="javascript:void(0);" class="menu-link menu-toggle" id="EnlaceReportes">
+              <span class="menu-icon material-symbols-outlined">summarize</span>
+              <div class="menu-text" data-i18n="Layouts">Reportes</div>
+            </a>
+
+            <ul class="menu-sub">
+              <li class="menu-item ">
+                <a href="../reportes/boleta-calificacion.html" class="menu-link">
+                  <div data-i18n="Without menu">Boleta de Calificaciones</div>
+                </a>
+              </li>
+              <li class="menu-item ">
+                <a href="../reportes/lista-cotejo.html" class="menu-link">
+                  <div data-i18n="Without navbar">Lista de Cotejo</div>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="../reportes/cuadro-prim.html" class="menu-link">
+                  <div data-i18n="Container">Cuadro PRIM</div>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="menu-item">
+            <a href="../alertas/alertas.html" class="menu-link" id="EnlaceAlertas">
+              <span class="menu-icon material-symbols-outlined">notification_important</span>
+              <div class="menu-text" data-i18n="Documentation">Alertas</div>
+            </a>
+          </li>
+
+          <li class="menu-item">
+            <a href="../panelControl/panel-control.html" class="menu-link" id="EnlacePanelControl">
+              <span class="menu-icon material-symbols-outlined">settings</span>
+              <div class="menu-text" data-i18n="Documentation">Panel de control</div>
+            </a>
+          </li>
+
+          <li class="menu-item">
+            <a href="../maestros/maestros.html" class="menu-link" id="EnlaceMaestro">
+              <span class="menu-icon material-symbols-outlined">person</span>
+              <div class="menu-text" data-i18n="Documentation">Maestros</div>
+            </a>
+          </li>
+
+          <li class="menu-item">
+            <a href="../encargado.html/encargado.html" class="menu-link" id="EnlaceEncargado">
+              <span class="menu-icon material-symbols-outlined">contacts_product</span>
+              <div class="menu-text" data-i18n="Documentation">Encargado</div>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Layout container -->
+      <div class="layout-page">
+        <!-- Navbar -->
+
+        <nav
+          class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+          id="layout-navbar">
+
+          <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+
+            <ul class="navbar-nav flex-row align-items-center ms-auto">
+              <!-- Place this tag where you want the button to render. -->
+
+              <span class="fw-semibold d-block">Perfil de Usuario</span>
+              <!-- User -->
+              <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                  <div class="avatar avatar-online">
+                    <img src="../../assets/img/icons/user.png" alt class="w-px-40 h-auto rounded-circle" />
+                  </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li>
+                    <a class="dropdown-item" href="../../pages/perfil.html">
+                      <div class="d-flex">
+                        <div class="flex-shrink-0 me-3">
+                          <div class="avatar avatar-online">
+                            <img src="../../assets/img/icons/user.png" alt class="w-px-40 h-auto rounded-circle" />
+                          </div>
+                        </div>
+                        <div class="flex-grow-1">
+                          <span class="fw-semibold d-block">Usuario</span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <div class="dropdown-divider"></div>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="../../pages/perfil.html">
+                      <i class="bx bx-user me-2"></i>
+                      <span class="align-middle">Mi Perfil</span>
+                    </a>
+                  </li>
+
+                  <li>
+
+                  </li>
+                  <li>
+                    <div class="dropdown-divider"></div>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="/">
+                      <i class="bx bx-power-off me-2"></i>
+                      <span class="align-middle">Cerrar Sesión</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <!--/ User -->
+            </ul>
+          </div>
+        </nav>
+
+        <!-- Content wrapper -->
+        <div class="content-wrapper">
+
+          <!-- Mensaje Bienvenida -->
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="row mb-4">
+              <div class="col-12 col-lg-12">
+                <div class="card">
+                  <div class="card-body py-3">
+                    <h2 class="card-title text-primary mb-2">Alumnos</h2>
+                    <p class="mb-0"> Hoy se aprende, mañana se conquista. ¡El conocimiento es un superpoder!</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row g-3 align-items-stretch mb-3">
+              <!-- Buscar Alumno (Derecha) -->
+              <div class="col-12 col-lg-6">
+                <div class="card shadow mb-4 h-100" id="Tarjeta-Reportes-actividades">
+                  <div class="card-header">
+                    <h6 class="m-0 font-weight-bold text-primary">Buscar Alumno</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="add-task">
+                      <form class="row g-3">
+                        <div class="col-12 col-md-4">
+                          <label for="Cod_alumno" class="form-label">Codigo de Alumno</label>
+                          <input type="text" class="form-control" id="Cod_alumno" />
+                        </div>
+                        <div class="col-12 col-md-8">
+                          <label for="nombre_alumno" class="form-label">Nombre alumno</label>
+                          <input type="text" class="form-control" id="nombre_alumno" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <label for="dpi_alumno" class="form-label">DPI del alumno</label>
+                          <input type="number" class="form-control" id="dpi_alumno" />
+                        </div>
+                        <div class="col-12 col-md-8">
+                          <label for="nombre_maestro" class="form-label">Nombre Maestro</label>
+                          <input type="text" class="form-control" id="nombre_maestro" />
+                        </div>
+                      </form>
+
+                      <div class="d-flex gap-2 mt-3">
+                        <button class="btn btn-sm btn-primary" id="search-btn">Buscar</button>
+                        <button class="btn btn-sm btn-warning" id="create-btn">Crear Alumno</button>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Filtros (Centro) -->
+              <div class="col-12 col-lg-3">
+                <div id="Selec-gradSec" class="card shadow-sm h-100">
+                  <div class="card-body">
+                    <div class="row g-2 align-items-end">
+
+                      <!-- Grado (arriba) -->
+                      <div class="col-12 form-container">
+                        <label for="combo_grado_direc" class="select-label">grado:</label>
+                        <select id="combo_grado_direc" class="custom-select">
+                          <option value="" disabled selected>-- Elija una opción --</option>
+                        </select>
+                      </div>
+
+                      <!-- Sección (abajo) -->
+                      <div class="col-12 form-container">
+                        <label for="combo_seccion_direc" class="select-label">sección:</label>
+                        <select id="combo_seccion_direc" class="custom-select">
+                          <option value="" disabled selected>-- Elija una opción --</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Imagen (derecha) -->
+              <div class="col-12 col-lg-3">
+                <div class="card shadow mb-4 h-100">
+                  <div class="card-body p-0 h-100">
+                    <img src="../../assets/img/alumnos.png" alt="Imagen de alumnos" class="img-fluid w-100 h-100"
+                      style="object-fit: cover; border-radius: 0.375rem;">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="col-lg-12 mb-3">
+              <div class="card shadow mb-4" id="Tarjeta-Tablas">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Información</h6>
+                </div>
+                <div class="table-responsive" id="tableContainerActivities" style="display: block; padding: 15px">
+                  <table class="table table-bordered" id="dataTableActivities" width="100%" cellspacing="0">
+                    <thead>
+                      <tr>
+                        <th>No</th>
+                        <th>Cod. Alumno</th>
+                        <th>DPI alumno</th>
+                        <th>Nombre Alumno</th>
+                        <th>No. Tel.</th>
+                        <th>Maestros asignados</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tableBodyActivities">
+                      <!-- Las filas se insertarán aquí dinámicamente -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===================================== -->
+          <!-- MODAL ALUMNO -->
+          <!-- ===================================== -->
+          <div class="modal fade" id="modalAlumno" tabindex="-1">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content shadow-lg border-0">
+
+                <!-- HEADER -->
+                <div class="modal-header bg-primary text-white">
+                  <h5 class="modal-title" id="modalAlumnoTitle">Registrar Alumno</h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- BARRA PROGRESO -->
+                <div class="px-4 pt-3">
+                  <div class="progress" style="height:6px;">
+                    <div id="wizardProgressAlumno" class="progress-bar" style="width:50%;"></div>
+                  </div>
+                </div>
+
+                <!-- BODY -->
+                <div class="modal-body">
+
+                  <form id="formAlumno">
+
+                    <input type="hidden" id="modal_alumno_id">
+
+                    <!-- ========================= -->
+                    <!-- PASO 1 -->
+                    <!-- ========================= -->
+                    <div class="wizard-step" id="step-1-alumno">
+
+                      <h6 class="mb-3 text-primary">Información Personal</h6>
+
+                      <div class="row g-3">
+
+                        <div class="col-md-4">
+                          <label class="form-label">Nombre</label>
+                          <input type="text" class="form-control" id="modal_nombre" required>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Apellido</label>
+                          <input type="text" class="form-control" id="modal_apellido" required>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Teléfono</label>
+                          <input type="text" class="form-control" id="modal_telefono">
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Género</label>
+                          <select class="form-control" id="modal_genero">
+                            <option value="" selected>Elija género</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                          </select>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">DPI</label>
+                          <input type="number" class="form-control" id="modal_dpi" required>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">NIT</label>
+                          <input type="text" class="form-control" id="modal_nit">
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Fecha nacimiento</label>
+                          <input type="date" class="form-control" id="modal_fecha_nacimiento">
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Correo</label>
+                          <input type="email" class="form-control" id="modal_correo" required>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label">Residencia</label>
+                          <input type="text" class="form-control" id="modal_residencia">
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <!-- ========================= -->
+                    <!-- PASO 2 -->
+                    <!-- ========================= -->
+                    <div class="wizard-step d-none" id="step-2-alumno">
+
+                      <h5 class="mb-4 text-primary fw-bold">Información Académica</h5>
+
+                      <div class="row g-4">
+
+                        <!-- ============================= -->
+                        <!-- BLOQUE 1: GRADO Y SECCIÓN -->
+                        <!-- ============================= -->
+                        <div class="col-12 col-lg-3">
+                          <div class="card shadow-sm h-100">
+                            <div class="card-header bg-light">
+                              <h6 class="mb-0 text-primary">Datos Académicos</h6>
+                            </div>
+                            <div class="card-body">
+
+                              <div class="mb-3">
+                                <label class="form-label">Código de Alumno</label>
+                                  <input type="text" class="form-control" id="insert_codigo_alumno"
+                                    placeholder="Insertar código de alumno...">
+                              </div>
+
+                              <div class="mb-3">
+                                <label class="form-label">Grado</label>
+                                <select id="modal_grado_alumno" class="form-select">
+                                  <option value="" disabled selected>Elija grado</option>
+                                  <option value="1">1er Grado</option>
+                                  <option value="2">2do Grado</option>
+                                  <option value="3">3er Grado</option>
+                                  <option value="4">4to Grado</option>
+                                  <option value="5">5to Grado</option>
+                                  <option value="6">6to Grado</option>
+                                </select>
+                              </div>
+
+                              <div>
+                                <label class="form-label">Sección</label>
+                                <select id="modal_seccion_alumno" class="form-select">
+                                  <option value="" disabled selected>Elija sección</option>
+                                  <option value="1">Sección A</option>
+                                  <option value="2">Sección B</option>
+                                </select>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- ============================= -->
+                        <!-- BLOQUE 2: ASIGNAR ENCARGADO -->
+                        <!-- ============================= -->
+                        <div class="col-12 col-lg-9">
+                          <div class="card shadow-sm h-100">
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                              <h6 class="mb-0 text-primary">Asignar Encargado</h6>
+                            </div>
+
+                            <div class="card-body">
+
+                              <!-- Buscador -->
+                              <div class="row mb-3">
+
+                                <div class="col-12 col-md-5">
+                                  <label class="form-label">nombre encargado</label>
+                                  <input type="text" class="form-control" id="buscar_nombre_encargado"
+                                    placeholder="Buscar encargado por nombre...">
+                                </div>
+
+                                <div class="col-12 col-md-5">
+                                  <label class="form-label">DPI del encargado</label>
+                                  <input type="text" class="form-control" id="buscar_dpi_encargado"
+                                    placeholder="Buscar encargado por DPI...">
+                                </div>
+
+                                <div class="col-12 col-md-2 d-flex align-items-center">
+                                  <button type="button" class="btn btn-warning"
+                                    id="btnBuscarEncargadoAlumno">Buscar</button>
+                                </div>
+
+                              </div>
+
+                              <!-- Tabla -->
+                              <div class="table-responsive">
+                                <table class="table table-hover table-bordered align-middle">
+                                  <thead class="table-light text-center">
+                                    <tr>
+                                      <th style="width: 60px;">#</th>
+                                      <th>Nombre del Encargado</th>
+                                      <th style="width: 100px;">Asignar</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody id="tableBodyModalEncargado">
+                                    <!-- Se llena dinámicamente -->
+                                  </tbody>
+                                </table>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+
+                  </form>
+
+                </div>
+
+                <!-- FOOTER -->
+                <div class="modal-footer d-flex justify-content-between">
+
+                  <button type="button" class="btn btn-outline-secondary" id="btnPrevAlumno" disabled>
+                    ← Anterior
+                  </button>
+
+                  <div>
+                    <button type="button" class="btn btn-primary" id="btnNextAlumno">
+                      Siguiente →
+                    </button>
+
+                    <button type="button" class="btn btn-success d-none" id="btnGuardarAlumno">
+                      Guardar
+                    </button>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+        <!-- / Content -->
+
+        <!-- Footer -->
+        <footer class="content-footer footer bg-footer-theme">
+          <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+            <div class="mb-2 mb-md-0">
+              carolay Canté© 2026, "Construyendo herramientas que facilitan el aprendizaje."
+            </div>
+
+          </div>
+        </footer>
+        <!-- / Footer -->
+
+        <div class="content-backdrop fade"></div>
+      </div>
+    </div>
+    <!-- / Layout page -->
+  </div>
+  <!-- Overlay -->
+  <div class="layout-overlay layout-menu-toggle"></div>
+  </div>
+  <!-- / Layout wrapper -->
+  <!-- Core JS -->
+  <script src="../../assets/js/bootstrap.js"></script>
+
+  <!-- Variables de configuración -->
+  <script src="../../config/enviroment.js"></script>
+
+  <!-- endbuild -->
+  <!-- Main JS -->
+  <script src="../../assets/js/main.js"></script>
+  <!-- JS Geovanny-->
+  <script src="../../assets/js/Calendar/index.global.min.js"></script>
+  <script src="../../assets/js/Menu/sidebar.js"></script>
+  <script src="../../assets/js/Menu/comboGradSec.js"></script>
+  <script src="../../assets/js/alumno/alumno.js"></script>
+  <script src="../../assets/js/auth/roleHandler.js"></script>
+
+</body>
+
+</html>

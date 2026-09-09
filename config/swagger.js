@@ -12,7 +12,7 @@ const swaggerDefinition = {  // Cambié "swaggerDefnintion" a "swaggerDefinition
     },
     servers: [
         {
-            url: 'http://localhost:8000',
+            url: 'http://localhost:8001',
         },
     ],
 }

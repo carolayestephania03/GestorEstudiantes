@@ -437,37 +437,37 @@
     }
 
     async function guardarCalificacionMateria(payload) {
-        const json = await postJSON('http://127.0.0.1:8001/calificacion/guardarCalificacion', payload);
+        const json = await postJSON('http://localhost:8001/calificacion/guardarCalificacion', payload);
         return json || {};
     }
 
     async function guardarActitudinal(payload) {
-        const json = await postJSON('http://127.0.0.1:8001/Actitudinal/GuardarActitudinal', payload);
+        const json = await postJSON('http://localhost:8001/Actitudinal/GuardarActitudinal', payload);
         return json || {};
     }
 
     async function fetchActividadesPorTipo(payload) {
-        const json = await postJSON('http://127.0.0.1:8001/actividad/ActividadesPorTipo', payload);
+        const json = await postJSON('http://localhost:8001/actividad/ActividadesPorTipo', payload);
         return Array.isArray(json.data) ? json.data : [];
     }
 
     async function fetchActividadesCalificadasPorAlumno(payload) {
-        const json = await postJSON('http://127.0.0.1:8001/actividad/ActividadesCalificadasPorAlumno', payload);
+        const json = await postJSON('http://localhost:8001/actividad/ActividadesCalificadasPorAlumno', payload);
         return Array.isArray(json.data) ? json.data : [];
     }
 
     async function fetchActitudinal(payload) {
-        const json = await postJSON('http://127.0.0.1:8001/Actitudinal/obtenerActitudinal', payload);
+        const json = await postJSON('http://localhost:8001/Actitudinal/obtenerActitudinal', payload);
         return json || {};
     }
 
     async function fetchTopicosActitudinal() {
-        const json = await getJSON('http://127.0.0.1:8001/Actitudinal/topicosActitudinal');
+        const json = await getJSON('http://localhost:8001/Actitudinal/topicosActitudinal');
         return Array.isArray(json.data) ? json.data : [];
     }
 
     async function guardarConfiguracionNotas(payload) {
-        const json = await postJSON('http://127.0.0.1:8001/Actitudinal/ConfigurarNotas', payload);
+        const json = await postJSON('http://localhost:8001/Actitudinal/ConfigurarNotas', payload);
         return json || {};
     }
 
@@ -1245,113 +1245,295 @@
     // =========================================================
     // Carga tabla materia
     // =========================================================
-    async function cargarTabla({ useSelectedCiclo = false } = {}) {
-        if (!table || !thead || !tbody) return;
+async function cargarTabla({ useSelectedCiclo = false } = {}) {
+    if (!table || !thead || !tbody) return;
 
-        const grado_id = toInt(selGrado?.value, 0);
-        const seccion_id = toInt(selSeccion?.value, 0);
+    const grado_id = toInt(selGrado?.value, 0);
+    const seccion_id = toInt(selSeccion?.value, 0);
 
-        if (!grado_id || !seccion_id) {
-            setNoDisponible('Seleccione grado y sección.');
+    if (!grado_id || !seccion_id) {
+        setNoDisponible('Seleccione grado y sección.');
+        return;
+    }
+
+    const ciclo_id = useSelectedCiclo
+        ? Math.max(1, toInt(selCiclo?.value, 1))
+        : 1;
+
+    if (selCiclo) {
+        selCiclo.value = String(ciclo_id);
+    }
+
+    const payload = {
+        grado_id,
+        seccion_id,
+        ciclo_id,
+        anio: ANIO
+    };
+
+    setLoading('Cargando tabla de calificaciones...');
+
+    try {
+
+        /*
+        =========================================================
+        Cargar independientemente:
+        1. Actividades
+        2. Calificaciones existentes
+        3. Alumnos
+        =========================================================
+        */
+        const [
+            porTipo,
+            calif,
+            alumnosAPI
+        ] = await Promise.all([
+            fetchActividadesPorTipo(payload),
+            fetchActividadesCalificadasPorAlumno(payload),
+            fetchAlumnos(payload)
+        ]);
+
+        console.log('ActividadesPorTipo:', porTipo);
+        console.log('Actividades calificadas:', calif);
+        console.log('Alumnos:', alumnosAPI);
+
+        /*
+        =========================================================
+        Configuración de notas
+        =========================================================
+        */
+        try {
+            const actitudinalResp = await fetchActitudinal(payload);
+            const config = actitudinalResp?.configuracion || {};
+
+            estadoNotasConfig.puntaje_maximo_actitudinal = toNumber(
+                config.puntaje_maximo_actitudinal ??
+                config.puntaje_actitudinal,
+                0
+            );
+
+            estadoNotasConfig.puntaje_maximo_declarativo = toNumber(
+                config.puntaje_maximo_declarativo ??
+                config.puntaje_declarativo,
+                0
+            );
+
+            estadoNotasConfig.puntaje_maximo_procedimental = toNumber(
+                config.puntaje_maximo_procedimental ??
+                config.puntaje_procedimental,
+                0
+            );
+
+        } catch (e) {
+            console.warn(
+                'No se pudo sincronizar la configuración de notas:',
+                e
+            );
+        }
+
+        /*
+        =========================================================
+        Materias permitidas
+        =========================================================
+        */
+        const permitidas = getMateriasPermitidas(
+            grado_id,
+            ROL
+        );
+
+        setMateriaOptions(
+            permitidas,
+            porTipo,
+            calif
+        );
+
+        /*
+        =========================================================
+        Materia seleccionada
+        =========================================================
+        */
+        const materiaSel = toInt(
+            selMateria?.value,
+            0
+        );
+
+        if (!materiaSel) {
+            renderThead({
+                cols: {
+                    1: [],
+                    2: []
+                },
+                titles: {
+                    1: 'Tareas',
+                    2: 'Procedimentales'
+                }
+            });
+
+            setNoDisponible(
+                'No hay materias disponibles.'
+            );
+
             return;
         }
 
-        const ciclo_id = useSelectedCiclo ? Math.max(1, toInt(selCiclo?.value, 1)) : 1;
-        if (selCiclo) selCiclo.value = String(ciclo_id);
+        /*
+        =========================================================
+        Nombre materia
+        =========================================================
+        */
+        const materiaPorTipo =
+            (porTipo || []).find(
+                x =>
+                    toInt(x?.materia_id, 0) ===
+                    materiaSel
+            ) || null;
 
-        const payload = {
-            grado_id,
-            seccion_id,
-            ciclo_id,
-            anio: ANIO
-        };
+        const materiaCalificada =
+            (calif || []).find(
+                x =>
+                    toInt(x?.materia_id, 0) ===
+                    materiaSel
+            ) || null;
 
-        setLoading('Cargando tabla de calificaciones...');
+        const nombreMatSel =
+            materiaPorTipo?.nombre_materia ||
+            materiaCalificada?.nombre_materia ||
+            selMateria?.selectedOptions?.[0]?.textContent ||
+            'Materia';
 
-        try {
-            const [porTipo, calif] = await Promise.all([
-                fetchActividadesPorTipo(payload),
-                fetchActividadesCalificadasPorAlumno(payload)
-            ]);
-
-            try {
-                const actitudinalResp = await fetchActitudinal(payload);
-                const config = actitudinalResp?.configuracion || {};
-
-                estadoNotasConfig.puntaje_maximo_actitudinal = toNumber(
-                    config.puntaje_maximo_actitudinal ?? config.puntaje_actitudinal,
-                    0
-                );
-                estadoNotasConfig.puntaje_maximo_declarativo = toNumber(
-                    config.puntaje_maximo_declarativo ?? config.puntaje_declarativo,
-                    0
-                );
-                estadoNotasConfig.puntaje_maximo_procedimental = toNumber(
-                    config.puntaje_maximo_procedimental ?? config.puntaje_procedimental,
-                    0
-                );
-            } catch (e) {
-                console.warn('No se pudo sincronizar la configuración de notas:', e);
-            }
-
-            const permitidas = getMateriasPermitidas(grado_id, ROL);
-            setMateriaOptions(permitidas, porTipo, calif);
-
-            const materiaSel = toInt(selMateria?.value, 0);
-            if (!materiaSel) {
-                setNoDisponible('Datos no disponibles');
-                return;
-            }
-
-            const nombreMatSel =
-                (porTipo || []).find(x => toInt(x?.materia_id, 0) === materiaSel)?.nombre_materia ||
-                (calif || []).find(x => toInt(x?.materia_id, 0) === materiaSel)?.nombre_materia ||
-                'Materia';
-
-            if (tituloMateria) tituloMateria.textContent = nombreMatSel;
-            if (badgeMateria) badgeMateria.textContent = 'Materia';
-
-            const porTipoMateria = (porTipo || []).find(x => toInt(x?.materia_id, 0) === materiaSel) || null;
-            const califMateria = (calif || []).find(x => toInt(x?.materia_id, 0) === materiaSel) || null;
-
-            const { cols, titles } = buildColumnsFromPorTipo(porTipoMateria, califMateria);
-
-            estadoMateriaActual.materia_id = materiaSel;
-            estadoMateriaActual.nombre_materia = nombreMatSel;
-            estadoMateriaActual.cols = cols;
-            estadoMateriaActual.titles = titles;
-
-            const totalActs = (cols[1]?.length || 0) + (cols[2]?.length || 0);
-            if (!totalActs) {
-                renderThead({
-                    cols: { 1: [], 2: [] },
-                    titles: { 1: 'Tareas', 2: 'Procedimentales' }
-                });
-                setNoDisponible('Datos no disponibles');
-                return;
-            }
-
-            renderThead({ cols, titles });
-
-            const alumnos = califMateria ? buildAlumnosListForMateria(califMateria) : [];
-
-            if (!alumnos.length) {
-                renderTbody([], cols);
-                setNoDisponible('Datos no disponibles');
-                return;
-            }
-
-            renderTbody(alumnos, cols);
-
-            const califMap = buildCalifMap(calif || []);
-            fillNotasFromCalifMap(materiaSel, califMap);
-
-            if (tfoot) tfoot.innerHTML = '';
-        } catch (e) {
-            console.error('Error cargarTabla:', e);
-            setNoDisponible('Datos no disponibles');
+        if (tituloMateria) {
+            tituloMateria.textContent =
+                nombreMatSel;
         }
+
+        if (badgeMateria) {
+            badgeMateria.textContent =
+                'Materia';
+        }
+
+        /*
+        =========================================================
+        Crear columnas
+
+        IMPORTANTE:
+        Incluso si NO EXISTEN calificaciones,
+        las actividades vienen de ActividadesPorTipo.
+        =========================================================
+        */
+        const {
+            cols,
+            titles
+        } = buildColumnsFromPorTipo(
+            materiaPorTipo,
+            materiaCalificada
+        );
+
+        estadoMateriaActual.materia_id =
+            materiaSel;
+
+        estadoMateriaActual.nombre_materia =
+            nombreMatSel;
+
+        estadoMateriaActual.cols =
+            cols;
+
+        estadoMateriaActual.titles =
+            titles;
+
+        /*
+        =========================================================
+        Dibujar encabezados
+        =========================================================
+        */
+        renderThead({
+            cols,
+            titles
+        });
+
+        /*
+        =========================================================
+        Validar actividades
+        =========================================================
+        */
+        const totalActs =
+            (cols[1]?.length || 0) +
+            (cols[2]?.length || 0);
+
+        if (!totalActs) {
+            setNoDisponible(
+                'No existen actividades registradas para esta materia.'
+            );
+
+            return;
+        }
+
+        /*
+        =========================================================
+        Crear filas SIEMPRE desde buscarAlumnos
+
+        Ya NO dependemos de calificaciones.
+        =========================================================
+        */
+        const alumnos =
+            normalizarAlumnosParaTabla(
+                alumnosAPI
+            );
+
+        if (!alumnos.length) {
+            setNoDisponible(
+                'No existen alumnos registrados para este grado y sección.'
+            );
+
+            return;
+        }
+
+        /*
+        =========================================================
+        Crear tabla con alumnos
+        =========================================================
+        */
+        renderTbody(
+            alumnos,
+            cols
+        );
+
+        /*
+        =========================================================
+        Aplicar calificaciones existentes
+
+        Si no existen:
+        inputs permanecen en 0.
+
+        Si existen:
+        se llenan según actividad_id + alumno_id.
+        =========================================================
+        */
+        const califMap =
+            buildCalifMap(
+                calif || []
+            );
+
+        fillNotasFromCalifMap(
+            materiaSel,
+            califMap
+        );
+
+        if (tfoot) {
+            tfoot.innerHTML = '';
+        }
+
+    } catch (e) {
+        console.error(
+            'Error cargarTabla:',
+            e
+        );
+
+        setNoDisponible(
+            e?.message ||
+            'No fue posible cargar la información.'
+        );
     }
+}
 
     // =========================================================
     // Carga tabla actitudinal

@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
       descripcion: inputDescripcion?.value.trim() || null,
       fecha_entrega: inputFechaEntrega?.value || "",
       puntaje_maximo: Number(inputPunteo?.value || 0),
-      estado_actividad_id: 1,
+      estado_actividad_id: 2,
       estado: 1,
       crear_para_alumnos: 1
     };
@@ -233,7 +233,7 @@ document.addEventListener("DOMContentLoaded", function () {
     try {
       btnGuardar.disabled = true;
 
-      const response = await fetch("http://127.0.0.1:8001/actividad/CrearActividad", {
+      const response = await fetch("http://localhost:8001/actividad/CrearActividad", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

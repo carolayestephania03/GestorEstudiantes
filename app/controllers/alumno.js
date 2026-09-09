@@ -222,9 +222,6 @@ exports.buscarAlumnosConMaestros = [
 ];
 
 exports.crearAlumnoConEncargado = [
-  // =========================
-  // VALIDACIONES (según SP)
-  // =========================
   body('alumno_nombre')
     .trim()
     .notEmpty().withMessage('alumno_nombre requerido')

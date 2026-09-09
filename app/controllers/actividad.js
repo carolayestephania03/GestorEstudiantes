@@ -1122,7 +1122,7 @@ exports.getTareasAgrupadasPorAviso = [
         const bucket = agrupado.get(aviso);
 
         bucket.actividades.push({
-          id_actividad: r.id_actividad,
+          actividad_id: r.actividad_id,
           nombre_actividad: r.nombre_actividad,
           descripcion: r.descripcion,
           fecha_creacion: r.fecha_creacion,

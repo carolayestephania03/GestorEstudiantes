@@ -60,6 +60,20 @@
       outline: none;
     }
 
+    .custom-select:disabled {
+      background-color: #e9ecef;
+      color: #adb5bd;
+      border-color: #ced4da;
+      cursor: not-allowed;
+      background-image: linear-gradient(45deg, transparent 50%, #adb5bd 50%),
+        linear-gradient(135deg, #adb5bd 50%, transparent 50%);
+    }
+
+    .custom-select:disabled:focus {
+      border-color: #ced4da;
+      box-shadow: none;
+    }
+
     .select-label {
       font-weight: 600;
       color: #3b71ca;

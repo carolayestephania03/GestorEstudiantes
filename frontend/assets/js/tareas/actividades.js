@@ -61,7 +61,7 @@
   }
 
   async function actualizarActividad(payload) {
-    const r = await fetch('http://127.0.0.1:8001/actividad/ActualizarActividad', {
+    const r = await fetch('http://localhost:8001/actividad/ActualizarActividad', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -74,7 +74,7 @@
   }
 
   async function fetchCiclos() {
-    const r = await fetch('http://127.0.0.1:8001/ciclo', {
+    const r = await fetch('http://localhost:8001/ciclo', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
@@ -87,7 +87,7 @@
   }
 
   async function fetchEstadosActividad() {
-    const r = await fetch('http://127.0.0.1:8001/EstadoActividad', {
+    const r = await fetch('http://localhost:8001/EstadoActividad', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
@@ -100,7 +100,7 @@
   }
 
   async function fetchTiposActividad() {
-    const r = await fetch('http://127.0.0.1:8001/tipoActividad', {
+    const r = await fetch('http://localhost:8001/tipoActividad', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
@@ -132,7 +132,7 @@
   }
 
   async function fetchActividadesPorTipo(payload) {
-    const r = await fetch('http://127.0.0.1:8001/actividad/ActividadesPorTipo', {
+    const r = await fetch('http://localhost:8001/actividad/ActividadesPorTipo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -144,7 +144,7 @@
   }
 
   async function fetchActividadDetalle(actividad_id) {
-    const r = await fetch('http://127.0.0.1:8001/actividad/ActividadDetalle', {
+    const r = await fetch('http://localhost:8001/actividad/ActividadDetalle', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -160,10 +160,18 @@
   // =========================================================
   // Render UI (h3 + contador) + cards por tipo
   // =========================================================
-  const SECCIONES = [
-    { key: 'tarea', title: 'Trabajo, proyecto o ejercicio', match: /tarea/i },
-    { key: 'evaluacion', title: 'Evaluación', match: /examen|evalu/i }
-  ];
+const SECCIONES = [
+  {
+    key: 'tarea',
+    title: 'Trabajo, proyecto o ejercicio',
+    match: /procedimental|tarea|trabajo|proyecto|ejercicio/i
+  },
+  {
+    key: 'evaluacion',
+    title: 'Evaluación',
+    match: /declarativo|examen|evaluacion|evaluación/i
+  }
+];
 
   function cardTemplate(a) {
     const titulo = safeText(a?.nombre_actividad || 'Actividad');
@@ -232,25 +240,65 @@
     return toInt(sessionStorage.getItem('actividadIdRedireccion'), 0);
   }
 
-  function agruparPorSeccion(dataMaterias) {
-    const bucket = { tarea: [], evaluacion: [] };
+function agruparPorSeccion(dataMaterias) {
+  const bucket = { tarea: [], evaluacion: [] };
 
-    for (const mat of dataMaterias) {
-      const tipos = Array.isArray(mat?.tipos_actividad) ? mat.tipos_actividad : [];
+  for (const mat of dataMaterias) {
+    const tipos = Array.isArray(mat?.tipos_actividad)
+      ? mat.tipos_actividad
+      : [];
 
-      for (const t of tipos) {
-        const nombreTipo = String(t?.tipo_actividad || '');
-        const acts = Array.isArray(t?.actividades) ? t.actividades : [];
+    for (const t of tipos) {
 
-        const sec = SECCIONES.find(s => s.match.test(nombreTipo));
-        if (!sec) continue;
+      const tipoId = toInt(t?.tipo_actividad_id, 0);
+      const nombreTipo = String(t?.tipo_actividad || '').trim();
 
-        bucket[sec.key].push(...acts);
+      const actividades = Array.isArray(t?.actividades)
+        ? t.actividades
+        : [];
+
+      let seccion = null;
+
+      /*
+       * tipo_actividad_id = 1
+       * Procedimental
+       */
+      if (
+        tipoId === 1 ||
+        /procedimental|tarea|trabajo|proyecto|ejercicio/i.test(nombreTipo)
+      ) {
+        seccion = 'tarea';
       }
-    }
 
-    return bucket;
+      /*
+       * Declarativo / Evaluación
+       * Ajusta el ID si en tu catálogo Declarativo
+       * utiliza otro tipo_actividad_id.
+       */
+      else if (
+        tipoId === 2 ||
+        /declarativo|examen|evaluacion|evaluación/i.test(nombreTipo)
+      ) {
+        seccion = 'evaluacion';
+      }
+
+      if (!seccion) {
+        console.warn(
+          'Tipo de actividad no reconocido:',
+          {
+            tipo_actividad_id: tipoId,
+            tipo_actividad: nombreTipo
+          }
+        );
+        continue;
+      }
+
+      bucket[seccion].push(...actividades);
+    }
   }
+
+  return bucket;
+}
 
   function renderSecciones(bucket) {
     const htmlParts = SECCIONES.map(sec => {

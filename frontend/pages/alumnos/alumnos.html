@@ -60,6 +60,20 @@
       outline: none;
     }
 
+        .custom-select:disabled {
+      background-color: #e9ecef;
+      color: #adb5bd;
+      border-color: #ced4da;
+      cursor: not-allowed;
+      background-image: linear-gradient(45deg, transparent 50%, #adb5bd 50%),
+        linear-gradient(135deg, #adb5bd 50%, transparent 50%);
+    }
+
+    .custom-select:disabled:focus {
+      border-color: #ced4da;
+      box-shadow: none;
+    }
+
     .select-label {
       font-weight: 600;
       color: #3b71ca;
@@ -363,7 +377,7 @@
                       <form class="row g-3">
                         <div class="col-12 col-md-4">
                           <label for="Cod_alumno" class="form-label">Codigo de Alumno</label>
-                          <input type="number" class="form-control" id="Cod_alumno" />
+                          <input type="text" class="form-control" id="Cod_alumno" />
                         </div>
                         <div class="col-12 col-md-8">
                           <label for="nombre_alumno" class="form-label">Nombre alumno</label>
